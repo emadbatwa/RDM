@@ -84,6 +84,18 @@
                     Laravel
                 </div>
 
+                <script>
+                    var url = "https://www.google.com/maps/place/Arctic+Pixel+Digital+Solutions/@63.6741553,-164.9587713,4z/data=!3m1!4b1!4m5!3m4!1s0x5133b2ed09c706b9:0x66deacb5f48c5d57!8m2!3d64.751111!4d-147.3494442";
+                    var regex = new RegExp('@(.*),(.*),');
+                    var lon_lat_match = url.match(regex);
+                    var lon = lon_lat_match[1];
+                    var lat = lon_lat_match[2];
+                    console.log(lon_lat_match);
+                    console.log(lon);
+                    console.log(lat);
+
+                </script>
+
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
