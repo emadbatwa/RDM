@@ -19,22 +19,16 @@ class AuthController extends Controller
 {
 
     /**
-     * signup a user
+     * register a user
      *
-     * User will enter the information required for signup and if its a boutique the api will detect the extra information for boutique.
+     * User will enter the information required for register
      *
      * @bodyParam name string required The Name of the user Example: mohammed alghamdi
      * @bodyParam phone_number string required The Phone Number of the user 10 digits (There is a check that the string is number). Example: 0555555555
      * @bodyParam email string required The Email of the user. Example: mohammed@hotmail.com
      * @bodyParam password string required The password of the user. Example: password
      * @bodyParam password_confirmation string required The password of the user. Example: password
-     * @bodyParam role string required The Role of the user. Example: BOUTIQUE
-     * @bodyParam city string required The City of the user. Example: makkah
-     * @bodyParam address string required The address of the user. Example: شارع العسكر بجوار مخبز حمادة
-     * @bodyParam boutique_name string required The boutique name of the boutique. Example: محل الخيال
-     * @bodyParam description string The description for the boutique. Example: محلنا يقدم افضل الملابس
-     * @bodyParam brand string The brand of the boutique. Example: ماركمة أ
-     * @bodyParam designer string The designer name of the boutique. Example: المصمم فلان الفلاني
+     * @bodyParam role string required The Role of the user. Example: USER
      *
      *
      * @response 201 {
@@ -49,68 +43,26 @@ class AuthController extends Controller
      *   ]
      *  }
      * }
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function signup(Request $request)
+    public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string',
-            'phone_number' => 'required|numeric',
+            //'phone_number' => 'required|numeric',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed',
-            'role' => 'in:USER,BOUTIQUE',
-            'city' => 'required|string',
-            'address' => 'required|string'
         ]);
 
-        if ($request->role == User::USER_ROLE) {
             $user = User::create([
                 'name' => $request->name,
-                'phone_number' => $request->phone_number,
+                //'phone_number' => $request->phone_number,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'activation_token' => str_random(60),
             ]);
-            $user->notify(new SignupActivate($user));
-
-
-            Address::create([
-                'city' =>$request->city,
-                'address' => $request->address,
-                'user_id' => $user->user_id
-            ]);
-        }
-
-        if ($request->role == User::BOUTIQUE_ROLE) {
-            $request->validate([
-                'boutique_name' => 'required|string',
-                'description' => 'required|string',
-            ]);
-
-            $user = User::create([
-                'name' => $request->name,
-                'phone_number' => $request->phone_number,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'role' => User::BOUTIQUE_ROLE,
-                'activation_token' => str_random(60),
-            ]);
-            $user->notify(new SignupActivate($user));
-
-            $avatar = Avatar::create($user->name)->getImageObject()->encode('png');
-            Storage::put('public/avatars/'.$user->user_id.'/avatar.png', (string) $avatar);
-
-            $boutique = Boutique::create([
-                'boutique_name' => $request->boutique_name,
-                'description' => $request->description,
-                'user_id' => $user->user_id
-            ]);
-
-            Address::create([
-                'city' =>$request->city,
-                'address' => $request->address,
-                'user_id' => $user->user_id
-            ]);
-        }
+            //$user->notify(new registerActivate($user));
 
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
@@ -177,8 +129,6 @@ class AuthController extends Controller
         ]);
 
         $credentials = request(['email', 'password']);
-        //$credentials['active'] = 1;
-        $credentials['deleted_at'] = null;
 
         if (!Auth::attempt($credentials))
             return response()->json([
@@ -226,19 +176,5 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Successfully logged out'
         ]);
-    }
-
-    public function signupActivate($token)
-    {
-        $user = User::where('activation_token', $token)->first();
-        if (!$user) {
-            return response()->json([
-                'message' => 'This activation token is invalid.'
-            ], 404);
-        }
-        $user->active = true;
-        $user->activation_token = '';
-        $user->save();
-        return $user;
     }
 }

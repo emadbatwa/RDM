@@ -15,7 +15,8 @@ class CreateNeighborhoodsTable extends Migration
     {
         Schema::create('neighborhoods', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('neighborhood');
+            $table->string('name_ar');
+            $table->string('name_en');
             $table->unsignedInteger('city_id');
             $table->foreign('city_id')->references('id')->on('cities');
         });

@@ -33,16 +33,16 @@ Route::group([
     //inside this function all auth routes that the user can use before login/register
 ], function () {
     Route::post('login', 'API\AuthController@login');
-    Route::post('register', 'API\AuthController@signup');
-    Route::get('signup/activate/{token}', 'API\AuthController@signupActivate');
+    Route::post('register', 'API\AuthController@register');
+    Route::get('register/activate/{token}', 'API\AuthController@registerActivate');
     //inside this group all apis that need a user level role to access
     Route::group([
         'middleware' => 'auth:api'
-    ], function() {
+    ], function () {
         Route::get('logout', 'API\AuthController@logout');
         //user route will return a response with user info, addresses, and a boutique info if exists.
         Route::get('user', 'API\UserController@userInfo');
     });
 });
-Route::get('signup/activate/{token}', 'AuthController@signupActivate');
+Route::get('register/activate/{token}', 'API\AuthController@registerActivate');
 
