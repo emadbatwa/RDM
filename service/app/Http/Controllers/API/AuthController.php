@@ -50,14 +50,14 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            //'phone_number' => 'required|numeric',
+            'phone' => 'required|regex:/(05)[0-9]{8}/',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed',
         ]);
 
             $user = User::create([
                 'name' => $request->name,
-                //'phone_number' => $request->phone_number,
+                'phone' => $request->phone,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'activation_token' => str_random(60),
