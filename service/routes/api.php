@@ -26,16 +26,11 @@ Route::group([
     Route::get('find/{token}', 'PasswordResetController@find');
     Route::post('reset', 'PasswordResetController@reset');
 });
-//this group handles the users authentication system
 Route::group([
-    //this prefix means the api will be yourdomain.com/auth/{any of the routes inside this group}
     'prefix' => 'auth'
-    //inside this function all auth routes that the user can use before login/register
 ], function () {
     Route::post('login', 'API\AuthController@login');
     Route::post('register', 'API\AuthController@register');
-    Route::get('register/activate/{token}', 'API\AuthController@registerActivate');
-    //inside this group all apis that need a user level role to access
     Route::group([
         'middleware' => 'auth:api'
     ], function () {
