@@ -20,7 +20,11 @@ class StatusesTableSeeder extends Seeder
         ]);
 
         DB::table('statuses')->insert([
-            'status' => 'IN_PROGRESS',
+            'status' => 'ASSIGNED',
+        ]);
+
+        DB::table('statuses')->insert([
+            'status' => 'EXCLUDE',
         ]);
     }
 }

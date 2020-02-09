@@ -31,6 +31,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Location extends Model
 {
+    protected $fillable = [
+        'location_url', 'latitude', 'longitude', 'neighborhood_id', 'city_id',
+    ];
+
     public $timestamps = false;
 
     public function city()

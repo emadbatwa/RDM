@@ -16,10 +16,11 @@ class DatabaseSeeder extends Seeder
 
         $this->call(RolesTableSeeder::class);
         $this->call(StatusesTableSeeder::class);
+        $this->call(ClassificationsSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(CitiesTableSeeder::class);
         $this->call(NeighborhoodsTableSeeder::class);
-
+        $this->call(TicketsSeeder::class);
         Model::reguard();
     }
 }

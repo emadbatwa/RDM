@@ -18,5 +18,8 @@ class UsersTableSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        $records = 20;
+        factory(App\User::class, $records)->create();
     }
 }

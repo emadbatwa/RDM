@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function userInfo(Request $request)
     {
-        $user = User::find($request->user()->user_id);
+        $user = User::find($request->user()->id);
 
         return response()->json($user);
     }

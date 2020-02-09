@@ -38,6 +38,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Ticket extends Model
 {
+    protected $fillable = [
+        'description', 'assigned_to', 'user_id', 'status_id' , 'classification_id', 'location_id',
+    ];
     public function user()
     {
         return $this->belongsTo('App\User');

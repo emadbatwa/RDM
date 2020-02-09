@@ -27,7 +27,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Photo extends Model
 {
-    public $timestamps = false;
+    protected $fillable = [
+        'photo_path', 'photo_name', 'ticket_id',
+    ];
 
     public function ticket()
     {
