@@ -35,12 +35,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket whereUserId($value)
  * @mixin \Eloquent
+ * @property int $classification_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket whereClassificationId($value)
  */
 class Ticket extends Model
 {
     protected $fillable = [
-        'description', 'assigned_to', 'user_id', 'status_id' , 'classification_id', 'location_id',
+        'description', 'assigned_to', 'user_id', 'status_id', 'classification_id', 'location_id',
     ];
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -66,3 +69,7 @@ class Ticket extends Model
         return $this->hasOne('App\Location');
     }
 }
+
+
+
+

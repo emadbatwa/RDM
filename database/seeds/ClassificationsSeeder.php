@@ -12,6 +12,10 @@ class ClassificationsSeeder extends Seeder
     public function run()
     {
         DB::table('classifications')->insert([
+            'classification' => 'OTHER',
+        ]);
+
+        DB::table('classifications')->insert([
             'classification' => 'CRACKS',
         ]);
 

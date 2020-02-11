@@ -20,6 +20,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Neighborhood whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Neighborhood whereNeighborhood($value)
  * @mixin \Eloquent
+ * @property string $name_ar
+ * @property string $name_en
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Neighborhood whereNameAr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Neighborhood whereNameEn($value)
  */
 class Neighborhood extends Model
 {

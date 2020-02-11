@@ -19,6 +19,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\City whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\City whereId($value)
  * @mixin \Eloquent
+ * @property string $name_ar
+ * @property string $name_en
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\City whereNameAr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\City whereNameEn($value)
  */
 class City extends Model
 {

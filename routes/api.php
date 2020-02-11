@@ -22,9 +22,14 @@ Route::group([
         'middleware' => 'auth:api'
     ], function () {
         Route::get('logout', 'API\AuthController@logout');
-        //user route will return a response with user info, addresses, and a boutique info if exists.
         Route::get('user', 'API\UserController@userInfo');
     });
 });
-Route::get('register/activate/{token}', 'API\AuthController@registerActivate');
-
+Route::group([
+    'prefix' => 'ticket',
+    'middleware' => 'auth:api',
+], function () {
+    Route::post('create', 'API\TicketController@create');
+    Route::get('list', 'API\TicketController@list');
+    Route::put('update', 'API\TicketController@update');
+});

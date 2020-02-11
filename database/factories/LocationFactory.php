@@ -8,14 +8,16 @@ use App\Neighborhood;
 use App\City;
 
 $factory->define(Location::class, function (Faker $faker) {
-    $n = Neighborhood::all()->random(1);
     $c = City::all()->random(1);
+    $n = Neighborhood::where('City_id', '=', $c[0]->id)->get()->random(1);
+    $latitude = $faker->latitude;
+    $longitude = $faker->longitude;
 
     return [
-        'location_url' => $faker->url,
-        'latitude' => $faker->latitude,
-        'longitude' => $faker->longitude,
-        'neighborhood_id' =>$n[0]->id,
+        'location_url' => 'https://www.google.com/maps/search/?api=1&query='.$latitude.','.$longitude,
+        'latitude' => $latitude,
+        'longitude' => $longitude,
         'city_id' => $c[0]->id,
+        'neighborhood_id' => $n[0]->id,
     ];
 });
