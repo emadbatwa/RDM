@@ -32,4 +32,8 @@ Route::group([
     Route::post('create', 'API\TicketController@create');
     Route::get('list', 'API\TicketController@list');
     Route::post('update', 'API\TicketController@update');
+    Route::post('rate', 'API\TicketController@rate');
+    Route::get('cities', 'API\TicketController@cities');
+    Route::get('neighborhoods', 'API\TicketController@neighborhoods');
+
 });

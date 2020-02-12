@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Address;
-use App\Notifications\PasswordResetSuccess;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -22,5 +20,9 @@ class UserController extends Controller
         $user = User::find($request->user()->id);
 
         return response()->json($user);
+    }
+
+    public function update(){
+
     }
 }

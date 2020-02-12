@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\City;
 use App\Classification;
 use App\Http\Controllers\Controller;
+use App\Neighborhood;
 use App\Photo;
 use App\Status;
 use App\Ticket;
@@ -31,36 +33,43 @@ class TicketController extends Controller
             'photos.*' => 'image|mimes:jpg,jpeg',
         ], $messages);
 
-        $location = Location::create([
-            'location_url' => 'https://www.google.com/maps/search/?api=1&query=' . $request->latitude . ',' . $request->longitude,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-            'neighborhood_id' => $request->neighborhood,
-            'city_id' => $request->city,
-        ]);
+        $city = City::find($request->city);
+        $neighborhood = Neighborhood::find($request->neighborhood);
+        if($neighborhood->city_id == $city->id && $request->user()->role_id == 1) {
+            $location = Location::create([
+                'location_url' => 'https://www.google.com/maps/search/?api=1&query=' . $request->latitude . ',' . $request->longitude,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'neighborhood_id' => $request->neighborhood,
+                'city_id' => $request->city,
+            ]);
 
-        $ticket = Ticket::create([
-            'description' => $request->description,
-            'user_id' => $request->user()->id,
-            'classification_id' => Classification::OTHER,
-            'location_id' => $location->id,
-        ]);
+            $ticket = Ticket::create([
+                'description' => $request->description,
+                'user_id' => $request->user()->id,
+                'classification_id' => Classification::OTHER,
+                'location_id' => $location->id,
+            ]);
 
-        if ($photos = $request->file('photos')) {
-            foreach ($photos as $photo) {
-                $filename = uniqid() . time() . '.' . $photo->extension();
-                $photo->move(storage_path('app/public/photos'), $filename);
-                Photo::create([
-                    'photo_path' => 'http://www.ai-rdm.website/storage/photos/' . $filename,
-                    'photo_name' => $filename,
-                    'ticket_id' => $ticket->id,
-                    'role_id' => 1
-                ]);
+            if ($photos = $request->file('photos')) {
+                foreach ($photos as $photo) {
+                    $filename = uniqid() . time() . '.' . $photo->extension();
+                    $photo->move(storage_path('app/public/photos'), $filename);
+                    Photo::create([
+                        'photo_path' => 'http://www.ai-rdm.website/storage/photos/' . $filename,
+                        'photo_name' => $filename,
+                        'ticket_id' => $ticket->id,
+                        'role_id' => 1
+                    ]);
+                }
             }
+            return response()->json([
+                'message' => 'Successfully added ticket'
+            ], 200);
         }
         return response()->json([
-            'message' => 'Successfully added ticket'
-        ], 200);
+            'message' => 'neighborhood is not in the same city, or the user is not a normal user'
+        ], 400);
     }
 
     public function list(Request $request)
@@ -95,7 +104,7 @@ class TicketController extends Controller
         //employee list
         if ($user->role_id == 4) {
             $tickets = $tickets->select('tickets.id', 'tickets.description', 'statuses.status')
-                ->where('tickets.assigned_company', '=', $user->id)
+                ->where('tickets.assigned_employee', '=', $user->id)
                 ->orderBy('id')
                 ->get();
         }
@@ -288,5 +297,17 @@ class TicketController extends Controller
             Ticket::where('id', '=', $ticket->id)->update(['user_rating_id' => $rating->id]);
         };
 
+    }
+
+    public function cities(Request $request){
+        return response()->json([
+            City::all(),
+        ], 200);
+    }
+
+    public function neighborhoods(Request $request){
+        return response()->json([
+            Neighborhood::all(),
+        ], 200);
     }
 }
