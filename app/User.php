@@ -45,6 +45,8 @@ use Laravel\Passport\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRoleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $company
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereCompany($value)
  */
 class User extends Authenticatable
 {

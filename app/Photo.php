@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Photo whereTicketId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Photo whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $role_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Photo whereRoleId($value)
  */
 class Photo extends Model
 {

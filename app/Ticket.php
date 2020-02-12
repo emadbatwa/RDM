@@ -37,11 +37,15 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property int $classification_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket whereClassificationId($value)
+ * @property int|null $assigned_company
+ * @property int|null $assigned_employee
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket whereAssignedCompany($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket whereAssignedEmployee($value)
  */
 class Ticket extends Model
 {
     protected $fillable = [
-        'description', 'assigned_to', 'user_id', 'status_id', 'classification_id', 'location_id',
+        'description', 'assigned_employee', 'assigned_company','user_id', 'status_id', 'classification_id', 'location_id',
     ];
 
     public function user()

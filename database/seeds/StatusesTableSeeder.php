@@ -16,7 +16,11 @@ class StatusesTableSeeder extends Seeder
         ]);
 
         DB::table('statuses')->insert([
-            'status' => 'CLOSED',
+            'status' => 'ASSIGNED',
+        ]);
+
+        DB::table('statuses')->insert([
+            'status' => 'IN_PROGRESS',
         ]);
 
         DB::table('statuses')->insert([
@@ -24,7 +28,11 @@ class StatusesTableSeeder extends Seeder
         ]);
 
         DB::table('statuses')->insert([
-            'status' => 'ASSIGNED',
+            'status' => 'DONE',
+        ]);
+
+        DB::table('statuses')->insert([
+            'status' => 'CLOSED',
         ]);
 
         DB::table('statuses')->insert([

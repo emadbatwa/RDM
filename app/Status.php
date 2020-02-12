@@ -20,6 +20,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Status extends Model
 {
+    const OPEN = 'OPEN';
+    const ASSIGNED = 'ASSIGNED';
+    const IN_PROGRESS = 'IN_PROGRESS';
+    const SOLVED = 'SOLVED';
+    const DONE = 'DONE';
+    const CLOSED = 'CLOSED';
+    const EXCLUDED = 'EXCLUDED';
+
     public $timestamps = false;
 
     public function tickets()

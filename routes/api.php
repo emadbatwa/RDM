@@ -31,5 +31,5 @@ Route::group([
 ], function () {
     Route::post('create', 'API\TicketController@create');
     Route::get('list', 'API\TicketController@list');
-    Route::put('update', 'API\TicketController@update');
+    Route::post('update', 'API\TicketController@update');
 });
