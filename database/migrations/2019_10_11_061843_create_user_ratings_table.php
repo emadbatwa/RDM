@@ -14,7 +14,7 @@ class CreateUserRatingsTable extends Migration
     public function up()
     {
         Schema::create('user_ratings', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->integer('rating');
             $table->text('comment');
             $table->timestamps();
