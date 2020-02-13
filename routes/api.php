@@ -35,5 +35,6 @@ Route::group([
     Route::post('rate', 'API\TicketController@rate');
     Route::get('cities', 'API\TicketController@cities');
     Route::get('neighborhoods', 'API\TicketController@neighborhoods');
+    Route::post('show', 'API\TicketController@show');
 
 });

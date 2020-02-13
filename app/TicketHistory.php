@@ -29,4 +29,8 @@ use Illuminate\Database\Eloquent\Model;
 class TicketHistory extends Model
 {
     protected $fillable = ['massage', 'sender', 'receiver', 'ticket_id'];
+
+    public function ticket(){
+        return $this->belongsTo('App\Ticket');
+    }
 }

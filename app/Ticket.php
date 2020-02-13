@@ -63,6 +63,11 @@ class Ticket extends Model
         return $this->hasMany('App\Photo');
     }
 
+    public function ticketHistories()
+    {
+        return $this->hasMany('App\TicketHistory');
+    }
+
     public function classification()
     {
         return $this->belongsTo('App\Classification');

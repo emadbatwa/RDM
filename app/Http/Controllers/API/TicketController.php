@@ -35,7 +35,7 @@ class TicketController extends Controller
 
         $city = City::find($request->city);
         $neighborhood = Neighborhood::find($request->neighborhood);
-        if($neighborhood->city_id == $city->id && $request->user()->role_id == 1) {
+        if ($neighborhood->city_id == $city->id && $request->user()->role_id == 1) {
             $location = Location::create([
                 'location_url' => 'https://www.google.com/maps/search/?api=1&query=' . $request->latitude . ',' . $request->longitude,
                 'latitude' => $request->latitude,
@@ -109,6 +109,36 @@ class TicketController extends Controller
                 ->get();
         }
         return response()->json($tickets);
+    }
+
+    public function show(Request $request)
+    {
+        $request->validate([
+            'ticket_id' => 'required | numeric',
+        ]);
+        $wantedTicket = Ticket::find($request->ticket_id);
+        $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
+            ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
+            ->where('tickets.id', '=', $wantedTicket->id)
+            ->select('tickets.id', 'tickets.description', 'statuses.status', 'classifications.classification')
+            ->get();
+
+        $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
+            ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
+            ->select('locations.id', 'locations.location_url', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
+            ->where('locations.id', '=', $wantedTicket->location_id)->get();
+
+        $photos = Photo::where('ticket_id', '=', $wantedTicket->id)->get();
+
+        $ticketHistories = TicketHistory::where('ticket_id', '=', $wantedTicket->id)->get();
+
+
+        return response()->json([
+            'ticket' => $ticket[0],
+            'location' => $location[0],
+            'photos' => $photos,
+            'ticketHistories' => $ticketHistories,
+        ], 200);
     }
 
     public function update(Request $request)
@@ -285,7 +315,7 @@ class TicketController extends Controller
 
         $user = $request->user();
         $ticket = Ticket::find($request->ticket_id);
-        if($user->role_id == 1 && $ticket->user_rating_id == null){
+        if ($user->role_id == 1 && $ticket->user_rating_id == null) {
             $request->validate([
                 'comment' => 'required|string',
                 'rating' => 'required|in:1, 2, 3, 4, 5',
@@ -299,13 +329,15 @@ class TicketController extends Controller
 
     }
 
-    public function cities(Request $request){
+    public function cities(Request $request)
+    {
         return response()->json([
             City::all(),
         ], 200);
     }
 
-    public function neighborhoods(Request $request){
+    public function neighborhoods(Request $request)
+    {
         return response()->json([
             Neighborhood::all(),
         ], 200);
