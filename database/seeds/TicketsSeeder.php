@@ -16,7 +16,6 @@ class TicketsSeeder extends Seeder
         $tickets = \App\Ticket::all();
         foreach ($tickets as $ticket) {
             \App\Photo::create([
-                'photo_path' => 'http://127.0.0.1:8000/storage/photos/5e411f70ef5831581326192.jpeg',
                 'photo_name' => '5e411f70ef5831581326192.jpeg',
                 'ticket_id' => $ticket->id,
                 'role_id' => 3,

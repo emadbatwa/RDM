@@ -27,9 +27,9 @@ class TicketController extends Controller
             'description' => 'string',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
-            'city' => 'required',
-            'neighborhood' => 'required',
-            'photos' => 'required | max:4',
+            'city' => 'required |numeric| in: 6',
+            'neighborhood' => 'required |numeric| between:3377,3437',
+            'photos' => 'required ',
             'photos.*' => 'image|mimes:jpg,jpeg',
         ], $messages);
 
@@ -52,11 +52,11 @@ class TicketController extends Controller
             ]);
 
             if ($photos = $request->file('photos')) {
+                $i = 1;
                 foreach ($photos as $photo) {
-                    $filename = uniqid() . time() . '.' . $photo->extension();
+                    $filename = $i++ . time() . '.' . $photo->extension();
                     $photo->move(storage_path('app/public/photos'), $filename);
                     Photo::create([
-                        'photo_path' => 'http://www.ai-rdm.website/storage/photos/' . $filename,
                         'photo_name' => $filename,
                         'ticket_id' => $ticket->id,
                         'role_id' => 1
@@ -219,11 +219,11 @@ class TicketController extends Controller
 
             if ($ticket->assigned_employee == $employee->id && $ticket->assigned_company == $employee->company && $ticket->status->id == 3 && $photos = $request->file('photos')) {
                 $ticket->update(['status_id' => 4]);
+                $i = 1;
                 foreach ($photos as $photo) {
-                    $filename = uniqid() . time() . '.' . $photo->extension();
+                    $filename = $i++ . time() . '.' . $photo->extension();
                     $photo->move(storage_path('app/public/photos'), $filename);
                     Photo::create([
-                        'photo_path' => 'http://www.ai-rdm.website/storage/photos/' . $filename,
                         'photo_name' => $filename,
                         'ticket_id' => $ticket->id,
                         'role_id' => 3
@@ -332,14 +332,14 @@ class TicketController extends Controller
     public function cities(Request $request)
     {
         return response()->json([
-            City::all(),
+            'cities' => City::where('id', '=', 6)->get(),
         ], 200);
     }
 
     public function neighborhoods(Request $request)
     {
         return response()->json([
-            Neighborhood::all(),
+           'neighborhoods' => Neighborhood::where('city_id', '=', 6)->get(),
         ], 200);
     }
 }

@@ -30,12 +30,13 @@ use Illuminate\Database\Eloquent\Model;
 class Photo extends Model
 {
     protected $fillable = [
-        'photo_path', 'photo_name', 'ticket_id', 'role_id',
+        'photo_name', 'ticket_id', 'role_id',
     ];
 
     protected $hidden = [
         'created_at', 'updated_at'
     ];
+
     public function ticket()
     {
         return $this->belongsTo('App\Ticket');
