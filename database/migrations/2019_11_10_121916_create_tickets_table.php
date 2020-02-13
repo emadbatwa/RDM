@@ -15,7 +15,7 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->unsignedInteger('assigned_company')->nullable();
             $table->foreign('assigned_company')->references('id')->on('users');
             $table->unsignedInteger('assigned_employee')->nullable();

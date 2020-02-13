@@ -24,7 +24,7 @@ class TicketController extends Controller
         ];
 
         $request->validate([
-            'description' => 'required|string',
+            'description' => 'string',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'city' => 'required',

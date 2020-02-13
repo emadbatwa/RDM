@@ -12,7 +12,7 @@ class NeighborhoodsTableSeeder extends Seeder
      */
     public function run()
     {
-        $json = File::get('public/storage/json/neighborhoods.json');
+        $json = File::get('database/seeds/json/neighborhoods.json');
         $data = json_decode($json);
         //$array1 = (array) $data->toArray();
         foreach ($data->data as $obj) {
