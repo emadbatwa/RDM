@@ -37,7 +37,6 @@ class TicketController extends Controller
         $neighborhood = Neighborhood::find($request->neighborhood);
         if ($neighborhood->city_id == $city->id && $request->user()->role_id == 1) {
             $location = Location::create([
-                'location_url' => 'https://www.google.com/maps/search/?api=1&query=' . $request->latitude . ',' . $request->longitude,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'neighborhood_id' => $request->neighborhood,
@@ -75,40 +74,57 @@ class TicketController extends Controller
     public function list(Request $request)
     {
         $user = $request->user();
-        $tickets = Ticket::with('photos')->join('statuses', 'statuses.id', '=', 'tickets.status_id')
+        $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
             ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
-            ->join('locations', 'locations.id', '=', 'tickets.location_id')
-            ->join('cities', 'cities.id', '=', 'locations.city_id')
-            ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id');
+            ->select('tickets.id', 'tickets.description', 'statuses.status', 'classifications.classification', 'tickets.location_id', 'tickets.user_rating_id');
         //user list
         if ($user->role_id == 1) {
-            $tickets = $tickets->select('tickets.id', 'tickets.description', 'statuses.status')
-                ->where('tickets.user_id', '=', $user->id)
+            $tickets = $tickets->where('tickets.user_id', '=', $user->id)
                 ->orderBy('id')
                 ->get();
         }
         //admin list
         if ($user->role_id == 2) {
-            $tickets = $tickets->select('tickets.id', 'tickets.description', 'statuses.status')
-                ->orderBy('id')
+            $tickets = $tickets->orderBy('id')
                 ->get();
         }
         //company list
         if ($user->role_id == 3) {
-            $tickets = $tickets->select('tickets.id', 'tickets.description', 'statuses.status')
-                ->where('tickets.assigned_company', '=', $user->id)
+            $tickets = $tickets->where('tickets.assigned_company', '=', $user->id)
                 ->orderBy('id')
                 ->get();
         }
 
         //employee list
         if ($user->role_id == 4) {
-            $tickets = $tickets->select('tickets.id', 'tickets.description', 'statuses.status')
-                ->where('tickets.assigned_employee', '=', $user->id)
+            $tickets = $tickets->where('tickets.assigned_employee', '=', $user->id)
                 ->orderBy('id')
                 ->get();
         }
-        return response()->json($tickets);
+
+        $finalList = array();
+        $i = 0;
+        foreach ($tickets as $ticket) {
+            $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
+                ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
+                ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
+                ->where('locations.id', '=', $ticket->location_id)->get();
+
+            $photos = Photo::where('ticket_id', '=', $ticket->id)->get();
+
+            $ticketHistories = TicketHistory::where('ticket_id', '=', $ticket->id)->get();
+
+            $userRating = UserRating::where('id', '=', $ticket->user_rating_id)->get();
+
+            $finalList[$i++] = [
+                'ticket' => $ticket,
+                'location' => $location,
+                'photos' => $photos,
+                'ticketHistories' => $ticketHistories,
+                'userRating' => $userRating,
+            ];
+        }
+        return response()->json($finalList, 200);
     }
 
     public function show(Request $request)
@@ -116,29 +132,41 @@ class TicketController extends Controller
         $request->validate([
             'ticket_id' => 'required | numeric',
         ]);
+
+        $user = $request->user();
         $wantedTicket = Ticket::find($request->ticket_id);
-        $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
-            ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
-            ->where('tickets.id', '=', $wantedTicket->id)
-            ->select('tickets.id', 'tickets.description', 'statuses.status', 'classifications.classification')
-            ->get();
 
-        $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
-            ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
-            ->select('locations.id', 'locations.location_url', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
-            ->where('locations.id', '=', $wantedTicket->location_id)->get();
+        if ($wantedTicket->user_id == $user->id || $wantedTicket->assigned_company == $user->id || $wantedTicket->assigned_employee == $user->id || $user->role_id == 2) {
+            $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
+                ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
+                ->where('tickets.id', '=', $wantedTicket->id)
+                ->select('tickets.id', 'tickets.description', 'statuses.status', 'classifications.classification')
+                ->get();
 
-        $photos = Photo::where('ticket_id', '=', $wantedTicket->id)->get();
+            $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
+                ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
+                ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
+                ->where('locations.id', '=', $wantedTicket->location_id)->get();
 
-        $ticketHistories = TicketHistory::where('ticket_id', '=', $wantedTicket->id)->get();
+            $photos = Photo::where('ticket_id', '=', $wantedTicket->id)->get();
+
+            $ticketHistories = TicketHistory::where('ticket_id', '=', $wantedTicket->id)->get();
+
+            $userRating = UserRating::where('id', '=', $wantedTicket->user_rating_id)->get();
 
 
-        return response()->json([
-            'ticket' => $ticket[0],
-            'location' => $location[0],
-            'photos' => $photos,
-            'ticketHistories' => $ticketHistories,
-        ], 200);
+            return response()->json([
+                'ticket' => $ticket[0],
+                'location' => $location[0],
+                'photos' => $photos,
+                'ticketHistories' => $ticketHistories,
+                'userRating' => $userRating,
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Not your ticket'
+            ], 400);
+        }
     }
 
     public function update(Request $request)
@@ -339,7 +367,7 @@ class TicketController extends Controller
     public function neighborhoods(Request $request)
     {
         return response()->json([
-           'neighborhoods' => Neighborhood::where('city_id', '=', 6)->get(),
+            'neighborhoods' => Neighborhood::where('city_id', '=', 6)->get(),
         ], 200);
     }
 }

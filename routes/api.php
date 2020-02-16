@@ -25,6 +25,15 @@ Route::group([
         Route::get('user', 'API\UserController@userInfo');
     });
 });
+
+Route::group([
+    'prefix' => 'password'
+], function () {
+    Route::post('create', 'API\PasswordResetController@create');
+    Route::get('find/{token}', 'API\PasswordResetController@find');
+    Route::post('reset', 'API\PasswordResetController@reset');
+});
+
 Route::group([
     'prefix' => 'ticket',
     'middleware' => 'auth:api',

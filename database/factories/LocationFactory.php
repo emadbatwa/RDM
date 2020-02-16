@@ -14,7 +14,6 @@ $factory->define(Location::class, function (Faker $faker) {
     $longitude = $faker->longitude;
 
     return [
-        'location_url' => 'https://www.google.com/maps/search/?api=1&query='.$latitude.','.$longitude,
         'latitude' => $latitude,
         'longitude' => $longitude,
         'city_id' => $c[0]->id,
