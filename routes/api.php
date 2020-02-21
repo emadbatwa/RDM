@@ -47,3 +47,9 @@ Route::group([
     Route::post('show', 'API\TicketController@show');
 
 });
+Route::group([
+    'prefix' => 'user',
+    'middleware' => 'auth:api',
+], function () {
+    Route::post('update', 'API\UserController@update');
+});

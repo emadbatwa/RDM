@@ -30,12 +30,13 @@ class TicketController extends Controller
             'city' => 'required |numeric| in: 6',
             'neighborhood' => 'required |numeric| between:3377,3437',
             'photos' => 'required ',
-            'photos.*' => 'image|mimes:jpg,jpeg',
+            'photos.*' => 'image|mimes:jpg,jpeg,png',
         ], $messages);
+        $photos = $request->file('photos');
 
         $city = City::find($request->city);
         $neighborhood = Neighborhood::find($request->neighborhood);
-        if ($neighborhood->city_id == $city->id && $request->user()->role_id == 1) {
+        if ($neighborhood->city_id == $city->id && $request->user()->role_id == 1 && is_array($photos) == true) {
             $location = Location::create([
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
@@ -50,7 +51,7 @@ class TicketController extends Controller
                 'location_id' => $location->id,
             ]);
 
-            if ($photos = $request->file('photos')) {
+            if ($photos) {
                 $i = 1;
                 foreach ($photos as $photo) {
                     $filename = $i++ . time() . '.' . $photo->extension();
@@ -63,11 +64,12 @@ class TicketController extends Controller
                 }
             }
             return response()->json([
-                'message' => 'Successfully added ticket'
+                'message' => 'Successfully added ticket',
+                'ticket_id' => $ticket->id,
             ], 200);
         }
         return response()->json([
-            'message' => 'neighborhood is not in the same city, or the user is not a normal user'
+            'message' => 'neighborhood is not in the same city, or the user is not a normal user, or photos are bad',
         ], 400);
     }
 
@@ -76,7 +78,7 @@ class TicketController extends Controller
         $user = $request->user();
         $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
             ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
-            ->select('tickets.id', 'tickets.description', 'statuses.status', 'classifications.classification', 'tickets.location_id', 'tickets.user_rating_id');
+            ->select('tickets.id', 'tickets.description', 'statuses.status', 'classifications.classification', 'tickets.location_id', 'tickets.user_rating_id', 'created_at', 'updated_at');
         //user list
         if ($user->role_id == 1) {
             $tickets = $tickets->where('tickets.user_id', '=', $user->id)
