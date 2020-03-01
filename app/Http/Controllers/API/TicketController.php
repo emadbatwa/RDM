@@ -345,7 +345,7 @@ class TicketController extends Controller
 
         $user = $request->user();
         $ticket = Ticket::find($request->ticket_id);
-        if ($user->role_id == 1 && $ticket->user_rating_id == null) {
+        if ($user->role_id == 1 && $ticket->user_rating_id == null && $user->id == $ticket->user_id && $ticket->status_id == 6) {
             $request->validate([
                 'comment' => 'required|string',
                 'rating' => 'required|in:1, 2, 3, 4, 5',
@@ -355,8 +355,14 @@ class TicketController extends Controller
                 'rating' => $request->rating,
             ]);
             Ticket::where('id', '=', $ticket->id)->update(['user_rating_id' => $rating->id]);
-        };
-
+        } else {
+            return response()->json([
+                'message' => 'Either the user role is not a normal user, the ticket is not closed, the ticket already rated or the logged in user dosen\'t create the ticket',
+            ], 400);
+        }
+        return response()->json([
+            'message' => 'Successfully added review',
+        ], 200);
     }
 
     public function cities(Request $request)
@@ -368,8 +374,6 @@ class TicketController extends Controller
 
     public function neighborhoods(Request $request)
     {
-        return response()->json([
-            'neighborhoods' => Neighborhood::where('city_id', '=', 6)->get(),
-        ], 200);
+        return Neighborhood::where('city_id', '=', 6)->get();
     }
 }

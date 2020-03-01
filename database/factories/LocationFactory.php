@@ -8,15 +8,14 @@ use App\Neighborhood;
 use App\City;
 
 $factory->define(Location::class, function (Faker $faker) {
-    $c = City::all()->random(1);
-    $n = Neighborhood::where('City_id', '=', $c[0]->id)->get()->random(1);
+    $n = Neighborhood::where('City_id', '=', 6)->get()->random(1);
     $latitude = $faker->latitude;
     $longitude = $faker->longitude;
 
     return [
         'latitude' => $latitude,
         'longitude' => $longitude,
-        'city_id' => $c[0]->id,
+        'city_id' => 6,
         'neighborhood_id' => $n[0]->id,
     ];
 });
