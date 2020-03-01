@@ -20,13 +20,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Status extends Model
 {
-    const OPEN = 1;
-    const ASSIGNED = 2;
-    const IN_PROGRESS = 3;
-    const SOLVED = 4;
-    const DONE = 5;
-    const CLOSED = 6;
-    const EXCLUDED = 7;
+    const OPEN = 'OPEN';
+    const ASSIGNED = 'ASSIGNED';
+    const IN_PROGRESS = 'IN_PROGRESS';
+    const SOLVED = 'SOLVED';
+    const DONE = 'DONE';
+    const CLOSED = 'CLOSED';
+    const EXCLUDED = 'EXCLUDED';
 
     public $timestamps = false;
 

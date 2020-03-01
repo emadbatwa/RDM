@@ -19,14 +19,15 @@ class UserController extends Controller
     {
         $user = User::find($request->user()->id)->load('role');
         if ($user->role_id == 4) {
-            $userfinal = array([
+            $userfinal = [
                 'name' => $user->name,
                 'phone' => $user->phone,
                 'email' => $user->email,
                 'active' => $user->active,
                 'role' => $user->role->role,
+                'role_ar' => $user->role->role_ar,
                 'company' => User::find($user->company)->name,
-            ]);
+            ];
         } else {
             $userfinal = [
                 'id' => $user->id,
@@ -35,6 +36,7 @@ class UserController extends Controller
                 'email' => $user->email,
                 'active' => $user->active,
                 'role' => $user->role->role,
+                'role_ar' => $user->role->role_ar,
             ];
         }
 

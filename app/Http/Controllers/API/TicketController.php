@@ -78,7 +78,7 @@ class TicketController extends Controller
         $user = $request->user();
         $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
             ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
-            ->select('tickets.id', 'tickets.description', 'statuses.status', 'classifications.classification', 'tickets.location_id', 'tickets.user_rating_id', 'created_at', 'updated_at');
+            ->select('tickets.id', 'tickets.description', 'statuses.status','statuses.status_ar', 'classifications.classification', 'classifications.classification_ar','created_at', 'updated_at');
         //user list
         if ($user->role_id == 1) {
             $tickets = $tickets->where('tickets.user_id', '=', $user->id)
@@ -142,7 +142,7 @@ class TicketController extends Controller
             $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
                 ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
                 ->where('tickets.id', '=', $wantedTicket->id)
-                ->select('tickets.id', 'tickets.description', 'statuses.status', 'classifications.classification')
+                ->select('tickets.id', 'tickets.description', 'statuses.status','statuses.status_ar', 'classifications.classification', 'classifications.classification_ar','created_at', 'updated_at')
                 ->get();
 
             $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
