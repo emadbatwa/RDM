@@ -12,6 +12,7 @@ use App\Ticket;
 use App\TicketHistory;
 use App\User;
 use App\UserRating;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Location;
 
@@ -78,7 +79,7 @@ class TicketController extends Controller
         $user = $request->user();
         $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
             ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
-            ->select('tickets.id', 'tickets.description', 'statuses.status','statuses.status_ar', 'classifications.classification', 'classifications.classification_ar','created_at', 'updated_at');
+            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.created_at', 'tickets.updated_at');
         //user list
         if ($user->role_id == 1) {
             $tickets = $tickets->where('tickets.user_id', '=', $user->id)
@@ -117,7 +118,10 @@ class TicketController extends Controller
             $ticketHistories = TicketHistory::where('ticket_id', '=', $ticket->id)->get();
 
             $userRating = UserRating::where('id', '=', $ticket->user_rating_id)->get();
-
+            //dd($ticket->toArray());
+            $ticket->toArray();
+            $ticket->created_at = Carbon::parse($ticket->created_at)->format('d/M/Y');
+            $ticket->updated_at = Carbon::parse($ticket->updated_at)->format('d/M/Y');
             $finalList[$i++] = [
                 'ticket' => $ticket,
                 'location' => $location,
@@ -138,11 +142,11 @@ class TicketController extends Controller
         $user = $request->user();
         $wantedTicket = Ticket::find($request->ticket_id);
 
-        if ($wantedTicket->user_id == $user->id || $wantedTicket->assigned_company == $user->id || $wantedTicket->assigned_employee == $user->id || $user->role_id == 2) {
+        if ($wantedTicket != null && ($wantedTicket->user_id == $user->id || $wantedTicket->assigned_company == $user->id || $wantedTicket->assigned_employee == $user->id || $user->role_id == 2)) {
             $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
                 ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
                 ->where('tickets.id', '=', $wantedTicket->id)
-                ->select('tickets.id', 'tickets.description', 'statuses.status','statuses.status_ar', 'classifications.classification', 'classifications.classification_ar','created_at', 'updated_at')
+                ->select('tickets.id', 'tickets.description', 'statuses.status', 'statuses.status_ar', 'classifications.classification', 'classifications.classification_ar', 'created_at', 'updated_at')
                 ->get();
 
             $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
@@ -191,7 +195,11 @@ class TicketController extends Controller
                     $ticket->update(['assigned_company' => $company->id, 'status_id' => 2]);
                 }
                 //need to implement a way to delete the photo from storage or not?
-                Photo::where('ticket_id', '=', $ticket->id)->where('role_id', '=', 3)->delete();
+                $photos = Photo::where('ticket_id', '=', $ticket->id)->where('role_id', '=', 3)->get();
+                foreach ($photos as $photo) {
+                    \Storage::delete('public/photos/' . $photo->photo_name);
+                    $photo->delete();
+                }
                 if ($massage = $request->massage) {
                     TicketHistory::create([
                         'massage' => $massage,
@@ -347,7 +355,7 @@ class TicketController extends Controller
         $ticket = Ticket::find($request->ticket_id);
         if ($user->role_id == 1 && $ticket->user_rating_id == null && $user->id == $ticket->user_id && $ticket->status_id == 6) {
             $request->validate([
-                'comment' => 'required|string',
+                'comment' => 'string',
                 'rating' => 'required|in:1, 2, 3, 4, 5',
             ]);
             $rating = UserRating::create([
@@ -375,5 +383,60 @@ class TicketController extends Controller
     public function neighborhoods(Request $request)
     {
         return Neighborhood::where('city_id', '=', 6)->get();
+    }
+
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'ticket_id' => 'required | numeric',
+        ]);
+        $ticket = Ticket::find($request->ticket_id);
+
+        if ($ticket != null && $request->user()->id == $ticket->user_id && $ticket->status_id == 1) {
+
+            $photos = Photo::where('ticket_id', '=', $ticket->id)->get();
+            foreach ($photos as $photo) {
+                \Storage::delete('public/photos/' . $photo->photo_name);
+                $photo->delete();
+            }
+            $location = Location::where('id', '=', $ticket->location_id)->delete();
+            $userRating = UserRating::where('id', '=', $ticket->user_rating_id)->delete();
+            $ticket = Ticket::where('id', '=', $request->ticket_id)->delete();
+            return response()->json([
+                'message' => 'Successfully deleted ticket',
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'Either the user is not the creator of the ticket, or the ticket is not open',
+        ], 400);
+    }
+
+    public function ticketsCount(Request $request)
+    {
+        $user_id = $request->user()->id;
+        $ticketsCount = Ticket::where('user_id', '=', $user_id)->get()->count();
+
+        return response()->json([
+            'ticketsCount' => $ticketsCount
+        ]);
+    }
+
+    public function addPhotos(Request $request)
+    {
+        $photos = $request->file('photos');
+        $ticket = Ticket::find($request->ticket_id);
+        $role_id = $request->role_id;
+        if ($photos) {
+            $i = 1;
+            foreach ($photos as $photo) {
+                $filename = $i++ . time() . '.' . $photo->extension();
+                $photo->move(storage_path('app/public/photos'), $filename);
+                Photo::create([
+                    'photo_name' => $filename,
+                    'ticket_id' => $ticket->id,
+                    'role_id' => $role_id,
+                ]);
+            }
+        }
     }
 }

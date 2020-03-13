@@ -24,6 +24,11 @@ class CreateUsersTable extends Migration
             $table->foreign('role_id')->references('id')->on('roles');
             $table->unsignedInteger('company')->nullable();
             $table->foreign('company')->references('id')->on('users');
+            $table->unsignedInteger('city_id')->nullable();
+            $table->foreign('city_id')->references('id')->on('cities');
+            $table->unsignedInteger('neighborhood_id')->nullable();
+            $table->foreign('neighborhood_id')->references('id')->on('neighborhoods');
+            $table->String('gender')->nullable();
             $table->timestamps();
         });
     }

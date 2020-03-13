@@ -17,7 +17,7 @@ class CreatePhotosTable extends Migration
             $table->increments('id');
             $table->string('photo_name');
             $table->unsignedInteger('ticket_id');
-            $table->foreign('ticket_id')->references('id')->on('tickets');
+            $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
             $table->unsignedInteger('role_id');
             $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();

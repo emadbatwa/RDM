@@ -45,6 +45,9 @@ Route::group([
     Route::get('cities', 'API\TicketController@cities');
     Route::get('neighborhoods', 'API\TicketController@neighborhoods');
     Route::post('show', 'API\TicketController@show');
+    Route::post('delete', 'API\TicketController@delete');
+    Route::get('ticketsCount', 'API\TicketController@ticketsCount');
+    Route::post('addPhotos', 'API\TicketController@addPhotos');
 
 });
 Route::group([

@@ -27,9 +27,9 @@ class CreateTicketsTable extends Migration
             $table->unsignedInteger('classification_id');
             $table->foreign('classification_id')->references('id')->on('classifications');
             $table->unsignedInteger('location_id');
-            $table->foreign('location_id')->references('id')->on('locations');
+            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedInteger('user_rating_id')->nullable();
-            $table->foreign('user_rating_id')->references('id')->on('user_ratings');
+            $table->foreign('user_rating_id')->references('id')->on('user_ratings')->onDelete('cascade');
             $table->timestamps();
         });
     }

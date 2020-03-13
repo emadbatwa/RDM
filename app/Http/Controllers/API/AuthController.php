@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\City;
+use App\Neighborhood;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -67,13 +69,20 @@ class AuthController extends Controller
             $token->expires_at = Carbon::now()->addWeeks(1);
         $token->save();
         $userinfo = User::with('role')->where('id', '=', $request->user()->id)->first();
+        if (!$request->is('api*')) {
+            return view('home')->with(['user_data' => $userinfo]);
+        }
+        $city = City::find($request->user()->city_id);
+        $neighborhood = Neighborhood::find($request->user()->neighborhood_id);
         return response()->json([
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
             )->toDateTimeString(),
-            'user_data' => $userinfo
+            'user_data' => $userinfo,
+            'city' => $city,
+            'neighborhood' => $neighborhood,
         ]);
     }
 

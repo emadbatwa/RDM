@@ -11,9 +11,11 @@
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
-                        </div>
                     @endif
-
+                            <form action={{url('/ticket/list')}} method="get">
+                                <button type="submit" class="btn btn-primary">list</button>
+                            </form>
+                        </div>
                     You are logged in!
                 </div>
             </div>

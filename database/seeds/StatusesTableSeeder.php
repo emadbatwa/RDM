@@ -23,7 +23,7 @@ class StatusesTableSeeder extends Seeder
 
         DB::table('statuses')->insert([
             'status' => 'IN_PROGRESS',
-            'status_ar' => 'قيد الاصلاح',
+            'status_ar' => 'قيد التنفيذ',
         ]);
 
         DB::table('statuses')->insert([
