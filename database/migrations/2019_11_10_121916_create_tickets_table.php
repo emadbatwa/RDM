@@ -30,6 +30,8 @@ class CreateTicketsTable extends Migration
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedInteger('user_rating_id')->nullable();
             $table->foreign('user_rating_id')->references('id')->on('user_ratings')->onDelete('cascade');
+            $table->unsignedInteger('damage_degree_id')->nullable();
+            $table->foreign('damage_degree_id')->references('id')->on('damage_degrees');
             $table->timestamps();
         });
     }

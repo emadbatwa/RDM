@@ -45,7 +45,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     protected $fillable = [
-        'description', 'assigned_employee', 'assigned_company','user_id', 'status_id', 'classification_id', 'location_id', 'user_rating_id'
+        'description', 'assigned_employee', 'assigned_company','user_id', 'status_id', 'classification_id', 'location_id', 'user_rating_id', 'damage_degree_id',
     ];
 
     public function user()

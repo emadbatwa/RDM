@@ -45,7 +45,7 @@ class TicketsSeeder extends Seeder
                 \App\TicketHistory::create([
                     'sender' => 1,
                     'receiver' => 2,
-                    'massage' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
+                    'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
             }
@@ -55,7 +55,7 @@ class TicketsSeeder extends Seeder
                 \App\TicketHistory::create([
                     'sender' => 1,
                     'receiver' => 2,
-                    'massage' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
+                    'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
                 $ticket->assigned_employee = rand(3, 4);
@@ -67,7 +67,7 @@ class TicketsSeeder extends Seeder
                 \App\TicketHistory::create([
                     'sender' => 1,
                     'receiver' => 2,
-                    'massage' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
+                    'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
                 $ticket->assigned_employee = rand(3, 4);
@@ -79,6 +79,7 @@ class TicketsSeeder extends Seeder
                         'role_id' => 3,
                     ]);
                 }
+                $ticket->update(['damage_degree_id' => rand(1,3)]);
             }
             //Done
             if ($ticket->status_id == 5) {
@@ -86,7 +87,7 @@ class TicketsSeeder extends Seeder
                 \App\TicketHistory::create([
                     'sender' => 1,
                     'receiver' => 2,
-                    'massage' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
+                    'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
                 $ticket->assigned_employee = rand(3, 4);
@@ -101,7 +102,7 @@ class TicketsSeeder extends Seeder
                 \App\TicketHistory::create([
                     'sender' => 2,
                     'receiver' => 1,
-                    'massage' => 'تم اصلاحها في أقل من يوم',
+                    'message' => 'تم اصلاحها في أقل من يوم',
                     'ticket_id' => $ticket->id,
                 ]);
             }
@@ -111,7 +112,7 @@ class TicketsSeeder extends Seeder
                 \App\TicketHistory::create([
                     'sender' => 1,
                     'receiver' => 2,
-                    'massage' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
+                    'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
                 $ticket->assigned_employee = rand(3, 4);
@@ -126,7 +127,7 @@ class TicketsSeeder extends Seeder
                 \App\TicketHistory::create([
                     'sender' => 2,
                     'receiver' => 1,
-                    'massage' => 'تم اصلاحها في أقل من يوم',
+                    'message' => 'تم اصلاحها في أقل من يوم',
                     'ticket_id' => $ticket->id,
                 ]);
                 if (rand(1,2) == 1) {

@@ -15,7 +15,7 @@ class CreateTicketHistoriesTable extends Migration
     {
         Schema::create('ticket_histories', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('massage');
+            $table->text('message');
             $table->unsignedInteger('sender');
             $table->foreign('sender')->references('id')->on('users');
             $table->unsignedInteger('receiver');

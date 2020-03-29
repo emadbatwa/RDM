@@ -12,7 +12,6 @@ use App\Ticket;
 use App\TicketHistory;
 use App\User;
 use App\UserRating;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Location;
 
@@ -79,7 +78,8 @@ class TicketController extends Controller
         $user = $request->user();
         $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
             ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
-            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.created_at', 'tickets.updated_at');
+            ->join('damage_degrees', 'damage_degrees.id', '=', 'tickets.classification_id')
+            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.created_at', 'tickets.updated_at');
         //user list
         if ($user->role_id == 1) {
             $tickets = $tickets->where('tickets.user_id', '=', $user->id)
@@ -118,10 +118,7 @@ class TicketController extends Controller
             $ticketHistories = TicketHistory::where('ticket_id', '=', $ticket->id)->get();
 
             $userRating = UserRating::where('id', '=', $ticket->user_rating_id)->get();
-            //dd($ticket->toArray());
-            $ticket->toArray();
-            $ticket->created_at = Carbon::parse($ticket->created_at)->format('d/M/Y');
-            $ticket->updated_at = Carbon::parse($ticket->updated_at)->format('d/M/Y');
+
             $finalList[$i++] = [
                 'ticket' => $ticket,
                 'location' => $location,
@@ -145,8 +142,9 @@ class TicketController extends Controller
         if ($wantedTicket != null && ($wantedTicket->user_id == $user->id || $wantedTicket->assigned_company == $user->id || $wantedTicket->assigned_employee == $user->id || $user->role_id == 2)) {
             $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
                 ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
+                ->join('damage_degrees', 'damage_degrees.id', '=', 'tickets.classification_id')
                 ->where('tickets.id', '=', $wantedTicket->id)
-                ->select('tickets.id', 'tickets.description', 'statuses.status', 'statuses.status_ar', 'classifications.classification', 'classifications.classification_ar', 'created_at', 'updated_at')
+                ->select('tickets.id', 'tickets.description', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'created_at', 'updated_at')
                 ->get();
 
             $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
@@ -184,7 +182,8 @@ class TicketController extends Controller
         if ($request->user()->role_id == 2 && $request->status == Status::ASSIGNED) {
             $request->validate([
                 'company_id' => 'required | numeric',
-                'massage' => 'string',
+                'message' => 'string',
+                'classification_id' =>'in:1, 2, 3, 4, 5, 6'
             ]);
 
             $ticket = Ticket::find($request->ticket_id);
@@ -194,15 +193,18 @@ class TicketController extends Controller
                 if ($ticket->status->id == 1) {
                     $ticket->update(['assigned_company' => $company->id, 'status_id' => 2]);
                 }
+                if ($classification_id = $request->classification_id){
+                    $ticket->update(['classification_id' => $classification_id]);
+                }
                 //need to implement a way to delete the photo from storage or not?
                 $photos = Photo::where('ticket_id', '=', $ticket->id)->where('role_id', '=', 3)->get();
                 foreach ($photos as $photo) {
                     \Storage::delete('public/photos/' . $photo->photo_name);
                     $photo->delete();
                 }
-                if ($massage = $request->massage) {
+                if ($message = $request->message) {
                     TicketHistory::create([
-                        'massage' => $massage,
+                        'message' => $message,
                         'sender' => 1,
                         'receiver' => $company->id,
                         'ticket_id' => $ticket->id,
@@ -250,14 +252,17 @@ class TicketController extends Controller
 
             $request->validate([
                 'photos' => 'required | max:4',
+                'degree_id' => 'required|in:1, 2, 3',
                 'photos.*' => 'image|mimes:jpg,jpeg',
             ], $messages);
             $ticket = Ticket::find($request->ticket_id);
             $employee = $request->user();
+            $degree = $request->degree_id;
 
             if ($ticket->assigned_employee == $employee->id && $ticket->assigned_company == $employee->company && $ticket->status->id == 3 && $photos = $request->file('photos')) {
-                $ticket->update(['status_id' => 4]);
+                $ticket->update(['damage_degree_id' => $degree, 'status_id' => 4]);
                 $i = 1;
+
                 foreach ($photos as $photo) {
                     $filename = $i++ . time() . '.' . $photo->extension();
                     $photo->move(storage_path('app/public/photos'), $filename);
@@ -279,7 +284,7 @@ class TicketController extends Controller
 
         if ($request->user()->role_id == 3 && $request->status == Status::DONE) {
             $request->validate([
-                'massage' => 'string',
+                'message' => 'string',
             ]);
 
             $ticket = Ticket::find($request->ticket_id);
@@ -287,9 +292,9 @@ class TicketController extends Controller
 
             if ($ticket->assigned_company == $company->id && $ticket->status->id == 4) {
                 $ticket->update(['status_id' => 5]);
-                if ($massage = $request->massage) {
+                if ($message = $request->message) {
                     TicketHistory::create([
-                        'massage' => $massage,
+                        'message' => $message,
                         'sender' => $request->user()->id,
                         'receiver' => 1,
                         'ticket_id' => $ticket->id,
