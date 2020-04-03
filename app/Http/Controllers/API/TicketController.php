@@ -12,6 +12,7 @@ use App\Ticket;
 use App\TicketHistory;
 use App\User;
 use App\UserRating;
+use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Http\Request;
 use App\Location;
 
@@ -47,22 +48,28 @@ class TicketController extends Controller
             $ticket = Ticket::create([
                 'description' => $request->description,
                 'user_id' => $request->user()->id,
-                'classification_id' => Classification::OTHER,
+                'classification_id' => 10,
                 'location_id' => $location->id,
             ]);
-
+            $storedPhotos = [];
             if ($photos) {
                 $i = 1;
                 foreach ($photos as $photo) {
                     $filename = $i++ . time() . '.' . $photo->extension();
                     $photo->move(storage_path('app/public/photos'), $filename);
-                    Photo::create([
+                   $storedPhotos[$i] = Photo::create([
                         'photo_name' => $filename,
                         'ticket_id' => $ticket->id,
                         'role_id' => 1
                     ]);
                 }
             }
+
+            $client = new \GuzzleHttp\Client();
+            $classResponse = $client->request('GET', 'http://35.222.57.223/upload?url=http://www.ai-rdm.website/storage/photos/'.$storedPhotos[2]);
+            $classification = preg_replace('/\s+/', '', $classResponse->getBody()->getContents());
+            $ticket->update(['classification_id' => ++$classification]);
+
             return response()->json([
                 'message' => 'Successfully added ticket',
                 'ticket_id' => $ticket->id,
@@ -183,7 +190,7 @@ class TicketController extends Controller
             $request->validate([
                 'company_id' => 'required | numeric',
                 'message' => 'string',
-                'classification_id' =>'in:1, 2, 3, 4, 5, 6'
+                'classification_id' => 'in:1, 2, 3, 4, 5, 6'
             ]);
 
             $ticket = Ticket::find($request->ticket_id);
@@ -193,7 +200,7 @@ class TicketController extends Controller
                 if ($ticket->status->id == 1) {
                     $ticket->update(['assigned_company' => $company->id, 'status_id' => 2]);
                 }
-                if ($classification_id = $request->classification_id){
+                if ($classification_id = $request->classification_id) {
                     $ticket->update(['classification_id' => $classification_id]);
                 }
                 //need to implement a way to delete the photo from storage or not?

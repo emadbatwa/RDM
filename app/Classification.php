@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Classification extends Model
 {
-    const OTHER = 1;
     public $timestamps = false;
 
     public function tickets()
