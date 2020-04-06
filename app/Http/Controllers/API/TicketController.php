@@ -57,7 +57,7 @@ class TicketController extends Controller
                 foreach ($photos as $photo) {
                     $filename = $i++ . time() . '.' . $photo->extension();
                     $photo->move(storage_path('app/public/photos'), $filename);
-                   $storedPhotos[$i] = Photo::create([
+                    $storedPhotos[$i] = Photo::create([
                         'photo_name' => $filename,
                         'ticket_id' => $ticket->id,
                         'role_id' => 1
@@ -66,10 +66,11 @@ class TicketController extends Controller
             }
 
             $client = new \GuzzleHttp\Client();
-            $classResponse = $client->request('GET', 'http://35.222.57.223/upload?url=http://www.ai-rdm.website/storage/photos/'.$storedPhotos[2]);
-            $classification = preg_replace('/\s+/', '', $classResponse->getBody()->getContents());
-            $ticket->update(['classification_id' => ++$classification]);
-
+            $classResponse = $client->request('GET', 'http://34.71.210.152/upload?url=http://www.ai-rdm.website/storage/photos/' . $storedPhotos[2]->photo_name);
+            if ($classResponse->getStatusCode() == 200) {
+                $classification = preg_replace('/\s+/', '', $classResponse->getBody()->getContents());
+                $ticket->update(['classification_id' => ++$classification]);
+            }
             return response()->json([
                 'message' => 'Successfully added ticket',
                 'ticket_id' => $ticket->id,
