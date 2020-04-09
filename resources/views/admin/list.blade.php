@@ -10,6 +10,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
+                <h1>admin</h1>
                 <div class="card">
                     <div class="card-header">Dashboard</div>
 
@@ -487,7 +488,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Position</th>
-                                <th>Office</th>
+                                 <th>Office</th>
                                 <th>Age</th>
                                 <th>Start date</th>
                                 <th>Salary</th>

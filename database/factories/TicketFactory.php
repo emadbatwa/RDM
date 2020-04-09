@@ -14,7 +14,7 @@ $factory->define(Ticket::class, function (Faker $faker) {
         'description' => $faker->sentence($nbWords = 6, $variableNbWords = true),
          'user_id' => $u[0]->id,
          'status_id' => rand(1, 7),
-         'classification_id' => 10,
+         'classification_id' => rand(1, 10),
          'location_id' => function () {
              return factory(App\Location::class)->create()->id;
          },

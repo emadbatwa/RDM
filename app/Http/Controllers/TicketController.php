@@ -28,6 +28,7 @@ class TicketController extends Controller
             ->join('users', 'users.id', '=', 'tickets.user_id')
             ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
             ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'users.name as userName', 'users.phone as userPhone', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at');
+
         //user list
         if ($user->role_id == 1) {
             $tickets = $tickets->where('tickets.user_id', '=', $user->id)
@@ -59,13 +60,13 @@ class TicketController extends Controller
             $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
                 ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
                 ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
-                ->where('locations.id', '=', $ticket->location_id)->get();
+                ->where('locations.id', '=', $ticket->location_id)->first();
 
             $photos = Photo::where('ticket_id', '=', $ticket->id)->get();
 
             $ticketHistories = TicketHistory::where('ticket_id', '=', $ticket->id)->get();
 
-            $userRating = UserRating::where('id', '=', $ticket->user_rating_id)->get();
+            $userRating = UserRating::where('id', '=', $ticket->user_rating_id)->first();
 
             $assignedEmployee = User::where('id', '=', $ticket->assigned_employee)->first();
             $assignedEmployee = collect($assignedEmployee)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
@@ -80,11 +81,68 @@ class TicketController extends Controller
                 'userRating' => $userRating,
                 'assignedEmployee' => $assignedEmployee,
                 'assignedCompany' => $assignedCompany,
+                ''
             ];
         }
         $finalList = $this->paginate($finalList);
-        $finalList->withPath('home');
-        return view('home')->with(['tickets' => $finalList]);
+        $finalList->withPath('/ticket/list');
+        if (\Auth::user()->role_id == 2) {
+            return view('admin.list')->with(['tickets' => $finalList]);
+        } elseif (\Auth::user()->role_id == 3) {
+            return view('company.list')->with(['tickets' => $finalList]);
+        }
+        // $finalList = datatables($finalList)->toJson();
+    }
+
+    public function map(Request $request)
+    {
+        $user = $request->user();
+        //admin
+        if ($user->role_id == 2) {
+            $tickets = Ticket::orderBy('id')
+                ->get();
+        }
+
+        $finalList = array();
+        $i = 0;
+        foreach ($tickets as $ticket) {
+            $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
+                ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
+                ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
+                ->where('locations.id', '=', $ticket->location_id)->first();
+            $finalList[$i++] = [
+                'ticket' => $ticket,
+                'location' => $location,
+            ];
+        }
+        return view('admin.map')->with(['tickets' => $finalList]);
+        // $finalList = datatables($finalList)->toJson();
+    }
+
+    public function publicMap(Request $request)
+    {
+        $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
+            ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
+            ->join('users', 'users.id', '=', 'tickets.user_id')
+            ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
+            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.created_at', 'tickets.updated_at')
+            ->orderBy('id')
+            ->get();
+
+
+        $finalList = array();
+        $i = 0;
+        foreach ($tickets as $ticket) {
+            $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
+                ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
+                ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
+                ->where('locations.id', '=', $ticket->location_id)->first();
+            $finalList[$i++] = [
+                'ticket' => $ticket,
+                'location' => $location,
+            ];
+        }
+        return view('publicMap')->with(['tickets' => $finalList]);
         // $finalList = datatables($finalList)->toJson();
     }
 
@@ -103,18 +161,18 @@ class TicketController extends Controller
                 ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
                 ->where('tickets.id', '=', $wantedTicket->id)
                 ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at')
-                ->get();
+                ->first();
 
             $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
                 ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
                 ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
-                ->where('locations.id', '=', $wantedTicket->location_id)->get();
+                ->where('locations.id', '=', $wantedTicket->location_id)->first();
 
             $photos = Photo::where('ticket_id', '=', $wantedTicket->id)->get();
 
             $ticketHistories = TicketHistory::where('ticket_id', '=', $wantedTicket->id)->get();
 
-            $userRating = UserRating::where('id', '=', $wantedTicket->user_rating_id)->get();
+            $userRating = UserRating::where('id', '=', $wantedTicket->user_rating_id)->first();
 
             $assignedEmployee = User::where('id', '=', $wantedTicket->assigned_employee)->first();
             $assignedEmployee = collect($assignedEmployee)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
@@ -123,18 +181,21 @@ class TicketController extends Controller
             $assignedCompany = collect($assignedCompany)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
 
 
-            $ticket = ['ticket' => $ticket[0],
-                'location' => $location[0],
+            $ticket = ['ticket' => $ticket,
+                'location' => $location,
                 'photos' => $photos,
                 'ticketHistories' => $ticketHistories,
                 'userRating' => $userRating,
                 'assignedEmployee' => $assignedEmployee,
                 'assignedCompany' => $assignedCompany,
             ];
-            return view('tickets.show')->with(['ticket' => $ticket]);
-
+            if (\Auth::user()->role_id == 2) {
+                return view('admin.show')->with(['ticket' => $ticket]);
+            } elseif (\Auth::user()->role_id == 3) {
+                return view('company.show')->with(['ticket' => $ticket]);
+            }
         } else {
-            return view('tickets.show')->with(['message' => 'not your ticket']);
+            return redirect()->back();
         }
     }
 

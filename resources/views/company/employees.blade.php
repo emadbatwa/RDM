@@ -1,0 +1,15 @@
+@extends('layouts.app')
+@section('content')
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                @if($employees ?? '')
+                    @foreach($employees as $employee)
+                        <p>{{$employee->id}}</p>
+                        <br>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+    </div>
+@endsection

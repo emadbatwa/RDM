@@ -16,13 +16,14 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
-Route::get('/home', 'TicketController@list')->name('home');
+Route::get('/public_map', 'TicketController@publicMap');
 
 Route::group([
     'prefix' => 'ticket',
     'middleware' => 'auth',
 ], function () {
+    Route::get('/list', 'TicketController@list');
+    Route::get('/map', 'TicketController@map');
     Route::get('show/{ticket_id}', 'TicketController@show');
     Route::post('update', 'TicketController@update');
 });
@@ -30,6 +31,8 @@ Route::group([
     'prefix' => 'user',
     'middleware' => 'auth',
 ], function () {
-    Route::post('update', 'API\UserController@update');
+    Route::get('employees', 'UserController@employees');
+    Route::get('cities', 'API\TicketController@cities');
+    Route::get('neighborhoods', 'API\TicketController@neighborhoods');
 });
 
