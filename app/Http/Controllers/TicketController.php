@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use App\City;
 use App\Classification;
-use App\Http\Controllers\Controller;
 use App\Neighborhood;
 use App\Photo;
 use App\Status;
@@ -13,81 +12,22 @@ use App\TicketHistory;
 use App\User;
 use App\UserRating;
 use GuzzleHttp\Client as GuzzleClient;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Location;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class TicketController extends Controller
 {
-    public function create(Request $request)
-    {
-        $messages = [
-            "photos.max" => "photos can't be more than 4."
-        ];
-
-        $request->validate([
-            'description' => 'string',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'city' => 'required |numeric| in: 6',
-            'neighborhood' => 'required |numeric| between:3377,3437',
-            'photos' => 'required ',
-            'photos.*' => 'image|mimes:jpg,jpeg,png',
-        ], $messages);
-        $photos = $request->file('photos');
-
-        $city = City::find($request->city);
-        $neighborhood = Neighborhood::find($request->neighborhood);
-        if ($neighborhood->city_id == $city->id && $request->user()->role_id == 1 && is_array($photos) == true) {
-            $location = Location::create([
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'neighborhood_id' => $request->neighborhood,
-                'city_id' => $request->city,
-            ]);
-
-            $ticket = Ticket::create([
-                'description' => $request->description,
-                'user_id' => $request->user()->id,
-                'classification_id' => 10,
-                'location_id' => $location->id,
-            ]);
-            $storedPhotos = [];
-            if ($photos) {
-                $i = 1;
-                foreach ($photos as $photo) {
-                    $filename = $i++ . time() . '.' . $photo->extension();
-                    $photo->move(storage_path('app/public/photos'), $filename);
-                    $storedPhotos[$i] = Photo::create([
-                        'photo_name' => $filename,
-                        'ticket_id' => $ticket->id,
-                        'role_id' => 1
-                    ]);
-                }
-            }
-
-            $client = new \GuzzleHttp\Client();
-            $classResponse = $client->request('GET', 'http://35.222.57.223/upload?url=http://www.ai-rdm.website/storage/photos/' . $storedPhotos[2]->photo_name);
-            if ($classResponse->getStatusCode() == 200) {
-                $classification = preg_replace('/\s+/', '', $classResponse->getBody()->getContents());
-                $ticket->update(['classification_id' => ++$classification]);
-            }
-            return response()->json([
-                'message' => 'Successfully added ticket',
-                'ticket_id' => $ticket->id,
-            ], 200);
-        }
-        return response()->json([
-            'message' => 'neighborhood is not in the same city, or the user is not a normal user, or photos are bad',
-        ], 400);
-    }
-
     public function list(Request $request)
     {
         $user = $request->user();
         $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
             ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
+            ->join('users', 'users.id', '=', 'tickets.user_id')
             ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
-            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.created_at', 'tickets.updated_at');
+            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'users.name as userName', 'users.phone as userPhone', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at');
         //user list
         if ($user->role_id == 1) {
             $tickets = $tickets->where('tickets.user_id', '=', $user->id)
@@ -127,21 +67,31 @@ class TicketController extends Controller
 
             $userRating = UserRating::where('id', '=', $ticket->user_rating_id)->get();
 
+            $assignedEmployee = User::where('id', '=', $ticket->assigned_employee)->first();
+            $assignedEmployee = collect($assignedEmployee)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
+
+            $assignedCompany = User::where('id', '=', $ticket->assigned_company)->first();
+            $assignedCompany = collect($assignedCompany)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
             $finalList[$i++] = [
                 'ticket' => $ticket,
                 'location' => $location,
                 'photos' => $photos,
                 'ticketHistories' => $ticketHistories,
                 'userRating' => $userRating,
+                'assignedEmployee' => $assignedEmployee,
+                'assignedCompany' => $assignedCompany,
             ];
         }
-        return response()->json($finalList, 200);
+        $finalList = $this->paginate($finalList);
+        $finalList->withPath('home');
+        return view('home')->with(['tickets' => $finalList]);
+        // $finalList = datatables($finalList)->toJson();
     }
 
     public function show(Request $request)
     {
         $request->validate([
-            'ticket_id' => 'required | numeric',
+            'ticket_id' => 'numeric',
         ]);
 
         $user = $request->user();
@@ -152,7 +102,7 @@ class TicketController extends Controller
                 ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
                 ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
                 ->where('tickets.id', '=', $wantedTicket->id)
-                ->select('tickets.id', 'tickets.description', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'created_at', 'updated_at')
+                ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at')
                 ->get();
 
             $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
@@ -166,18 +116,25 @@ class TicketController extends Controller
 
             $userRating = UserRating::where('id', '=', $wantedTicket->user_rating_id)->get();
 
+            $assignedEmployee = User::where('id', '=', $wantedTicket->assigned_employee)->first();
+            $assignedEmployee = collect($assignedEmployee)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
 
-            return response()->json([
-                'ticket' => $ticket[0],
+            $assignedCompany = User::where('id', '=', $wantedTicket->assigned_company)->first();
+            $assignedCompany = collect($assignedCompany)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
+
+
+            $ticket = ['ticket' => $ticket[0],
                 'location' => $location[0],
                 'photos' => $photos,
                 'ticketHistories' => $ticketHistories,
                 'userRating' => $userRating,
-            ], 200);
+                'assignedEmployee' => $assignedEmployee,
+                'assignedCompany' => $assignedCompany,
+            ];
+            return view('tickets.show')->with(['ticket' => $ticket]);
+
         } else {
-            return response()->json([
-                'message' => 'Not your ticket'
-            ], 400);
+            return view('tickets.show')->with(['message' => 'not your ticket']);
         }
     }
 
@@ -358,98 +315,16 @@ class TicketController extends Controller
         ], 400);
     }
 
-    public function rate(Request $request)
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @return LengthAwarePaginator
+     * @var array
+     */
+    public function paginate($items, $perPage = 5, $page = null, $options = [])
     {
-        $request->validate([
-            'ticket_id' => 'required | numeric',
-        ]);
-
-        $user = $request->user();
-        $ticket = Ticket::find($request->ticket_id);
-        if ($user->role_id == 1 && $ticket->user_rating_id == null && $user->id == $ticket->user_id && $ticket->status_id == 6) {
-            $request->validate([
-                'comment' => 'string',
-                'rating' => 'required|in:1, 2, 3, 4, 5',
-            ]);
-            $rating = UserRating::create([
-                'comment' => $request->comment,
-                'rating' => $request->rating,
-            ]);
-            Ticket::where('id', '=', $ticket->id)->update(['user_rating_id' => $rating->id]);
-        } else {
-            return response()->json([
-                'message' => 'Either the user role is not a normal user, the ticket is not closed, the ticket already rated or the logged in user dosen\'t create the ticket',
-            ], 400);
-        }
-        return response()->json([
-            'message' => 'Successfully added review',
-        ], 200);
-    }
-
-    public function cities(Request $request)
-    {
-        return response()->json([
-            'cities' => City::where('id', '=', 6)->get(),
-        ], 200);
-    }
-
-    public function neighborhoods(Request $request)
-    {
-        return Neighborhood::where('city_id', '=', 6)->get();
-    }
-
-    public function delete(Request $request)
-    {
-        $request->validate([
-            'ticket_id' => 'required | numeric',
-        ]);
-        $ticket = Ticket::find($request->ticket_id);
-
-        if ($ticket != null && $request->user()->id == $ticket->user_id && $ticket->status_id == 1) {
-
-            $photos = Photo::where('ticket_id', '=', $ticket->id)->get();
-            foreach ($photos as $photo) {
-                \Storage::delete('public/photos/' . $photo->photo_name);
-                $photo->delete();
-            }
-            $location = Location::where('id', '=', $ticket->location_id)->delete();
-            $userRating = UserRating::where('id', '=', $ticket->user_rating_id)->delete();
-            $ticket = Ticket::where('id', '=', $request->ticket_id)->delete();
-            return response()->json([
-                'message' => 'Successfully deleted ticket',
-            ], 200);
-        }
-        return response()->json([
-            'message' => 'Either the user is not the creator of the ticket, or the ticket is not open',
-        ], 400);
-    }
-
-    public function ticketsCount(Request $request)
-    {
-        $user_id = $request->user()->id;
-        $ticketsCount = Ticket::where('user_id', '=', $user_id)->get()->count();
-
-        return response()->json([
-            'ticketsCount' => $ticketsCount
-        ]);
-    }
-
-    public function addPhotos(Request $request)
-    {
-        $photos = $request->file('photos');
-        $ticket = Ticket::find($request->ticket_id);
-        $role_id = $request->role_id;
-        if ($photos) {
-            $i = 1;
-            foreach ($photos as $photo) {
-                $filename = $i++ . time() . '.' . $photo->extension();
-                $photo->move(storage_path('app/public/photos'), $filename);
-                Photo::create([
-                    'photo_name' => $filename,
-                    'ticket_id' => $ticket->id,
-                    'role_id' => $role_id,
-                ]);
-            }
-        }
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 }

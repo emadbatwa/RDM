@@ -22,15 +22,11 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-//            'name' => 'required|string',
-//            'phone' => 'regex:/(05)[0-9]{8}/',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed',
         ]);
 
             $user = User::create([
-//                'name' => $request->name,
-//                'phone' => $request->has('phone') ? $request->phone: null,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
             ]);
@@ -69,9 +65,7 @@ class AuthController extends Controller
             $token->expires_at = Carbon::now()->addWeeks(1);
         $token->save();
         $userinfo = User::with('role')->where('id', '=', $request->user()->id)->first();
-        if (!$request->is('api*')) {
-            return view('home')->with(['user_data' => $userinfo]);
-        }
+
         $city = City::find($request->user()->city_id);
         $neighborhood = Neighborhood::find($request->user()->neighborhood_id);
         return response()->json([
