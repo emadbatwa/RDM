@@ -16,8 +16,12 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-Route::get('/public_map', 'TicketController@publicMap');
-
+Route::group([
+    'prefix' => 'public',
+], function () {
+    Route::get('/map', 'TicketController@publicMap');
+    Route::get('show/{ticket_id}', 'TicketController@showPublic');
+});
 Route::group([
     'prefix' => 'ticket',
     'middleware' => 'auth',

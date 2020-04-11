@@ -6,6 +6,7 @@
                 <h1>public map</h1>
                 @if($tickets ?? '')
                     @foreach($tickets as $ticket)
+                        <p>{{$ticket['ticket']->status_ar}}</p>
                         <p>{{$ticket['location']->latitude}}</p>
                         <p>{{$ticket['location']->longitude}}</p>
                         <br/>

@@ -121,29 +121,60 @@ class TicketController extends Controller
 
     public function publicMap(Request $request)
     {
+        $request->validate([
+            'status' => 'in:OPEN,CLOSED,open,closed',
+        ]);
+
         $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
-            ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
             ->join('users', 'users.id', '=', 'tickets.user_id')
-            ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
-            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.created_at', 'tickets.updated_at')
-            ->orderBy('id')
-            ->get();
+            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'statuses.status', 'statuses.status_ar', 'tickets.created_at', 'tickets.updated_at')
+            ->orderBy('id');
 
-
+        if ($status = $request->status) {
+            $status = strtoupper($status);
+            $tickets = $tickets->where('status', '=', $status);
+        }
+        $tickets = $tickets->get();
         $finalList = array();
         $i = 0;
         foreach ($tickets as $ticket) {
-            $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
-                ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
-                ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
+            $location = Location::select(['locations.latitude', 'locations.longitude'])
                 ->where('locations.id', '=', $ticket->location_id)->first();
+
+            $photos = Photo::where('ticket_id', '=', $ticket->id)->get();
             $finalList[$i++] = [
                 'ticket' => $ticket,
                 'location' => $location,
+                'photos' => $photos,
             ];
         }
         return view('publicMap')->with(['tickets' => $finalList]);
         // $finalList = datatables($finalList)->toJson();
+    }
+
+    public function showPublic(Request $request)
+    {
+        $request->validate([
+            'ticket_id' => 'numeric',
+        ]);
+
+        $wantedTicket = Ticket::findOrFail($request->ticket_id);
+
+        $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
+            ->where('tickets.id', '=', $wantedTicket->id)
+            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'statuses.status', 'statuses.status_ar', 'tickets.created_at', 'tickets.updated_at')
+            ->first();
+
+        $location = Location::select(['locations.latitude', 'locations.longitude'])
+            ->where('locations.id', '=', $wantedTicket->location_id)->first();
+
+        $photos = Photo::where('ticket_id', '=', $wantedTicket->id)->get();
+
+        $ticket = ['ticket' => $ticket,
+            'location' => $location,
+            'photos' => $photos,
+        ];
+        return view('publicShow')->with(['ticket' => $ticket]);
     }
 
     public function show(Request $request)
