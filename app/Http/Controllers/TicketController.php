@@ -22,44 +22,48 @@ class TicketController extends Controller
 {
     public function list(Request $request)
     {
+        $request->validate([
+            'status' => 'in:1,2,3,4,5,6,7',
+            'neighborhood' => 'numeric| between:3377,3437',
+            'classification' => 'in:1, 2, 3, 4, 5, 6, 7, 8, 9, 10',
+            'degree' => 'in:1, 2, 3',
+        ]);
         $user = $request->user();
         $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
             ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
             ->join('users', 'users.id', '=', 'tickets.user_id')
             ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
-            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'users.name as userName', 'users.phone as userPhone', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at');
+            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'users.name as userName', 'users.phone as userPhone', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'tickets.damage_degree_id', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.id as classification_id', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at');
 
-        //user list
-        if ($user->role_id == 1) {
-            $tickets = $tickets->where('tickets.user_id', '=', $user->id)
-                ->orderBy('id')
-                ->get();
-        }
         //admin list
         if ($user->role_id == 2) {
-            $tickets = $tickets->orderBy('id')
-                ->get();
+            $tickets = $tickets->orderBy('id');
         }
         //company list
         if ($user->role_id == 3) {
             $tickets = $tickets->where('tickets.assigned_company', '=', $user->id)
-                ->orderBy('id')
-                ->get();
+                ->orderBy('id');
+
         }
 
-        //employee list
-        if ($user->role_id == 4) {
-            $tickets = $tickets->where('tickets.assigned_employee', '=', $user->id)
-                ->orderBy('id')
-                ->get();
+        if ($status = $request->status) {
+            $status = strtoupper($status);
+            $tickets = $tickets->where('status_id', '=', $status);
         }
-
+        if ($classification = $request->classification) {
+            $tickets = $tickets->where('classification_id', '=', $classification);
+        }
+        if ($degree = $request->degree) {
+            $tickets = $tickets->where('damage_degree_id', '=', $degree);
+        }
+        $tickets = $tickets->get();
         $finalList = array();
         $i = 0;
+        $neighborhood = $request->neighborhood;
         foreach ($tickets as $ticket) {
             $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
                 ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
-                ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
+                ->select('locations.id', 'locations.neighborhood_id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
                 ->where('locations.id', '=', $ticket->location_id)->first();
 
             $photos = Photo::where('ticket_id', '=', $ticket->id)->get();
@@ -73,16 +77,19 @@ class TicketController extends Controller
 
             $assignedCompany = User::where('id', '=', $ticket->assigned_company)->first();
             $assignedCompany = collect($assignedCompany)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
-            $finalList[$i++] = [
-                'ticket' => $ticket,
-                'location' => $location,
-                'photos' => $photos,
-                'ticketHistories' => $ticketHistories,
-                'userRating' => $userRating,
-                'assignedEmployee' => $assignedEmployee,
-                'assignedCompany' => $assignedCompany,
-                ''
-            ];
+
+            if ($neighborhood == $location->neighborhood_id || $neighborhood == null) {
+                $finalList[$i++] = [
+                    'ticket' => $ticket,
+                    'location' => $location,
+                    'photos' => $photos,
+                    'ticketHistories' => $ticketHistories,
+                    'userRating' => $userRating,
+                    'assignedEmployee' => $assignedEmployee,
+                    'assignedCompany' => $assignedCompany,
+                ];
+            }
+
         }
         $finalList = $this->paginate($finalList);
         $finalList->withPath('/ticket/list');

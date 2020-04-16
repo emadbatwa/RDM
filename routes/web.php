@@ -15,12 +15,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
+Route::group([
+    'middleware' => 'auth',
+], function () {
+    Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+    Route::post('register', 'Auth\RegisterController@register');
+});
+
+
 Route::group([
     'prefix' => 'public',
 ], function () {
     Route::get('/map', 'TicketController@publicMap');
-    Route::get('show/{ticket_id}', 'TicketController@showPublic');
+    Route::get('/show/{ticket_id}', 'TicketController@showPublic');
 });
 Route::group([
     'prefix' => 'ticket',
@@ -28,15 +36,15 @@ Route::group([
 ], function () {
     Route::get('/list', 'TicketController@list');
     Route::get('/map', 'TicketController@map');
-    Route::get('show/{ticket_id}', 'TicketController@show');
-    Route::post('update', 'TicketController@update');
+    Route::get('/show/{ticket_id}', 'TicketController@show');
+    Route::post('/update', 'TicketController@update');
 });
 Route::group([
     'prefix' => 'user',
     'middleware' => 'auth',
 ], function () {
-    Route::get('employees', 'UserController@employees');
-    Route::get('cities', 'API\TicketController@cities');
-    Route::get('neighborhoods', 'API\TicketController@neighborhoods');
+    Route::get('/employees', 'UserController@employees');
+    Route::get('/cities', 'API\TicketController@cities');
+    Route::get('/neighborhoods', 'API\TicketController@neighborhoods');
 });
 

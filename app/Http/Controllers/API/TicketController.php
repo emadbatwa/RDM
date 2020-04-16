@@ -64,12 +64,15 @@ class TicketController extends Controller
                     ]);
                 }
             }
+            try {
+                $client = new \GuzzleHttp\Client();
+                $classResponse = $client->request('GET', 'http://34.71.210.152/upload?url=http://www.ai-rdm.website/storage/photos/' . $storedPhotos[2]->photo_name);
+                if ($classResponse->getStatusCode() == 200) {
+                    $classification = preg_replace('/\s+/', '', $classResponse->getBody()->getContents());
+                    $ticket->update(['classification_id' => ++$classification]);
+                }
+            }catch (\Exception $e){
 
-            $client = new \GuzzleHttp\Client();
-            $classResponse = $client->request('GET', 'http://35.222.57.223/upload?url=http://www.ai-rdm.website/storage/photos/' . $storedPhotos[2]->photo_name);
-            if ($classResponse->getStatusCode() == 200) {
-                $classification = preg_replace('/\s+/', '', $classResponse->getBody()->getContents());
-                $ticket->update(['classification_id' => ++$classification]);
             }
             return response()->json([
                 'message' => 'Successfully added ticket',
@@ -426,8 +429,15 @@ class TicketController extends Controller
 
     public function ticketsCount(Request $request)
     {
-        $user_id = $request->user()->id;
-        $ticketsCount = Ticket::where('user_id', '=', $user_id)->get()->count();
+        $user = $request->user();
+
+        if ($user->role_id == 1) {
+            $ticketsCount = Ticket::where('tickets.user_id', '=', $user->id)->get->count();
+        }
+
+        if ($user->role_id == 4) {
+            $ticketsCount = Ticket::where('tickets.assigned_employee', '=', $user->id)->get()->count();
+        }
 
         return response()->json([
             'ticketsCount' => $ticketsCount
