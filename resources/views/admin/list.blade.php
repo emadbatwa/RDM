@@ -12,7 +12,7 @@
             <div class="col-md-8">
                 <h1>admin</h1>
                 <div class="card">
-                    <div class="card-header">Dashboard</div>
+                    <div class="card-header">Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
 
                     <div class="card-body">
                         <table id="example" class="display" style="width:100%">
