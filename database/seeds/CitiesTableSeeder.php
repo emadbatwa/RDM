@@ -14,7 +14,6 @@ class CitiesTableSeeder extends Seeder
     {
         $json = File::get('database/seeds/json/cities.json');
         $data = json_decode($json);
-        //$array1 = (array) $data->toArray();
         foreach ($data->data as $obj) {
             DB::table('cities')->insert(array(
                 'id' => $obj->id,
