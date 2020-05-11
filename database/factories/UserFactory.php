@@ -17,11 +17,6 @@ use Illuminate\Support\Str;
 */
 
 $factory->define(User::class, function (Faker $faker) {
-//    $role = rand(1,4);
-//    while($role == 2){
-//        $role = rand(1,4);
-//    }
-
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,

@@ -94,7 +94,10 @@ class TicketController extends Controller
         /*$finalList = $this->paginate($finalList);
         $finalList->withPath('/ticket/list');*/
         if (\Auth::user()->role_id == 2) {
-            return view('admin.list')->with(['tickets' => $finalList]);
+            $statistics['open'] = Ticket::where('status_id', '=', 1)->count();
+            $statistics['closed'] = Ticket::where('status_id', '=', 6)->count();
+            $statistics['total'] = Ticket::count();
+            return view('admin.list')->with(['tickets' => $finalList, 'statistics' => $statistics]);
         } elseif (\Auth::user()->role_id == 3) {
             return view('company.list')->with(['tickets' => $finalList]);
         }

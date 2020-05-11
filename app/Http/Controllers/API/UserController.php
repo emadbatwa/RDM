@@ -84,6 +84,7 @@ class UserController extends Controller
             if ($neighborhood != null) {
                 User::where('id', '=', $request->user()->id)->update(['neighborhood_id' => $neighborhood]);
             }
+
             $user = User::where('id', '=', $request->user()->id)->first();
             $userCity = City::where('id', '=', $user->city_id)->first();
             $userNeighborhood = Neighborhood::where('id', '=', $user->neighborhood_id)->first();

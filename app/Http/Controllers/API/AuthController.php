@@ -30,7 +30,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
             ]);
-
+        $userinfo = User::with('role')->where('id', '=', $user->id)->first();
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
         $token->save();
@@ -40,7 +40,7 @@ class AuthController extends Controller
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
             )->toDateTimeString(),
-            'user_data' => $user
+            'user_data' => $userinfo
         ]);
     }
 

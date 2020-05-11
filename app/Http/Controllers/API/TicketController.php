@@ -66,9 +66,12 @@ class TicketController extends Controller
             }
             try {
                 $client = new \GuzzleHttp\Client();
-                $classResponse = $client->request('GET', 'http://34.71.210.152/upload?url=http://www.ai-rdm.website/storage/photos/' . $storedPhotos[2]->photo_name);
+                $classResponse = $client->request('GET',
+                    'http://34.71.210.152/upload?url=http://www.ai-rdm.website/storage/photos/' .
+                    $storedPhotos[2]->photo_name);
                 if ($classResponse->getStatusCode() == 200) {
-                    $classification = preg_replace('/\s+/', '', $classResponse->getBody()->getContents());
+                    $classification = preg_replace('/\s+/', '',
+                        $classResponse->getBody()->getContents());
                     $ticket->update(['classification_id' => ++$classification]);
                 }
             }catch (\Exception $e){
