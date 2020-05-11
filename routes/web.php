@@ -36,7 +36,7 @@ Route::group([
 ], function () {
     Route::get('/list', 'TicketController@list');
     Route::get('/map', 'TicketController@map');
-    Route::get('/show/{ticket_id}', 'TicketController@show');
+    Route::post('/show', 'TicketController@show')->name('ticket.show');
     Route::post('/update', 'TicketController@update');
 });
 Route::group([

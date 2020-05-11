@@ -91,8 +91,8 @@ class TicketController extends Controller
             }
 
         }
-        $finalList = $this->paginate($finalList);
-        $finalList->withPath('/ticket/list');
+        /*$finalList = $this->paginate($finalList);
+        $finalList->withPath('/ticket/list');*/
         if (\Auth::user()->role_id == 2) {
             return view('admin.list')->with(['tickets' => $finalList]);
         } elseif (\Auth::user()->role_id == 3) {
@@ -186,12 +186,13 @@ class TicketController extends Controller
 
     public function show(Request $request)
     {
+        if ($request->ajax()) {
         $request->validate([
             'ticket_id' => 'numeric',
         ]);
 
         $user = $request->user();
-        $wantedTicket = Ticket::find($request->ticket_id);
+        $wantedTicket = Ticket::find(Input::get('ticketId'));
 
         if ($wantedTicket != null && ($wantedTicket->user_id == $user->id || $wantedTicket->assigned_company == $user->id || $wantedTicket->assigned_employee == $user->id || $user->role_id == 2)) {
             $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
@@ -228,13 +229,16 @@ class TicketController extends Controller
                 'assignedCompany' => $assignedCompany,
             ];
             if (\Auth::user()->role_id == 2) {
-                return view('admin.show')->with(['ticket' => $ticket]);
+                //return view('admin.show')->with(['ticket' => $ticket]);
+                return response()->json($this->utf8ize($ticket));
             } elseif (\Auth::user()->role_id == 3) {
-                return view('company.show')->with(['ticket' => $ticket]);
+                //return view('company.show')->with(['ticket' => $ticket]);
+                return response()->json($this->utf8ize($ticket));
             }
         } else {
             return redirect()->back();
         }
+    }
     }
 
     public function update(Request $request)
