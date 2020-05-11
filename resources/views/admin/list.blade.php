@@ -30,6 +30,69 @@ function getid (ele) {
 </script>
 
 
+      <!-- heatMap -->
+    
+      <div id="map" style="width: 100%; height: 500px;">
+
+        
+
+<script>
+
+  // This example requires the Visualization library. Include the libraries=visualization
+  // parameter when you first load the API. For example:
+  // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
+
+ var map, heatmap;
+
+ function initMap() {
+ map = new google.maps.Map(document.getElementById('map'), {
+  zoom: 13,
+ center: {lat:  21.42302911, lng: 39.82492447},
+  // mapTypeId: 'satellite'
+                   });
+
+  heatmap = new google.maps.visualization.HeatmapLayer({
+  data: getPoints(),
+  map: map
+  });
+  }
+     // Heatmap data: 500 Points
+ function getPoints() {
+  return [
+
+    new google.maps.LatLng(21.44271329,39.80257362),
+    new google.maps.LatLng(21.4423438, 39.80257094),
+    new google.maps.LatLng(21.44196432, 39.80260313),
+    new google.maps.LatLng(21.44164476, 39.80269969),
+    new google.maps.LatLng(21.44128525, 39.80271041),
+    new google.maps.LatLng(21.44082588, 39.80279624),
+    new google.maps.LatLng(21.44086582, 39.80335414),
+    new google.maps.LatLng(21.44099565, 39.8039335),
+    new google.maps.LatLng(21.44063614,39.80437338),
+    new google.maps.LatLng(21.44026664, 39.8044914),
+    new google.maps.LatLng(21.4401468, 39.80425537),
+    new google.maps.LatLng(21.43998702, 39.80448067),
+    new google.maps.LatLng(21.43976732, 39.80425537),
+    new google.maps.LatLng(21.43952765, 39.8043412),
+    new google.maps.LatLng(21.43939283, 39.80440825),
+    new google.maps.LatLng(21.44083586, 39.80622947),
+    new google.maps.LatLng(21.44062615, 39.80637968),
+    new google.maps.LatLng(21.44054626, 39.80652988),
+    new google.maps.LatLng(21.44047635, 39.8066479),
+    new google.maps.LatLng(21.44042642, 39.80674446),
+    new google.maps.LatLng(21.44031657, 39.80677664),
+    new google.maps.LatLng(21.44020672, 39.80681956),
+    new google.maps.LatLng(21.44027163, 39.8067686),
+    new google.maps.LatLng(21.44035153, 21.44035153)
+      
+   ];
+  }
+</script>
+ <script async defer
+   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBejOPM4uDw_MrHg4SpDUM6XwFb8Pw8lrg&libraries=visualization&callback=initMap">
+ </script>
+
+</div> 
 
     <div class="container">
 
