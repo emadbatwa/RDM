@@ -55,7 +55,7 @@ function getid (ele) {
                              <!-- data-target="#detailsModal" onclick="location.href=‘ticket/show/{$ticket->id’" -->
                             @foreach($tickets as $ticket)
                             <!-- <a href="/ticket/show/{{$ticket['ticket']->id}}"> -->
-                            <tr class="table-row" id="{{$ticket['ticket']->id}}" value ="1" data-toggle="modal" onclick="getid(this);" data-target="#detailsModal">
+                            <tr class="table-row" id="{{$ticket['ticket']->id-1}}" data-toggle="modal" onclick="getid(this);" data-target="#detailsModal">
                                     <td>{{$ticket['ticket']->id}}</td>
                                     <td>{{$ticket['ticket']->description}}</td>
                                     <td>{{$ticket['ticket']->status_ar}}</td>
