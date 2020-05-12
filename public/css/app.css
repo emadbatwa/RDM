@@ -462,7 +462,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
     --breakpoint-md: 768px;
     --breakpoint-lg: 992px;
     --breakpoint-xl: 1200px;
-    --font-family-sans-serif: "Nunito", sans-serif;
+    --font-family: "Cairo";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -473,7 +473,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
 }
 
 html {
-    font-family: sans-serif;
+    font-family: "Cairo";
     line-height: 1.15;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -483,12 +483,25 @@ html {
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+#sidebar {
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+    width: 7%;
+}
 
 #content {
     min-height: 100vh;
+    width: 100%;
     transition: all 0.3s;
     top: 0;
-    left: 0;
+    right: 0;
 }
 
 #sidebar .sidebar-header {
@@ -520,19 +533,6 @@ html {
 }
 
 /*---------------------------------*/
-.wrapper {
-    display: flex;
-    width: 100%;
-    align-items: stretch;
-}
-
-#sidebar {
-    min-width: auto;
-    max-width: auto;
-    background: #7386D5;
-    color: #fff;
-    transition: all 0.3s;
-}
 
 
 /*----------------------------------*/
@@ -552,7 +552,7 @@ section {
 
 body {
     margin: 0;
-    font-family: "Nunito", sans-serif;
+    font-family: "Cairo";
     font-size: 0.9rem;
     font-weight: 400;
     line-height: 1.6;
@@ -1092,7 +1092,7 @@ pre code {
 
 @media (min-width: 1200px) {
     .container {
-        max-width: 1140px;
+        max-width: 96%;
     }
 }
 
@@ -1108,8 +1108,7 @@ pre code {
     display: -webkit-box;
     display: flex;
     flex-wrap: wrap;
-    margin-right: -15px;
-    margin-left: -15px;
+
 }
 
 .no-gutters {
@@ -5045,7 +5044,6 @@ input[type=button].btn-block {
     align-items: center;
     -webkit-box-pack: justify;
     justify-content: space-between;
-    padding: 0.5rem 1rem;
 }
 
 .navbar > .container,
@@ -5080,7 +5078,6 @@ input[type=button].btn-block {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     flex-direction: column;
-    padding-left: 0;
     margin-bottom: 0;
     list-style: none;
 }
