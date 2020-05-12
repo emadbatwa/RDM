@@ -25,33 +25,37 @@
         </nav>
         <script>
             $(document).ready(function () {
-                window.tickets = @json($tickets);
                 var table = $('#example').DataTable({});
-                //});
-                //$('#example tbody').on( 'click', 'tr', function () {
-                // Get the rows id value
-
-                //var id = this.value;
-                //alert( 'Clicked row id '+id );
             });
 
 
-            function getid(ele) {
+            function getid (ele) {
                 var id = ele.id;
-                console.log(id);
-
-                var ticket = window.tickets[id];
-                console.log(ticket['ticket'].description);
-                console.log(ticket);
-                $('#description').text(ticket['ticket'].description);
-                $('#assigned_company').text(ticket['assignedCompany'].name); // @@@@@@@
-                $('#classification_ar').text(ticket['ticket'].classification_ar);
-                $('#degree_ar').text(ticket['ticket'].degree_ar);
-                $('#status_ar').text(ticket['ticket'].status_ar);
-                $('#created_at').text(ticket['ticket'].created_at);
-                $('#updated_at').text(ticket['ticket'].updated_at);
-                $('#id').text(ticket['ticket'].id);
-
+                console.log( id );
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: 'post',
+                    url: '{{ route('ticket.show') }}',
+                    data: {ticketId: id},
+                    success: function (data) {
+                        console.log(data);
+                        $('#description').text(data['ticket'].description);
+                        $('#assigned_company').text(data['assignedCompany'].name); // @@@@@@@
+                        $('#classification_ar').text(data['ticket'].classification_ar);
+                        $('#degree_ar').text(data['ticket'].degree_ar);
+                        $('#status_ar').text(data['ticket'].status_ar);
+                        $('#created_at').text(data['ticket'].created_at);
+                        $('#updated_at').text(data['ticket'].updated_at);
+                        $('#id').text(data['ticket'].id);
+                    },
+                    fain: function (data) {
+                        console.log(failed);
+                    }
+                });
             }
 
         </script>
@@ -174,7 +178,7 @@
                                     </tr>
                                     </tfoot>
                                 </table>
-                                
+
 
                                 <div id="detailsModal" class="modal fade bd-example-modal-lg" role="dialog" aria-labelledby="detailsModal"
                                      aria-hidden="true">
@@ -236,7 +240,7 @@
                                                                     @foreach($companies as $company)
                                                                     <option value="{{$company->id}}">{{$company->name}}</option>
                                                                     @endforeach
-                                                            
+
                                                             </select>
                                                         </div>
                                                     </td>

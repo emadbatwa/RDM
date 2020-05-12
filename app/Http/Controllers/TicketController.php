@@ -194,7 +194,7 @@ class TicketController extends Controller
         ]);
 
         $user = $request->user();
-        $wantedTicket = Ticket::find(Input::get('ticketId'));
+        $wantedTicket = Ticket::find($request->get('ticketId'));
 
         if ($wantedTicket != null && ($wantedTicket->user_id == $user->id || $wantedTicket->assigned_company == $user->id || $wantedTicket->assigned_employee == $user->id || $user->role_id == 2)) {
             $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
@@ -232,13 +232,13 @@ class TicketController extends Controller
             ];
             if (\Auth::user()->role_id == 2) {
                 //return view('admin.show')->with(['ticket' => $ticket]);
-                return response()->json($this->utf8ize($ticket));
+                return response()->json($ticket);
             } elseif (\Auth::user()->role_id == 3) {
                 //return view('company.show')->with(['ticket' => $ticket]);
-                return response()->json($this->utf8ize($ticket));
+                return response()->json($ticket);
             }
         } else {
-            return redirect()->back();
+            return response()->json('failed');
         }
     }
     }

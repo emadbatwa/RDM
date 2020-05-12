@@ -4,7 +4,6 @@
 @section('content')
     <script>
         $(document).ready(function () {
-             window.tickets = @json($tickets);
            var table =  $('#example').DataTable({});
 });
 
@@ -12,19 +11,27 @@
 function getid (ele) {
   var id = ele.id;
     console.log( id );
-
-    var ticket = window.tickets[id];
-    console.log(ticket['ticket'].description);
-    console.log(ticket);
-    $('#description').text(ticket['ticket'].description);
-    $('#assigned_company').text(ticket['ticket'].assigned_company); // @@@@@@@
-    $('#classification_ar').text(ticket['ticket'].classification_ar);
-    $('#degree_ar').text(ticket['ticket'].degree_ar);
-    $('#status_ar').text(ticket['ticket'].status_ar);
-    $('#created_at').text(ticket['ticket'].created_at);
-    $('#updated_at').text(ticket['ticket'].updated_at);
-    $('#id').text(ticket['ticket'].id);
-   
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'post',
+        url: '{{ route('ticket.show') }}',
+        data: {ticketId: id},
+        success: function (data) {
+            console.log(data);
+            $('#description').text(data['ticket'].description);
+            $('#assigned_company').text(data['assignedCompany'].name); // @@@@@@@
+            $('#classification_ar').text(data['ticket'].classification_ar);
+            $('#degree_ar').text(data['ticket'].degree_ar);
+            $('#status_ar').text(data['ticket'].status_ar);
+            $('#created_at').text(data['ticket'].created_at);
+            $('#updated_at').text(data['ticket'].updated_at);
+            $('#id').text(data['ticket'].id);
+        }
+    });
 }
     </script>
 
@@ -49,7 +56,7 @@ function getid (ele) {
                             </thead>
                             <tbody>
                             @foreach($tickets as $ticket)
-                                <tr class="table-row" id="{{$ticket['ticket']->id-1}}" data-toggle="modal" onclick="getid(this);" data-target="#detailsModal">
+                                <tr class="table-row" id="{{$ticket['ticket']->id}}" data-toggle="modal" onclick="getid(this);" data-target="#detailsModal">
                                     <td>{{$ticket['ticket']->id}}</td>
                                     <td>{{$ticket['ticket']->description}}</td>
                                     <td>{{$ticket['ticket']->status_ar}}</td>
@@ -78,7 +85,7 @@ function getid (ele) {
         <h4 class="modal-title"> تذكرة رقم:  </h4>
         <h4 id="id">  </h4>
         <h7 class="modal-title">الحالة:  </h7>
-        <h7 id="status_ar"> </h7> 
+        <h7 id="status_ar"> </h7>
 
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
