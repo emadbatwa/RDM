@@ -49,7 +49,7 @@ function getid (ele) {
                             </thead>
                             <tbody>
                             @foreach($tickets as $ticket)
-                                <tr class="table-row" id="{{$ticket['ticket']->id-1}}" data-toggle="modal" onclick="getid(this);" data-target="#detailsModal">
+                                <tr class="table-row" id="{{$ticket['ticket']->id}}" data-toggle="modal" onclick="getid(this);" data-target="#detailsModal">
                                     <td>{{$ticket['ticket']->id}}</td>
                                     <td>{{$ticket['ticket']->description}}</td>
                                     <td>{{$ticket['ticket']->status_ar}}</td>
