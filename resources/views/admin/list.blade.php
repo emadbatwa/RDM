@@ -200,6 +200,25 @@
                                                     <th>تاريخ التعديل:</th>
                                                     <td id="updated_at"></td>
                                                     <th>صور البلاغ</th>
+                                                    @foreach($ticket['photos'] as $photo)
+                                                     <!-- if role id 1 -> problem photo else if role id is 3  -> fix photo -->
+                                                    @if($photo->role_id == 1)
+                                                
+                                                    <td> <img src="http://www.ai-rdm.website/storage/photos/{{$photo->photo_name}}" alt="ticket photo" height="100" width="100"> </td>                                                
+                                                    @endif
+
+                                                    @endforeach
+                                                    <th>صور الاصلاح</th>
+                                                    @foreach($ticket['photos'] as $photo)
+                                                    @if($photo->role_id != 1)
+                                                
+                                                    <td> <img src="http://www.ai-rdm.website/storage/photos/{{$photo->photo_name}}" alt="ticket photo" height="100" width="100"> </td>                                                
+                                                
+                                                    @endif
+
+                                                    @endforeach
+                                      
+
                                                 </tr>
                                                 <tr>
                                                     <th>التصنيف:</th>
@@ -222,6 +241,7 @@
                                                     <th>الوصف</th>
                                                     <td id="description"></td>
                                                     <td rowspan="2"> الصور</td>
+                                                    
                                                 </tr>
                                                 <tr>
                                                     <th>الشركة:</th>
