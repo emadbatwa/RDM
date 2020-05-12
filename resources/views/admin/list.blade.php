@@ -44,7 +44,7 @@
                 console.log(ticket['ticket'].description);
                 console.log(ticket);
                 $('#description').text(ticket['ticket'].description);
-                $('#assigned_company').text(ticket['ticket'].assigned_company); // @@@@@@@
+                $('#assigned_company').text(ticket['assignedCompany'].name); // @@@@@@@
                 $('#classification_ar').text(ticket['ticket'].classification_ar);
                 $('#degree_ar').text(ticket['ticket'].degree_ar);
                 $('#status_ar').text(ticket['ticket'].status_ar);
@@ -153,12 +153,10 @@
                                             <td>{{$ticket['ticket']->status_ar}}</td>
                                             <td>{{$ticket['ticket']->degree_ar}}</td>
                                             <td>{{$ticket['ticket']->classification_ar}}</td>
-                                            @if($ticket['assignedCompany'] && $ticket['assignedCompany'])
-                                              <td>{{$ticket['assignedCompany']}}</td>
-
+                                            @if($ticket['assignedCompany'] != null)
+                                                <td>{{$ticket['assignedCompany']->name}}</td>
                                             @else
-                                            <td>there is no company</td>
-
+                                                <td>لا يوجد</td>
                                             @endif
                                             <td>{{$ticket['ticket']->created_at}}</td>
                                         </tr>
@@ -184,8 +182,8 @@
                                             <div class="modal-header">
                                                 <h4 class="modal-title"> تذكرة رقم: </h4>
                                                 <h4 id="id"></h4>
-                                                <h7 class="modal-title">الحالة:</h7>
-                                                <h7 id="status_ar"></h7>
+                                                <h4 class="modal-title">الحالة:</h4>
+                                                <h4 id="status_ar"></h4>
 
                                                 <button type="button" class="close" data-dismiss="modal"
                                                         aria-hidden="true">
