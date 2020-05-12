@@ -32,17 +32,17 @@ function getid (ele) {
     $('#created_at').text(ticket['ticket'].created_at);
     $('#updated_at').text(ticket['ticket'].updated_at);
     $('#id').text(ticket['ticket'].id);
-
+   
 }
 
 </script>
 
 
       <!-- heatMap -->
-
+    
       <div id="map" style="width: 100%; height: 500px;">
 
-
+        
 
 <script>
 
@@ -92,7 +92,7 @@ function getid (ele) {
     new google.maps.LatLng(21.44020672, 39.80681956),
     new google.maps.LatLng(21.44027163, 39.8067686),
     new google.maps.LatLng(21.44035153, 21.44035153)
-
+      
    ];
   }
 </script>
@@ -100,7 +100,7 @@ function getid (ele) {
    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBejOPM4uDw_MrHg4SpDUM6XwFb8Pw8lrg&libraries=visualization&callback=initMap">
  </script>
 
-</div>
+</div> 
 
     <div class="container">
 
@@ -158,7 +158,7 @@ function getid (ele) {
         <h4 class="modal-title"> تذكرة رقم:  </h4>
         <h4 id="id">  </h4>
         <h7 class="modal-title">الحالة:  </h7>
-        <h7 id="status_ar"> </h7>
+        <h7 id="status_ar"> </h7> 
 
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
