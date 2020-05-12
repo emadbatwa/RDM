@@ -124,7 +124,7 @@
 
                 <div class="row justify-content-center">
                     <div class="">
-                        <h1>admin</h1>
+                        <h1>admin</h1><!-- should be removed later -->
                         <div class="">
                             <div class="card-header">
                                 Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
@@ -153,7 +153,13 @@
                                             <td>{{$ticket['ticket']->status_ar}}</td>
                                             <td>{{$ticket['ticket']->degree_ar}}</td>
                                             <td>{{$ticket['ticket']->classification_ar}}</td>
-                                            <td>{{$ticket['ticket']->assigned_company}}</td>
+                                            @if($ticket['assignedCompany'] && $ticket['assignedCompany'])
+                                              <td>{{$ticket['assignedCompany']}}</td>
+
+                                            @else
+                                            <td>there is no company</td>
+
+                                            @endif
                                             <td>{{$ticket['ticket']->created_at}}</td>
                                         </tr>
                                     @endforeach
