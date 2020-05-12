@@ -174,10 +174,11 @@
                                     </tr>
                                     </tfoot>
                                 </table>
+                                
 
-                                <div id="detailsModal" class="modal fade" role="dialog" aria-labelledby="detailsModal"
+                                <div id="detailsModal" class="modal fade bd-example-modal-lg" role="dialog" aria-labelledby="detailsModal"
                                      aria-hidden="true">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h4 class="modal-title"> تذكرة رقم: </h4>
@@ -230,10 +231,12 @@
                                                             <select type="button" class="btn btn-danger dropdown-toggle"
                                                                     data-toggle="dropdown" aria-haspopup="true"
                                                                     aria-expanded="false">
-                                                                <option id="assigned_company" selected>1</a>
+                                                                <!-- <option id="assigned_company" selected>1</a> -->
                                                                     <!-- @@@@@@@ -->
-                                                                <option>2</a>
-                                                                <option>3</a>
+                                                                    @foreach($companies as $company)
+                                                                    <option value="{{$company->id}}">{{$company->name}}</option>
+                                                                    @endforeach
+                                                            
                                                             </select>
                                                         </div>
                                                     </td>
