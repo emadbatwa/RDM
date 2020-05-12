@@ -128,7 +128,7 @@
 
                 <div class="row justify-content-center">
                     <div class="">
-                        <h1>admin</h1><!-- should be removed later -->
+                     
                         <div class="">
                             <div class="card-header">
                                 Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
@@ -204,10 +204,26 @@
                                                     <th>تاريخ التعديل:</th>
                                                     <td id="updated_at"></td>
                                                     <th>صور البلاغ</th>
+
+
+                                                    <td>
+
+                                                    @foreach($ticket['photos'] as $photo)
+                                                     <!-- if role id 1 -> problem photo else if role id is 3  -> fix photo -->
+                                                    @if($photo->role_id == 1)
+                                                
+                                                     <img src="http://www.ai-rdm.website/storage/photos/{{$photo->photo_name}}" alt="ticket photo" height="100" width="100">                                             
+                                                    @endif
+
+                                                    @endforeach
+                                                     </td>   
+                                              
+                                              
+
                                                 </tr>
                                                 <tr>
                                                     <th>التصنيف:</th>
-                                                    <td id="classification_ar"></td>
+                                                    
                                                     <td>
 
                                                         <div class="btn-group">
@@ -225,11 +241,27 @@
                                                     <td id="degree_ar"></td>
                                                     <th>الوصف</th>
                                                     <td id="description"></td>
-                                                    <td rowspan="2"> الصور</td>
+                                                 
+                                                    
                                                 </tr>
                                                 <tr>
+                                                  <th>التصنيف:</th>
+                                                    
+                                                    <td>
+
+                                                        <div class="btn-group">
+                                                            <select type="button" class="btn btn-danger dropdown-toggle"
+                                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false">
+                                                                <option selected>1</a>
+                                                                <option>2</a>
+                                                                <option>3</a>
+                                                            </select>
+                                                        </div>
+
+                                                    </td>
                                                     <th>الشركة:</th>
-                                                    <td id="assigned_company"></td>
+                                                    
                                                     <td>
                                                         <div class="btn-group">
                                                             <select type="button" class="btn btn-danger dropdown-toggle"
@@ -244,6 +276,17 @@
                                                             </select>
                                                         </div>
                                                     </td>
+                                                    <th>صور الاصلاح</th>
+                                                    <td>
+                                                    @foreach($ticket['photos'] as $photo)
+                                                    @if($photo->role_id != 1)
+                                                
+                                                     <img src="http://www.ai-rdm.website/storage/photos/{{$photo->photo_name}}" alt="ticket photo" height="100" width="100">                                                 
+                                                
+                                                    @endif
+
+                                                    @endforeach
+                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="text-align:center" colspan="4">
