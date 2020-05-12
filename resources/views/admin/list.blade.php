@@ -44,7 +44,7 @@
                 console.log(ticket['ticket'].description);
                 console.log(ticket);
                 $('#description').text(ticket['ticket'].description);
-                $('#assigned_company').text(ticket['ticket'].assigned_company); // @@@@@@@
+                $('#assigned_company').text(ticket['assignedCompany'].name); // @@@@@@@
                 $('#classification_ar').text(ticket['ticket'].classification_ar);
                 $('#degree_ar').text(ticket['ticket'].degree_ar);
                 $('#status_ar').text(ticket['ticket'].status_ar);
@@ -120,144 +120,154 @@
 
             </div>
 
-            <div class="continer">
+            <div class="container">
 
                 <div class="row justify-content-center">
-                    <h1>admin</h1>
                     <div class="">
-                        {{--                        <div class="">--}}
-                        {{--                            Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>--}}
+                        <h1>admin</h1><!-- should be removed later -->
+                        <div class="">
+                            <div class="card-header">
+                                Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
 
-                        <div class="card-body">
-                            <table id="example" class="display" style="width:100%">
-                                <thead>
-                                <tr>
-                                    <th>رقم التذكرة</th>
-                                    <th>الوصف</th>
-                                    <th>الحالة</th>
-                                    <th>الدرجة</th>
-                                    <th>التصنيف</th>
-                                    <th>الشركة</th>
-                                    <th>تاريخ الإنشاء</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- data-target="#detailsModal" onclick="location.href=‘ticket/show/{$ticket->id’" -->
-                                @foreach($tickets as $ticket)
-                                    <!-- <a href="/ticket/show/{{$ticket['ticket']->id}}"> -->
-                                    <tr class="table-row" id="{{$ticket['ticket']->id-1}}" data-toggle="modal"
-                                        onclick="getid(this);" data-target="#detailsModal">
-                                        <td>{{$ticket['ticket']->id}}</td>
-                                        <td>{{$ticket['ticket']->description}}</td>
-                                        <td>{{$ticket['ticket']->status_ar}}</td>
-                                        <td>{{$ticket['ticket']->degree_ar}}</td>
-                                        <td>{{$ticket['ticket']->classification_ar}}</td>
-                                        <td>{{$ticket['ticket']->assigned_company}}</td>
-                                        <td>{{$ticket['ticket']->created_at}}</td>
+                            <div class="card-body">
+                                <table id="example" class="display" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th>رقم التذكرة</th>
+                                        <th>الوصف</th>
+                                        <th>الحالة</th>
+                                        <th>الدرجة</th>
+                                        <th>التصنيف</th>
+                                        <th>الشركة</th>
+                                        <th>تاريخ الإنشاء</th>
                                     </tr>
-                                @endforeach
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>رقم التذكرة</th>
-                                    <th>الوصف</th>
-                                    <th>الحالة</th>
-                                    <th>الدرجة</th>
-                                    <th>التصنيف</th>
-                                    <th>الشركة</th>
-                                    <th>تاريخ الإنشاء</th>
-                                </tr>
-                                </tfoot>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    <!-- data-target="#detailsModal" onclick="location.href=‘ticket/show/{$ticket->id’" -->
+                                    @foreach($tickets as $ticket)
+                                        <!-- <a href="/ticket/show/{{$ticket['ticket']->id}}"> -->
+                                        <tr class="table-row" id="{{$ticket['ticket']->id-1}}" data-toggle="modal"
+                                            onclick="getid(this);" data-target="#detailsModal">
+                                            <td>{{$ticket['ticket']->id}}</td>
+                                            <td>{{$ticket['ticket']->description}}</td>
+                                            <td>{{$ticket['ticket']->status_ar}}</td>
+                                            <td>{{$ticket['ticket']->degree_ar}}</td>
+                                            <td>{{$ticket['ticket']->classification_ar}}</td>
+                                            @if($ticket['assignedCompany'] != null)
+                                                <td>{{$ticket['assignedCompany']->name}}</td>
+                                            @else
+                                                <td>لا يوجد</td>
+                                            @endif
+                                            <td>{{$ticket['ticket']->created_at}}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th>رقم التذكرة</th>
+                                        <th>الوصف</th>
+                                        <th>الحالة</th>
+                                        <th>الدرجة</th>
+                                        <th>التصنيف</th>
+                                        <th>الشركة</th>
+                                        <th>تاريخ الإنشاء</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                                
 
-                            <div id="detailsModal" class="modal fade" role="dialog" aria-labelledby="detailsModal"
-                                 aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title"> تذكرة رقم: </h4>
-                                            <h4 id="id"></h4>
-                                            <h7 class="modal-title">الحالة:</h7>
-                                            <h7 id="status_ar"></h7>
+                                <div id="detailsModal" class="modal fade bd-example-modal-lg" role="dialog" aria-labelledby="detailsModal"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title"> تذكرة رقم: </h4>
+                                                <h4 id="id"></h4>
+                                                <h4 class="modal-title">الحالة:</h4>
+                                                <h4 id="status_ar"></h4>
 
-                                            <button type="button" class="close" data-dismiss="modal"
-                                                    aria-hidden="true">
-                                                &times;
-                                            </button>
-                                        </div>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">
+                                                    &times;
+                                                </button>
+                                            </div>
 
-                                        <p>
-                                        <table class="table">
-                                            <tr>
-                                                <th>تاريخ الإنشاء:</th>
-                                                <td id="created_at"></td>
-                                                <th>تاريخ التعديل:</th>
-                                                <td id="updated_at"></td>
-                                                <th>صور البلاغ</th>
-                                            </tr>
-                                            <tr>
-                                                <th>التصنيف:</th>
-                                                <td id="classification_ar"></td>
-                                                <td>
+                                            <p>
+                                            <table class="table">
+                                                <tr>
+                                                    <th>تاريخ الإنشاء:</th>
+                                                    <td id="created_at"></td>
+                                                    <th>تاريخ التعديل:</th>
+                                                    <td id="updated_at"></td>
+                                                    <th>صور البلاغ</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>التصنيف:</th>
+                                                    <td id="classification_ar"></td>
+                                                    <td>
 
-                                                    <div class="btn-group">
-                                                        <select type="button" class="btn btn-danger dropdown-toggle"
-                                                                data-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">
-                                                            <option selected>1</a>
-                                                            <option>2</a>
-                                                            <option>3</a>
-                                                        </select>
+                                                        <div class="btn-group">
+                                                            <select type="button" class="btn btn-danger dropdown-toggle"
+                                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false">
+                                                                <option selected>1</a>
+                                                                <option>2</a>
+                                                                <option>3</a>
+                                                            </select>
+                                                        </div>
+
+                                                    </td>
+                                                    <th>حجم الضرر:</th>
+                                                    <td id="degree_ar"></td>
+                                                    <th>الوصف</th>
+                                                    <td id="description"></td>
+                                                    <td rowspan="2"> الصور</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>الشركة:</th>
+                                                    <td id="assigned_company"></td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <select type="button" class="btn btn-danger dropdown-toggle"
+                                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false">
+                                                                <!-- <option id="assigned_company" selected>1</a> -->
+                                                                    <!-- @@@@@@@ -->
+                                                                    @foreach($companies as $company)
+                                                                    <option value="{{$company->id}}">{{$company->name}}</option>
+                                                                    @endforeach
+                                                            
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align:center" colspan="4">
+                                                        <a class="collapsee" data-toggle="collapse"
+                                                           href="#collapseExample"
+                                                           role="button" aria-expanded="false"
+                                                           aria-controls="collapseExample">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            </p>
+                                            <div class="collapse" id="collapseExample">
+                                                <div class="card card-body">
+                                                    <div class="modal-footer">
+                                                        <button class="btn" data-dismiss="modal" aria-hidden="true">
+                                                            Close
+                                                        </button>
+                                                        <input type="button" class="btn btn-default"
+                                                               data-dismiss="modal"
+                                                               value="Cancel">
+                                                        <input type="submit" class="btn btn-info" value="Save">
                                                     </div>
-
-                                                </td>
-                                                <th>حجم الضرر:</th>
-                                                <td id="degree_ar"></td>
-                                                <th>الوصف</th>
-                                                <td id="description"></td>
-                                                <td rowspan="2"> الصور</td>
-                                            </tr>
-                                            <tr>
-                                                <th>الشركة:</th>
-                                                <td id="assigned_company"></td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <select type="button" class="btn btn-danger dropdown-toggle"
-                                                                data-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">
-                                                            <option id="assigned_company" selected>1</a>
-                                                                <!-- @@@@@@@ -->
-                                                            <option>2</a>
-                                                            <option>3</a>
-                                                        </select>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="text-align:center" colspan="4">
-                                                    <a class="collapsee" data-toggle="collapse"
-                                                       href="#collapseExample"
-                                                       role="button" aria-expanded="false"
-                                                       aria-controls="collapseExample">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        <div class="collapse" id="collapseExample">
-                                            <div class="card card-body">
-                                                <div class="modal-footer">
-                                                    <button class="btn" data-dismiss="modal" aria-hidden="true">
-                                                        Close
-                                                    </button>
-                                                    <input type="button" class="btn btn-default"
-                                                           data-dismiss="modal"
-                                                           value="Cancel">
-                                                    <input type="submit" class="btn btn-info" value="Save">
                                                 </div>
                                             </div>
+
+
                                         </div>
-
-
                                     </div>
                                 </div>
                             </div>
@@ -266,5 +276,6 @@
                 </div>
             </div>
         </div>
+    </div>
 @endsection
 </html>

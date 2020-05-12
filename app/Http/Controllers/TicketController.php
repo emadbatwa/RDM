@@ -72,11 +72,9 @@ class TicketController extends Controller
 
             $userRating = UserRating::where('id', '=', $ticket->user_rating_id)->first();
 
-            $assignedEmployee = User::where('id', '=', $ticket->assigned_employee)->first();
-            $assignedEmployee = collect($assignedEmployee)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
+            $assignedEmployee = User::where('id', '=', $ticket->assigned_employee)->select('id', 'name', 'phone', 'email')->first();
 
-            $assignedCompany = User::where('id', '=', $ticket->assigned_company)->first();
-            $assignedCompany = collect($assignedCompany)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
+            $assignedCompany = User::where('id', '=', $ticket->assigned_company)->select('id', 'name', 'phone', 'email')->first();
 
             if ($neighborhood == $location->neighborhood_id || $neighborhood == null) {
                 $finalList[$i++] = [
@@ -97,7 +95,8 @@ class TicketController extends Controller
             $statistics['open'] = Ticket::where('status_id', '=', 1)->count();
             $statistics['closed'] = Ticket::where('status_id', '=', 6)->count();
             $statistics['total'] = Ticket::count();
-            return view('admin.list')->with(['tickets' => $finalList, 'statistics' => $statistics]);
+            $companies = User::where('role_id', '=', 3)->select('id', 'name', 'phone')->get();
+            return view('admin.list')->with(['tickets' => $finalList, 'statistics' => $statistics, 'companies' => $companies]);
         } elseif (\Auth::user()->role_id == 3) {
             return view('company.list')->with(['tickets' => $finalList]);
         }

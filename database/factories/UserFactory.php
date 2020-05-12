@@ -22,6 +22,7 @@ $factory->define(User::class, function (Faker $faker) {
         'email' => $faker->unique()->safeEmail,
         'password' => Hash::make('password'),
         'role_id' => 1,
+        'phone' => '05' . $faker->unique()->randomNumber($nbDigits = 8),
         'company' => null,
     ];
 });
