@@ -14,7 +14,7 @@
 
     <!-- Fonts -->
 {{--    <link rel="dns-prefetch" href="//fonts.gstatic.com">--}}
-    <link href="https:li//fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
     <link href="https://fonts.googleapis.com/css?family=Cairo&amp;subset=arabic" rel="stylesheet">
 
     <!-- Styles -->
@@ -22,13 +22,35 @@
     <link href="{{ asset('css/material.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+    <style>
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .h1,
+        .h2,
+        .h3,
+        .h4 {
+            font-family: "Cairo";
+        }
 
 
+
+        #map {
+            height:500px;
+            width:100%;
+        }
+
+    </style>
+    @yield('head')
 
 </head>
 <body>
     <div id="app">
-        @include('layouts.nav-bar')
+{{--        @include('layouts.nav-bar')--}}
         <main class="">
             @yield('content')
         </main>

@@ -1171,6 +1171,9 @@ html[dir="rtl"] .alert button.close {
     right: unset !important;
 }
 
+
+
+
 @media (min-width: 992px) {
     html[dir="rtl"] .navbar-expand-lg .navbar-nav .dropdown-menu-right {
         left: 0;
