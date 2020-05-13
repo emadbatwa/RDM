@@ -96,8 +96,9 @@ class TicketController extends Controller
             $statistics['closed'] = Ticket::where('status_id', '=', 6)->count();
             $statistics['total'] = Ticket::count();
             $companies = User::where('role_id', '=', 3)->select('id', 'name', 'phone')->get();
+            $classifications = Classification::select('id', 'classification_ar')->get();
            // return $finalList;
-            return view('admin.list')->with(['tickets' => $finalList, 'statistics' => $statistics, 'companies' => $companies]);
+            return view('admin.list')->with(['tickets' => $finalList, 'statistics' => $statistics, 'companies' => $companies, 'classifications' => $classifications]);
         } elseif (\Auth::user()->role_id == 3) {
             return view('company.list')->with(['tickets' => $finalList]);
         }
