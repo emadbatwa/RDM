@@ -6358,7 +6358,7 @@ a.close.disabled {
 
 .modal-header {
   display: -webkit-box;
-  display: flex;
+  display:  list-item;
   -webkit-box-align: start;
           align-items: flex-start;
   -webkit-box-pack: justify;

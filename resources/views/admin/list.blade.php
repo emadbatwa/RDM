@@ -68,7 +68,7 @@
                     success: function (data) {
                         console.log(data);
                         $('#description').text(data['ticket'].description);
-                        $('#assigned_company').text(data['assignedCompany'].name); // @@@@@@@
+                        $('#assigned_company').text(data['assignedCompany'].name);
                         $('#classification_ar').text(data['ticket'].classification_ar);
                         $('#degree_ar').text(data['ticket'].degree_ar);
                         $('#status_ar').text(data['ticket'].status_ar);
@@ -225,17 +225,22 @@
                                      aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h4 class="modal-title"> تذكرة رقم: </h4>
-                                                <h4 id="id"></h4>
-                                                <h4 class="modal-title">الحالة:</h4>
-                                                <h4 id="status_ar"></h4>
-
+                                            <div class="modal-header" style="text-align:center">
+                                            <table >
+                                              
+                                                 <tr>
+                                                 <th class="modal-title text-right" > تذكرة رقم: </th>
+                                                 <td id="id"></td>   
+                                                 <th class="modal-title">الحالة:</th>
+                                                 <td id="status_ar"></td>
+                                             
                                                 <button type="button" id="closeWindow" class="close"
                                                         data-dismiss="modal"
                                                         aria-hidden="true" onclick="clearr();">
                                                     &times;
                                                 </button>
+                                                </tr>
+                                            </table>
                                             </div>
 
                                             <p>
@@ -262,8 +267,8 @@
 
                                                     <td>
 
-                                                        <div class="btn-group">
-                                                            <select type="button" class="btn btn-danger dropdown-toggle"
+                                                        <div class="dropdown">
+                                                            <select type="button" class="btn dropdown-toggle"
                                                                     data-toggle="dropdown" aria-haspopup="true"
                                                                     aria-expanded="false">
                                                                 <option selected>1</a>
@@ -286,7 +291,7 @@
                                                     <td>
 
                                                         <div class="btn-group">
-                                                            <select type="button" class="btn btn-danger dropdown-toggle"
+                                                            <select type="button" class="btn"
                                                                     data-toggle="dropdown" aria-haspopup="true"
                                                                     aria-expanded="false">
                                                                 <option selected>1</a>
@@ -300,7 +305,7 @@
 
                                                     <td>
                                                         <div class="btn-group">
-                                                            <select type="button" class="btn btn-danger dropdown-toggle"
+                                                            <select type="button" class="btn  dropdown-toggle"
                                                                     data-toggle="dropdown" aria-haspopup="true"
                                                                     aria-expanded="false">
                                                                 <!-- <option id="assigned_company" selected>1</a> -->
@@ -321,7 +326,7 @@
                                                         <img src="" alt="ticket photo" height="100" width="100">
                                                     </td>
                                                 </tr>
-                                                <tr>
+                                                <!-- <tr>
                                                     <td style="text-align:center" colspan="4">
                                                         <a class="collapsee" data-toggle="collapse"
                                                            href="#collapseExample"
@@ -329,22 +334,20 @@
                                                            aria-controls="collapseExample">
                                                         </a>
                                                     </td>
-                                                </tr>
+                                                </tr> -->
                                             </table>
                                             </p>
-                                            <div class="collapse" id="collapseExample">
-                                                <div class="card card-body">
-                                                    <div class="modal-footer">
-                                                        <button class="btn" data-dismiss="modal" aria-hidden="true">
-                                                            Close
-                                                        </button>
-                                                        <input type="button" class="btn btn-default"
-                                                               data-dismiss="modal"
-                                                               value="Cancel">
-                                                        <input type="submit" class="btn btn-info" value="Save">
-                                                    </div>
+                                         
+                                              
+                                                <div class="modal-footer">
+                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                 <button type="button" class="btn btn-primary">Save changes</button>
                                                 </div>
-                                            </div>
+
+
+                                              
+                                                </div>
+                                          
 
 
                                         </div>
