@@ -18,7 +18,11 @@
     <link href="https://fonts.googleapis.com/css?family=Cairo&amp;subset=arabic" rel="stylesheet">
 
     <!-- Styles -->
+    <link href="{{ asset('css/app2.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/material.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+
 
 
 </head>

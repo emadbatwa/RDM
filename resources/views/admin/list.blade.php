@@ -6,23 +6,59 @@
 @section('content')
     <div class="wrapper">
 
-        <nav id="sidebar">
+{{--        <nav id="sidebar">--}}
 
-            <ul class="list-unstyled components">
-                <p>الموقع </p>
+{{--            <ul class="list-unstyled components">--}}
+{{--                <p>الموقع </p>--}}
 
-                <li>
-                    <a href="#">الشركه</a>
-                </li>
+{{--                <li>--}}
+{{--                    <a href="#">الشركه</a>--}}
+{{--                </li>--}}
 
-                <li>
-                    <a href="#">الخريطة</a>
-                </li>
-                <li>
-                    <a href="#">تواصل معنا</a>
-                </li>
-            </ul>
-        </nav>
+{{--                <li>--}}
+{{--                    <a href="#">الخريطة</a>--}}
+{{--                </li>--}}
+{{--                <li>--}}
+{{--                    <a href="#">تواصل معنا</a>--}}
+{{--                </li>--}}
+{{--            </ul>--}}
+{{--        </nav>--}}
+
+        <div class="sidebar" data-color="purple" data-background-color="white" >
+            <!--
+              Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+              Tip 2: you can also add an image using data-image tag
+          -->
+            <div class="logo">
+                <a href="http://gp.test/public/home" class="simple-text logo-normal">
+                    <img src="/images/logo.png" alt="Smiley" height="42" width="42" >
+                </a>
+            </div>
+
+
+            <div class="sidebar-wrapper">
+                <ul class="nav">
+                    <li class="nav-item ">
+                        <a class="nav-link" >
+                            <i class="material-icons">الرئيسية</i>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link">  <!--  need to be  -->
+                            <i class="material-icons">التذاكر</i>
+                        </a>
+                    </li>
+                    <li class="nav-item  fixed-bottom"  >
+                        <a class="nav-link" >
+                            <i class="material-icons">logout</i>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
         <script>
             $(document).on('hidden.bs.modal','#detailsModal', function () {
                 clearr();
@@ -227,13 +263,13 @@
                                         <div class="modal-content">
                                             <div class="modal-header" style="text-align:center">
                                             <table >
-                                              
+
                                                  <tr>
                                                  <th class="modal-title text-right" > تذكرة رقم: </th>
-                                                 <td id="id"></td>   
+                                                 <td id="id"></td>
                                                  <th class="modal-title">الحالة:</th>
                                                  <td id="status_ar"></td>
-                                             
+
                                                 <button type="button" id="closeWindow" class="close"
                                                         data-dismiss="modal"
                                                         aria-hidden="true" onclick="clearr();">
@@ -337,17 +373,17 @@
                                                 </tr> -->
                                             </table>
                                             </p>
-                                         
-                                              
+
+
                                                 <div class="modal-footer">
                                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                  <button type="button" class="btn btn-primary">Save changes</button>
                                                 </div>
 
 
-                                              
+
                                                 </div>
-                                          
+
 
 
                                         </div>
