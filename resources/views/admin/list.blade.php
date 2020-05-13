@@ -6,23 +6,23 @@
 @section('content')
     <div class="wrapper">
 
-        <nav id="sidebar">
+{{--        <nav id="sidebar">--}}
 
-            <ul class="list-unstyled components">
-                <p>الموقع </p>
+{{--            <ul class="list-unstyled components">--}}
+{{--                <p>الموقع </p>--}}
 
-                <li>
-                    <a href="#">الشركه</a>
-                </li>
+{{--                <li>--}}
+{{--                    <a href="#">الشركه</a>--}}
+{{--                </li>--}}
 
-                <li>
-                    <a href="#">الخريطة</a>
-                </li>
-                <li>
-                    <a href="#">تواصل معنا</a>
-                </li>
-            </ul>
-        </nav>
+{{--                <li>--}}
+{{--                    <a href="#">الخريطة</a>--}}
+{{--                </li>--}}
+{{--                <li>--}}
+{{--                    <a href="#">تواصل معنا</a>--}}
+{{--                </li>--}}
+{{--            </ul>--}}
+{{--        </nav>--}}
         <script>
             $(document).on('hidden.bs.modal','#detailsModal', function () {
                 clearr();
@@ -171,7 +171,7 @@
 
                         <div class="">
                             <div class="card-header">
-                                Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
+{{--                                Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>--}}
 
                             <div class="card-body">
                                 <table id="example" class="display" style="width:100%">
