@@ -24,14 +24,38 @@
             </ul>
         </nav>
         <script>
+            $(document).on('hidden.bs.modal','#detailsModal', function () {
+                clearr();
+            });
+            function clearr() {
+                console.log("dd");
+                $('#description').text("");
+                $('#assigned_company').text(""); // @@@@@@@
+                $('#classification_ar').text("");
+                $('#degree_ar').text("");
+                $('#status_ar').text("");
+                $('#created_at').text("");
+                $('#updated_at').text("");
+                $('#id').text("");
+
+                var fixPhotos = document.getElementById('fixPhotos');
+                var problemPhotos = document.getElementById('problemPhotos');
+                for (i = 0; i <= 3; i++) {
+                    problemPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
+                }
+                for (i = 0; i <= 3; i++) {
+                    fixPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
+                }
+            }
+
             $(document).ready(function () {
                 var table = $('#example').DataTable({});
             });
 
 
-            function getid (ele) {
+            function getid(ele) {
                 var id = ele.id;
-                console.log( id );
+                console.log(id);
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -51,9 +75,25 @@
                         $('#created_at').text(data['ticket'].created_at);
                         $('#updated_at').text(data['ticket'].updated_at);
                         $('#id').text(data['ticket'].id);
+                        var photos = data['photos'];
+                        var fixPhotos = document.getElementById('fixPhotos');
+                        var problemPhotos = document.getElementById('problemPhotos');
+                        var childrenCounter = 0;
+                        for (i = 0; i <= photos.length - 1; i++) {
+                            if (photos[i].role_id === 1) {
+                                problemPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
+                            }
+                        }
+                        childrenCounter = 0;
+                        for (i = 0; i <= photos.length - 1; i++) {
+                            if (photos[i].role_id === 3) {
+                                fixPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
+                            }
+                        }
+
                     },
-                    fain: function (data) {
-                        console.log(failed);
+                    fail: function (data) {
+                        console.log('failed');
                     }
                 });
             }
@@ -128,7 +168,7 @@
 
                 <div class="row justify-content-center">
                     <div class="">
-                     
+
                         <div class="">
                             <div class="card-header">
                                 Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
@@ -150,7 +190,7 @@
                                     <!-- data-target="#detailsModal" onclick="location.href=‘ticket/show/{$ticket->id’" -->
                                     @foreach($tickets as $ticket)
                                         <!-- <a href="/ticket/show/{{$ticket['ticket']->id}}"> -->
-                                        <tr class="table-row" id="{{$ticket['ticket']->id-1}}" data-toggle="modal"
+                                        <tr class="table-row" id="{{$ticket['ticket']->id}}" data-toggle="modal"
                                             onclick="getid(this);" data-target="#detailsModal">
                                             <td>{{$ticket['ticket']->id}}</td>
                                             <td>{{$ticket['ticket']->description}}</td>
@@ -180,7 +220,8 @@
                                 </table>
 
 
-                                <div id="detailsModal" class="modal fade bd-example-modal-lg" role="dialog" aria-labelledby="detailsModal"
+                                <div id="detailsModal" class="modal fade bd-example-modal-lg" role="dialog"
+                                     aria-labelledby="detailsModal"
                                      aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
@@ -190,8 +231,9 @@
                                                 <h4 class="modal-title">الحالة:</h4>
                                                 <h4 id="status_ar"></h4>
 
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                        aria-hidden="true">
+                                                <button type="button" id="closeWindow" class="close"
+                                                        data-dismiss="modal"
+                                                        aria-hidden="true" onclick="clearr();">
                                                     &times;
                                                 </button>
                                             </div>
@@ -206,24 +248,18 @@
                                                     <th>صور البلاغ</th>
 
 
-                                                    <td>
+                                                    <td id="problemPhotos">
+                                                        <img src="" alt="ticket photo" height="100" width="100">
+                                                        <img src="" alt="ticket photo" height="100" width="100">
+                                                        <img src="" alt="ticket photo" height="100" width="100">
+                                                        <img src="" alt="ticket photo" height="100" width="100">
+                                                    </td>
 
-                                                    @foreach($ticket['photos'] as $photo)
-                                                     <!-- if role id 1 -> problem photo else if role id is 3  -> fix photo -->
-                                                    @if($photo->role_id == 1)
-                                                
-                                                     <img src="http://www.ai-rdm.website/storage/photos/{{$photo->photo_name}}" alt="ticket photo" height="100" width="100">                                             
-                                                    @endif
-
-                                                    @endforeach
-                                                     </td>   
-                                              
-                                              
 
                                                 </tr>
                                                 <tr>
                                                     <th>التصنيف:</th>
-                                                    
+
                                                     <td>
 
                                                         <div class="btn-group">
@@ -241,12 +277,12 @@
                                                     <td id="degree_ar"></td>
                                                     <th>الوصف</th>
                                                     <td id="description"></td>
-                                                 
-                                                    
+
+
                                                 </tr>
                                                 <tr>
-                                                  <th>التصنيف:</th>
-                                                    
+                                                    <th>التصنيف:</th>
+
                                                     <td>
 
                                                         <div class="btn-group">
@@ -261,32 +297,29 @@
 
                                                     </td>
                                                     <th>الشركة:</th>
-                                                    
+
                                                     <td>
                                                         <div class="btn-group">
                                                             <select type="button" class="btn btn-danger dropdown-toggle"
                                                                     data-toggle="dropdown" aria-haspopup="true"
                                                                     aria-expanded="false">
                                                                 <!-- <option id="assigned_company" selected>1</a> -->
-                                                                    <!-- @@@@@@@ -->
-                                                                    @foreach($companies as $company)
-                                                                    <option value="{{$company->id}}">{{$company->name}}</option>
-                                                                    @endforeach
+                                                                <!-- @@@@@@@ -->
+                                                                @foreach($companies as $company)
+                                                                    <option
+                                                                        value="{{$company->id}}">{{$company->name}}</option>
+                                                                @endforeach
 
                                                             </select>
                                                         </div>
                                                     </td>
                                                     <th>صور الاصلاح</th>
-                                                    <td>
-                                                    @foreach($ticket['photos'] as $photo)
-                                                    @if($photo->role_id != 1)
-                                                
-                                                     <img src="http://www.ai-rdm.website/storage/photos/{{$photo->photo_name}}" alt="ticket photo" height="100" width="100">                                                 
-                                                
-                                                    @endif
-
-                                                    @endforeach
-                                                     </td>
+                                                    <td id="fixPhotos">
+                                                        <img src="" alt="ticket photo" height="100" width="100">
+                                                        <img src="" alt="ticket photo" height="100" width="100">
+                                                        <img src="" alt="ticket photo" height="100" width="100">
+                                                        <img src="" alt="ticket photo" height="100" width="100">
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="text-align:center" colspan="4">
