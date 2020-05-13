@@ -332,9 +332,10 @@
                                                             <select type="button" class="btn"
                                                                     data-toggle="dropdown" aria-haspopup="true"
                                                                     aria-expanded="false">
-                                                                <option selected>1</a>
-                                                                <option>2</a>
-                                                                <option>3</a>
+                                                                @foreach($classifications as $classification)
+                                                                    <option
+                                                                        value="{{$classification->id}}">{{$classification->classification_ar}}</option>
+                                                                @endforeach
                                                             </select>
                                                         </div>
 
