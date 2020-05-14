@@ -38,6 +38,7 @@ Route::group([
     Route::get('/map', 'TicketController@map');
     Route::post('/show', 'TicketController@show')->name('ticket.show');
     Route::post('/update', 'TicketController@update')->name('ticket.update');
+    Route::post('/updateClassification', 'TicketController@updateClassification')->name('ticket.updateClassification');
 });
 Route::group([
     'prefix' => 'user',

@@ -26,7 +26,7 @@
 
             <div class="sidebar-wrapper w">
                 <ul class="nav ">
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link" href="#map">
                             <i class="material-icons">map</i>
                             <p>الخريطة</p>
@@ -60,124 +60,21 @@
                 var tickets = @json($tickets);
                 console.log(tickets);
                 $('#tableBody').append(tickets);
-                window.table = $('#example').DataTable({});
-            });
-
-            $(document).on('hidden.bs.modal', '#detailsModal', function () {
-                clearr();
-            });
-
-            function clearr() {
-                console.log("dd");
-                $('#description').text("");
-                $('#assigned_company').text(""); // @@@@@@@
-                $('#classification_ar').text("");
-                $('#degree_ar').text("");
-                $('#status_ar').text("");
-                $('#created_at').text("");
-                $('#updated_at').text("");
-                $('#id').text("");
-
-                var fixPhotos = document.getElementById('fixPhotos');
-                var problemPhotos = document.getElementById('problemPhotos');
-                for (i = 0; i <= 3; i++) {
-                    problemPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
-                }
-                for (i = 0; i <= 3; i++) {
-                    fixPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
-                }
-            }
-
-            function getid(ele) {
-                window.id = ele.id;
-                console.log(id);
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    type: 'post',
-                    url: '{{ route('ticket.show') }}',
-                    data: {ticketId: window.id},
-                    success: function (data) {
-                        console.log(data);
-                        $('#description').text(data['ticket'].description);
-                        $('#assigned_company').text(data['assignedCompany'].name);
-                        $('#classification_ar').text(data['ticket'].classification_ar);
-                        $('#degree_ar').text(data['ticket'].degree_ar);
-                        $('#status_ar').text(data['ticket'].status_ar);
-                        $('#created_at').text(data['ticket'].created_at);
-                        $('#updated_at').text(data['ticket'].updated_at);
-                        $('#id').text(data['ticket'].id);
-                        var photos = data['photos'];
-                        var fixPhotos = document.getElementById('fixPhotos');
-                        var problemPhotos = document.getElementById('problemPhotos');
-                        var childrenCounter = 0;
-                        for (i = 0; i <= photos.length - 1; i++) {
-                            if (photos[i].role_id === 1) {
-                                problemPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
-                            }
+                window.table = $('#example').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ تذكرة لكل صفحة",
+                        "zeroRecords": "لا توجد تذاكر",
+                        "info": "عرض صفحة _PAGE_ من _PAGES_",
+                        "infoEmpty": "لا يوجد تذاكر",
+                        "infoFiltered": "(ترتيب من _MAX_ كل التذاكر)",
+                        "search": "البحث:",
+                        "paginate": {
+                            "previous": "السابق",
+                            "next": "التالي",
                         }
-                        childrenCounter = 0;
-                        for (i = 0; i <= photos.length - 1; i++) {
-                            if (photos[i].role_id === 3) {
-                                fixPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
-                            }
-                        }
-
-                    },
-                    error: function (data) {
-                        console.log('failed');
                     }
                 });
-            }
-
-            function updateTicket() {
-                console.log(window.id);
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    type: 'post',
-                    url: '{{ route('ticket.update') }}',
-                    data: {ticket_id: 39, status: 'ASSIGNED', company_id: 2},
-                    success: function (data) {
-                        $('#detailsModal').modal('hide');
-                        updateTable();
-                    },
-                    error: function (data) {
-                        $('#detailsModal').modal('hide');
-                        console.log('failed');
-                    }
-                });
-            }
-
-            function updateTable() {
-                console.log(window.id);
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    type: 'get',
-                    url: '{{ route('ticket.list') }}',
-                    data: {},
-                    success: function (data) {
-                        window.table.destroy();
-                        $('#tableBody').children().remove();
-                        $('#tableBody').append(data);
-                        window.table = $('#example').DataTable({});
-                    },
-                    error: function (data) {
-                        console.log('failed');
-                    }
-                });
-            }
-
+            });
         </script>
         <div class="main-panel">
             <!-- heatMap -->
@@ -252,9 +149,6 @@
                         <div class="">
                             <div class="card-header" id="table">
                                 Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
-                            @if(\Session::has('message'))
-                                <p>{{\Session::get('message')}}</p>
-                            @endif
 
                             <div class="card-body">
                                 <table id="example" class="display " style="width:100%">
@@ -334,16 +228,15 @@
 
                                                     <td>
 
-                                                        <div class="dropdown">
-                                                            <select type="button" class="btn dropdown-toggle"
-                                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                        <div class="btn-group">
+                                                            <select id="classifications" type="button" class="btn"
+                                                                    aria-haspopup="true"
                                                                     aria-expanded="false">
-                                                                <option selected>1</option>
-                                                                <option>2</option>
-                                                                <option>3</option>
                                                             </select>
                                                         </div>
-
+                                                        <button type="button" class="btn btn-primary" onclick="updateClassification();">
+                                                            تغيير التصنيف
+                                                        </button>
                                                     </td>
                                                     <th>حجم الضرر:</th>
                                                     <td id="degree_ar"></td>
@@ -353,45 +246,38 @@
 
                                                 </tr>
                                                 <tr>
-                                                    <th>التصنيف:</th>
 
-                                                    <td>
+                                                    <th>اسم المبلغ:</th>
+                                                    <td id="username"></td>
+                                                    <th>رقم المبلغ:</th>
+                                                    <td id="userphone"></td>
 
-                                                        <div class="btn-group">
-                                                            <select type="button" class="btn"
-                                                                    data-toggle="dropdown" aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                                @foreach($classifications as $classification)
-                                                                    <option
-                                                                        value="{{$classification->id}}">{{$classification->classification_ar}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-
-                                                    </td>
                                                     <th>الشركة:</th>
 
                                                     <td>
                                                         <div class="btn-group">
-                                                            <select type="button" class="btn  dropdown-toggle"
-                                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                            <select id="companies" type="button"
+                                                                    class="btn  dropdown-toggle"
+                                                                    aria-haspopup="true"
                                                                     aria-expanded="false">
                                                                 <!-- <option id="assigned_company" selected>1</a> -->
                                                                 <!-- @@@@@@@ -->
-                                                                @foreach($companies as $company)
-                                                                    <option
-                                                                        value="{{$company->id}}">{{$company->name}}</option>
-                                                                @endforeach
-
                                                             </select>
                                                         </div>
+                                                        <button type="button" class="btn btn-primary" onclick="assignTicket();">
+                                                            اسناد
+                                                        </button>
                                                     </td>
                                                     <th>صور الاصلاح</th>
                                                     <td id="fixPhotos">
-                                                        <img src="{{url('/images/defaultPhoto.png')}}" alt="ticket photo" height="100" width="100">
-                                                        <img src="{{url('/images/defaultPhoto.png')}}" alt="ticket photo" height="100" width="100">
-                                                        <img src="{{url('/images/defaultPhoto.png')}}" alt="ticket photo" height="100" width="100">
-                                                        <img src="{{url('/images/defaultPhoto.png')}}" alt="ticket photo" height="100" width="100">
+                                                        <img src="{{url('/images/defaultPhoto.png')}}"
+                                                             alt="ticket photo" height="100" width="100">
+                                                        <img src="{{url('/images/defaultPhoto.png')}}"
+                                                             alt="ticket photo" height="100" width="100">
+                                                        <img src="{{url('/images/defaultPhoto.png')}}"
+                                                             alt="ticket photo" height="100" width="100">
+                                                        <img src="{{url('/images/defaultPhoto.png')}}"
+                                                             alt="ticket photo" height="100" width="100">
                                                     </td>
                                                 </tr>
                                                 <!-- <tr>
@@ -406,11 +292,11 @@
                                             </table>
 
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                                    Close
+                                                <button type="button" class="btn btn-primary" onclick="closeTicket();">
+                                                    اغلاق
                                                 </button>
-                                                <button type="button" class="btn btn-primary" onclick="updateTicket();">
-                                                    Save changes
+                                                <button type="button" class="btn btn-primary" onclick="excludeTicket();">
+                                                    استبعاد
                                                 </button>
                                             </div>
                                         </div>
@@ -423,5 +309,238 @@
             </div>
         </div>
     </div>
+    <script>
+
+        $(document).on('hidden.bs.modal', '#detailsModal', function () {
+            clearr();
+        });
+
+        function clearr() {
+            console.log("dd");
+            $('#description').text("");
+            $('#assigned_company').text(""); // @@@@@@@
+            $('#classification_ar').text("");
+            $('#degree_ar').text("");
+            $('#status_ar').text("");
+            $('#created_at').text("");
+            $('#updated_at').text("");
+            $('#id').text("");
+            $('#classifications').children().remove();
+            $('#companies').children().remove();
+
+            var fixPhotos = document.getElementById('fixPhotos');
+            var problemPhotos = document.getElementById('problemPhotos');
+            for (i = 0; i <= 3; i++) {
+                problemPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
+            }
+            for (i = 0; i <= 3; i++) {
+                fixPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
+            }
+        }
+
+        function getid(ele) {
+            window.id = ele.id;
+            console.log(id);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ticket.show') }}',
+                data: {ticketId: window.id},
+                success: function (data) {
+                    console.log(data);
+                    $('#description').text(data['ticket']['ticket'].description);
+                    $('#assigned_company').text(data['ticket']['assignedCompany'].name);
+                    $('#classification_ar').text(data['ticket']['ticket'].classification_ar);
+                    if (data['ticket']['ticket'].degree_ar === null) {
+                        $('#degree_ar').text('لا يوجد');
+                    } else {
+                        $('#degree_ar').text(data['ticket']['ticket'].degree_ar);
+                    }
+                    $('#status_ar').text(data['ticket']['ticket'].status_ar);
+                    $('#username').text(data['ticket']['ticket'].userName);
+                    $('#userphone').text(data['ticket']['ticket'].userPhone);
+                    $('#created_at').text(data['ticket']['ticket'].created_at);
+                    $('#updated_at').text(data['ticket']['ticket'].updated_at);
+                    $('#id').text(window.id);
+                    var classifications = '';
+                    for (i = 0; i <= data['classifications'].length - 1; i++) {
+                        if (data['classifications'][i].classification_ar === data['ticket']['ticket'].classification_ar) {
+                            classifications += '<option selected value="' + data['classifications'][i].id + '">' + data['classifications'][i].classification_ar + '</option>';
+                        } else {
+                            classifications += '<option value="' + data['classifications'][i].id + '">' + data['classifications'][i].classification_ar + '</option>';
+                        }
+                        var companies = '';
+
+                    }
+                    console.log(data['ticket']['assignedCompany'].id);
+                    if (data['ticket']['assignedCompany'].id === undefined) {
+                        companies += '<option selected value="">لا يوجد</option>';
+                        for (i = 0; i <= data['companies'].length - 1; i++) {
+                            companies += '<option value="' + data['companies'][i].id + '">' + data['companies'][i].name + '</option>';
+                        }
+                    } else {
+                        for (i = 0; i <= data['companies'].length - 1; i++) {
+                            if (data['companies'][i].id === data['ticket']['assignedCompany'].id) {
+                                companies += '<option selected value="' + data['companies'][i].id + '">' + data['companies'][i].name + '</option>';
+                            } else {
+                                companies += '<option value="' + data['companies'][i].id + '">' + data['companies'][i].name + '</option>';
+                            }
+                        }
+                    }
+                    $('#classifications').append(classifications);
+                    $('#companies').append(companies);
+                    var photos = data['ticket']['photos'];
+                    var fixPhotos = document.getElementById('fixPhotos');
+                    var problemPhotos = document.getElementById('problemPhotos');
+                    var childrenCounter = 0;
+                    for (i = 0; i <= photos.length - 1; i++) {
+                        if (photos[i].role_id === 1) {
+                            problemPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
+                        }
+                    }
+                    childrenCounter = 0;
+                    for (i = 0; i <= photos.length - 1; i++) {
+                        if (photos[i].role_id === 3) {
+                            fixPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
+                        }
+                    }
+
+                },
+                error: function (data) {
+                    console.log('failed');
+                }
+            });
+        }
+
+        function updateTable() {
+            console.log(window.id);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: 'get',
+                url: '{{ route('ticket.list') }}',
+                data: {},
+                success: function (data) {
+                    window.table.destroy();
+                    $('#tableBody').children().remove();
+                    $('#tableBody').append(data);
+                    window.table = $('#example').DataTable({
+                        "language": {
+                            "lengthMenu": "عرض _MENU_ تذكرة لكل صفحة",
+                            "zeroRecords": "لا توجد تذاكر",
+                            "info": "عرض صفحة _PAGE_ من _PAGES_",
+                            "infoEmpty": "لا يوجد تذاكر",
+                            "infoFiltered": "(ترتيب من _MAX_ كل التذاكر)",
+                            "search": "البحث:",
+                            "paginate": {
+                                "previous": "السابق",
+                                "next": "التالي",
+                            }
+                        }
+                    });
+                },
+                error: function (data) {
+                    console.log('failed');
+                }
+            });
+        }
+        function updateClassification() {
+           var classification = $( "#classifications" ).val();
+           var ticketId = window.id;
+            console.log(classification);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ticket.updateClassification') }}',
+                data: {ticket_id: ticketId, classification: classification},
+                success: function (data) {
+                    console.log('okay');
+                },
+                error: function (data) {
+                    console.log('failed');
+                }
+            });
+        }
+        function assignTicket() {
+            var classification = $( "#classifications" ).val();
+            var ticketId = window.id;
+            var company = $( "#companies" ).val();
+            console.log(classification);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ticket.update') }}',
+                data: {ticket_id: ticketId, classification: classification, company_id:company, status: 'ASSIGNED'},
+                success: function (data) {
+                    console.log('okay');
+                    $('#detailsModal').modal('hide');
+                    updateTable();
+                },
+                error: function (data) {
+                    console.log('failed');
+                }
+            });
+        }
+
+        function closeTicket() {
+            var ticketId = window.id;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ticket.update') }}',
+                data: {ticket_id: ticketId, status: 'CLOSED'},
+                success: function (data) {
+                    console.log('okay');
+                    $('#detailsModal').modal('hide');
+                    updateTable();
+                },
+                error: function (data) {
+                    console.log('failed');
+                }
+            });
+        }
+
+        function excludeTicket() {
+            var ticketId = window.id;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: 'post',
+                url: '{{ route('ticket.update') }}',
+                data: {ticket_id: ticketId, status: 'EXCLUDED'},
+                success: function (data) {
+                    console.log('okay');
+                    $('#detailsModal').modal('hide');
+                    updateTable();
+                },
+                error: function (data) {
+                    console.log('failed');
+                }
+            });
+        }
+
+    </script>
 @endsection
 </html>

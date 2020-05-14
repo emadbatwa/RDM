@@ -50,7 +50,20 @@
     </div>
     <script>
         $(document).ready(function () {
-            var table = $('#example').DataTable({});
+            var table = $('#example').DataTable({
+                "language": {
+                    "lengthMenu": "عرض _MENU_ تذكرة لكل صفحة",
+                    "zeroRecords": "لا توجد تذاكر",
+                    "info": "عرض صفحة _PAGE_ من _PAGES_",
+                    "infoEmpty": "لا يوجد تذاكر",
+                    "infoFiltered": "(ترتيب من _MAX_ كل التذاكر)",
+                    "search": "البحث:",
+                    "paginate": {
+                        "previous": "السابق",
+                        "next": "التالي",
+                    }
+                }
+            });
         });
 
 

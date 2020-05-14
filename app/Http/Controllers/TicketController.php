@@ -96,9 +96,13 @@ class TicketController extends Controller
                                             onclick="getid(this);" data-target="#detailsModal">
                                             <td>' . $ticket['ticket']->id . '</td>
                                             <td>' . $ticket['ticket']->description . '</td>
-                                            <td>' . $ticket['ticket']->status_ar . '</td>
-                                            <td>' . $ticket['ticket']->degree_ar . '</td>
-                                            <td>' . $ticket['ticket']->classification_ar . '</td>';
+                                            <td>' . $ticket['ticket']->status_ar . '</td>';
+            if ($ticket['ticket']->degree_ar != null) {
+                $tickets = $tickets . '<td>' . $ticket['ticket']->degree_ar . '</td>';
+            } else {
+                $tickets = $tickets . '<td>لا يوجد</td>';
+            }
+            $tickets = $tickets . '<td>' . $ticket['ticket']->classification_ar . '</td>';
             if ($ticket['assignedCompany'] != null) {
                 $tickets = $tickets . '<td>' . $ticket['assignedCompany']->name . '</td>';
             } else {
@@ -109,18 +113,16 @@ class TicketController extends Controller
         /*$finalList = $this->paginate($finalList);
         $finalList->withPath('/ticket/list');*/
         if (\Auth::user()->role_id == 2) {
-            if($request->ajax()){
+            if ($request->ajax()) {
                 return response()->json($tickets);
             }
             $statistics['open'] = Ticket::where('status_id', '=', 1)->count();
             $statistics['closed'] = Ticket::where('status_id', '=', 6)->count();
             $statistics['total'] = Ticket::count();
-            $companies = User::where('role_id', '=', 3)->select('id', 'name', 'phone')->get();
-            $classifications = Classification::select('id', 'classification_ar')->get();
             // return $finalList;
-            return view('admin.list')->with(['tickets' => $tickets, 'statistics' => $statistics, 'companies' => $companies, 'classifications' => $classifications]);
+            return view('admin.list')->with(['tickets' => $tickets, 'statistics' => $statistics]);
         } elseif (\Auth::user()->role_id == 3) {
-            return view('company.list')->with(['tickets' => $tickets]);
+            return view('company.list')->with(['tickets' => $finalList]);
         }
         // $finalList = datatables($finalList)->toJson();
     }
@@ -221,9 +223,10 @@ class TicketController extends Controller
             if ($wantedTicket != null && ($wantedTicket->user_id == $user->id || $wantedTicket->assigned_company == $user->id || $wantedTicket->assigned_employee == $user->id || $user->role_id == 2)) {
                 $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
                     ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
+                    ->join('users', 'users.id', '=', 'tickets.user_id')
                     ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
                     ->where('tickets.id', '=', $wantedTicket->id)
-                    ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at')
+                    ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'users.name as userName', 'users.phone as userPhone', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at')
                     ->first();
 
                 $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
@@ -254,7 +257,9 @@ class TicketController extends Controller
                 ];
                 if (\Auth::user()->role_id == 2) {
                     //return view('admin.show')->with(['ticket' => $ticket]);
-                    return response()->json($ticket);
+                    $companies = User::where('role_id', '=', 3)->select('id', 'name', 'phone')->get();
+                    $classifications = Classification::select('id', 'classification_ar')->get();
+                    return response()->json(['ticket' => $ticket, 'companies' => $companies, 'classifications' => $classifications]);
                 } elseif (\Auth::user()->role_id == 3) {
                     //return view('company.show')->with(['ticket' => $ticket]);
                     return response()->json($ticket);
@@ -303,9 +308,9 @@ class TicketController extends Controller
                             'ticket_id' => $ticket->id,
                         ]);
                     }
-                    return response()->json(['message' => 'Successfully updated ticket'], 200);
+                    return response()->json(['message' => 'تم اسناد التذكرة'], 200);
                 } else {
-                    return response()->json(['message' => 'either the user is not admin, or the ticket already assigned'], 400);
+                    return response()->json(['message' => 'لم ينجح الاسناد'], 400);
                 }
             }
 
@@ -361,9 +366,9 @@ class TicketController extends Controller
                 if ($ticket->status->id == 5) {
                     $ticket->update(['status_id' => 6]);
 
-                    return redirect()->back()->with(['message' => 'Successfully updated ticket']);
+                    return response()->json(['message' => 'تم اغلاق التذكرة'], 200);
                 } else {
-                    return redirect()->back()->with(['message' => 'either the user is not admin, or the ticket already closed']);
+                    return response()->json(['message' => 'لم يتم اغلاق التذكرة'], 400);
                 }
             }
 
@@ -374,12 +379,31 @@ class TicketController extends Controller
                 if ($ticket->status->id == 1) {
                     $ticket->update(['status_id' => 7]);
 
-                    return redirect()->back()->with(['message' => 'Successfully updated ticket']);
+                    return response()->json(['message' => 'تم استبعاد التذكرة'], 200);
                 } else {
-                    return redirect()->back()->with(['message' => 'either the user is not admin, or the ticket already excluded']);
+                    return response()->json(['message' => 'لم يتم استبعاد التذكرة'], 400);
                 }
             }
-            return redirect()->back()->with(['message' => 'Something went wrong!!']);
+            return response()->json(['message' => 'حصلت مشكلة'], 400);
+        }
+    }
+
+    public function updateClassification(Request $request)
+    {
+        if ($request->ajax()) {
+            $request->validate([
+                'ticket_id' => 'required | numeric | exists:tickets,id',
+                'classification' => 'required | numeric | exists:classifications,id'
+            ]);
+            $ticket = Ticket::find($request->ticket_id);
+
+            if (\Auth::user()->role_id == 2 && $ticket->status_id == 1) {
+                $classification = $request->get('classification');
+                $ticket->update(['classification_id'=> $classification]);
+                return response()->json(['message' => 'تم تحديث تصنيف التذكرة'], 200);
+            } else {
+                return response()->json(['message' => 'يوجد خطأ في الارسال'], 400);
+            }
         }
     }
 

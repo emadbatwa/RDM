@@ -51,9 +51,8 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <form method="post" action="" autocomplete="off" class="form-horizontal">
-                                    <!-- @csrf
-                                    @method('post') -->
+                                    <form method="post" action="{{url('/register')}}" autocomplete="off" class="form-horizontal">
+                                     @csrf
                                         <div class="card ">
                                             <div class="card-header card-header-primary">
                                                 <h4 class="card-title">{{ __('اضافة موظف') }}</h4>
