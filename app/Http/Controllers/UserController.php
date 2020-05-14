@@ -19,6 +19,16 @@ class UserController extends Controller
         }
     }
 
+    public function add(Request $request)
+    {
+        if (\Auth::user()->role_id == 3) {
+            $employees = User::where('company', '=', \Auth::user()->id)->get();
+            return view('company.add')->with(['employees' => $employees]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
     public function update(Request $request)
     {
         $request->validate([

@@ -3,12 +3,6 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                @if($employees ?? '')
-                    @foreach($employees as $employee)
-                        <p>{{$employee->id}}</p>
-                        <br>
-                    @endforeach
-                @endif
                 <div class="content">
                     <div class="container-fluid">
                         <div class="row">
@@ -21,9 +15,7 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-12 text-right">
-                                                <a href="http://gp.test/user/create"
-                                                   class="btn btn-sm btn-primary">إضافة
-                                                    موظف</a>
+                                                <button onclick="location.href='{{ url('user/add') }}'" class="btn btn-sm btn-primary">إضافة موظف</button>
                                             </div>
                                         </div>
                                         <br/>
@@ -47,6 +39,18 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr>
+                                                @foreach($employees as $employee)
+                                                <tr>
+                                                <td>
+                                                {{$employee->name}}
+                                                </td>
+                                                <td>
+                                                {{$employee->email}}
+                                                 </td>
+                                                 <td>
+                                                 {{$employee->created_at}}
+                                                 </td>
+                                                <!-- <tr>
                                                     <td>
                                                         mohammed
                                                     </td>
@@ -55,7 +59,7 @@
                                                     </td>
                                                     <td>
                                                         2020-03-04
-                                                    </td>
+                                                    </td> -->
                                                     <td class="td-actions text-right">
                                                         <a rel="tooltip" class="btn btn-success btn-link"
                                                            href="http://gp.test/profile" data-original-title=""
@@ -65,6 +69,8 @@
                                                         </a>
                                                     </td>
                                                 </tr>
+                                                @endforeach
+
                                                 </tbody>
                                             </table>
                                         </div>
