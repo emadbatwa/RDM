@@ -6,25 +6,25 @@
 @section('content')
     <div class="wrapper">
 
-{{--        <nav id="sidebar">--}}
+        {{--        <nav id="sidebar">--}}
 
-{{--            <ul class="list-unstyled components">--}}
-{{--                <p>الموقع </p>--}}
+        {{--            <ul class="list-unstyled components">--}}
+        {{--                <p>الموقع </p>--}}
 
-{{--                <li>--}}
-{{--                    <a href="#">الشركه</a>--}}
-{{--                </li>--}}
+        {{--                <li>--}}
+        {{--                    <a href="#">الشركه</a>--}}
+        {{--                </li>--}}
 
-{{--                <li>--}}
-{{--                    <a href="#">الخريطة</a>--}}
-{{--                </li>--}}
-{{--                <li>--}}
-{{--                    <a href="#">تواصل معنا</a>--}}
-{{--                </li>--}}
-{{--            </ul>--}}
-{{--        </nav>--}}
+        {{--                <li>--}}
+        {{--                    <a href="#">الخريطة</a>--}}
+        {{--                </li>--}}
+        {{--                <li>--}}
+        {{--                    <a href="#">تواصل معنا</a>--}}
+        {{--                </li>--}}
+        {{--            </ul>--}}
+        {{--        </nav>--}}
 
-        <div class="sidebar" data-color="purple" data-background-color="white" >
+        <div class="sidebar" data-color="purple" data-background-color="white">
             <!--
               Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
@@ -32,7 +32,7 @@
           -->
             <div class="logo">
                 <a href="http://gp.test/public/home" class="simple-text logo-normal">
-                    <img src="/images/logo.png" alt="Smiley" height="42" width="42" >
+                    <img src="/images/logo.png" alt="Smiley" height="42" width="42">
                 </a>
             </div>
 
@@ -40,7 +40,7 @@
             <div class="sidebar-wrapper">
                 <ul class="nav">
                     <li class="nav-item ">
-                        <a class="nav-link" >
+                        <a class="nav-link">
                             <i class="material-icons">الرئيسية</i>
                         </a>
                     </li>
@@ -49,8 +49,8 @@
                             <i class="material-icons">التذاكر</i>
                         </a>
                     </li>
-                    <li class="nav-item  fixed-bottom"  >
-                        <a class="nav-link" >
+                    <li class="nav-item  fixed-bottom">
+                        <a class="nav-link">
                             <i class="material-icons">logout</i>
                         </a>
                     </li>
@@ -60,9 +60,17 @@
         </div>
 
         <script>
-            $(document).on('hidden.bs.modal','#detailsModal', function () {
+            $(document).ready(function () {
+                var tickets = @json($tickets);
+                console.log(tickets);
+                $('#tableBody').append(tickets);
+                window.table = $('#example').DataTable({});
+            });
+
+            $(document).on('hidden.bs.modal', '#detailsModal', function () {
                 clearr();
             });
+
             function clearr() {
                 console.log("dd");
                 $('#description').text("");
@@ -84,13 +92,8 @@
                 }
             }
 
-            $(document).ready(function () {
-                var table = $('#example').DataTable({});
-            });
-
-
             function getid(ele) {
-                var id = ele.id;
+                window.id = ele.id;
                 console.log(id);
                 $.ajaxSetup({
                     headers: {
@@ -100,7 +103,7 @@
                 $.ajax({
                     type: 'post',
                     url: '{{ route('ticket.show') }}',
-                    data: {ticketId: id},
+                    data: {ticketId: window.id},
                     success: function (data) {
                         console.log(data);
                         $('#description').text(data['ticket'].description);
@@ -128,7 +131,52 @@
                         }
 
                     },
-                    fail: function (data) {
+                    error: function (data) {
+                        console.log('failed');
+                    }
+                });
+            }
+
+            function updateTicket() {
+                console.log(window.id);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: 'post',
+                    url: '{{ route('ticket.update') }}',
+                    data: {ticket_id: 39, status: 'ASSIGNED', company_id: 2},
+                    success: function (data) {
+                        $('#detailsModal').modal('hide');
+                        updateTable();
+                    },
+                    error: function (data) {
+                        $('#detailsModal').modal('hide');
+                        console.log('failed');
+                    }
+                });
+            }
+
+            function updateTable() {
+                console.log(window.id);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: 'get',
+                    url: '{{ route('ticket.list') }}',
+                    data: {},
+                    success: function (data) {
+                        window.table.destroy();
+                        $('#tableBody').children().remove();
+                        $('#tableBody').append(data);
+                        window.table = $('#example').DataTable({});
+                    },
+                    error: function (data) {
                         console.log('failed');
                     }
                 });
@@ -208,6 +256,9 @@
                         <div class="">
                             <div class="card-header">
                                 Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
+                            @if(\Session::has('message'))
+                                <p>{{\Session::get('message')}}</p>
+                            @endif
 
                             <div class="card-body">
                                 <table id="example" class="display" style="width:100%">
@@ -222,25 +273,9 @@
                                         <th>تاريخ الإنشاء</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="tableBody">
                                     <!-- data-target="#detailsModal" onclick="location.href=‘ticket/show/{$ticket->id’" -->
-                                    @foreach($tickets as $ticket)
-                                        <!-- <a href="/ticket/show/{{$ticket['ticket']->id}}"> -->
-                                        <tr class="table-row" id="{{$ticket['ticket']->id}}" data-toggle="modal"
-                                            onclick="getid(this);" data-target="#detailsModal">
-                                            <td>{{$ticket['ticket']->id}}</td>
-                                            <td>{{$ticket['ticket']->description}}</td>
-                                            <td>{{$ticket['ticket']->status_ar}}</td>
-                                            <td>{{$ticket['ticket']->degree_ar}}</td>
-                                            <td>{{$ticket['ticket']->classification_ar}}</td>
-                                            @if($ticket['assignedCompany'] != null)
-                                                <td>{{$ticket['assignedCompany']->name}}</td>
-                                            @else
-                                                <td>لا يوجد</td>
-                                            @endif
-                                            <td>{{$ticket['ticket']->created_at}}</td>
-                                        </tr>
-                                    @endforeach
+
                                     </tbody>
                                     <tfoot>
                                     <tr>
@@ -262,21 +297,21 @@
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header" style="text-align:center">
-                                            <table >
+                                                <table>
 
-                                                 <tr>
-                                                 <th class="modal-title text-right" > تذكرة رقم: </th>
-                                                 <td id="id"></td>
-                                                 <th class="modal-title">الحالة:</th>
-                                                 <td id="status_ar"></td>
+                                                    <tr>
+                                                        <th class="modal-title text-right"> تذكرة رقم:</th>
+                                                        <td id="id"></td>
+                                                        <th class="modal-title">الحالة:</th>
+                                                        <td id="status_ar"></td>
 
-                                                <button type="button" id="closeWindow" class="close"
-                                                        data-dismiss="modal"
-                                                        aria-hidden="true" onclick="clearr();">
-                                                    &times;
-                                                </button>
-                                                </tr>
-                                            </table>
+                                                        <button type="button" id="closeWindow" class="close"
+                                                                data-dismiss="modal"
+                                                                aria-hidden="true">
+                                                            &times;
+                                                        </button>
+                                                    </tr>
+                                                </table>
                                             </div>
 
                                             <p>
@@ -307,9 +342,9 @@
                                                             <select type="button" class="btn dropdown-toggle"
                                                                     data-toggle="dropdown" aria-haspopup="true"
                                                                     aria-expanded="false">
-                                                                <option selected>1</a>
-                                                                <option>2</a>
-                                                                <option>3</a>
+                                                                <option selected>1</option>
+                                                                <option>2</option>
+                                                                <option>3</option>
                                                             </select>
                                                         </div>
 
@@ -357,10 +392,10 @@
                                                     </td>
                                                     <th>صور الاصلاح</th>
                                                     <td id="fixPhotos">
-                                                        <img src="" alt="ticket photo" height="100" width="100">
-                                                        <img src="" alt="ticket photo" height="100" width="100">
-                                                        <img src="" alt="ticket photo" height="100" width="100">
-                                                        <img src="" alt="ticket photo" height="100" width="100">
+                                                        <img src="{{url('/images/defaultPhoto.png')}}" alt="ticket photo" height="100" width="100">
+                                                        <img src="{{url('/images/defaultPhoto.png')}}" alt="ticket photo" height="100" width="100">
+                                                        <img src="{{url('/images/defaultPhoto.png')}}" alt="ticket photo" height="100" width="100">
+                                                        <img src="{{url('/images/defaultPhoto.png')}}" alt="ticket photo" height="100" width="100">
                                                     </td>
                                                 </tr>
                                                 <!-- <tr>
@@ -373,20 +408,15 @@
                                                     </td>
                                                 </tr> -->
                                             </table>
-                                            </p>
 
-
-                                                <div class="modal-footer">
-                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                 <button type="button" class="btn btn-primary">Save changes</button>
-                                                </div>
-
-
-
-                                                </div>
-
-
-
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="button" class="btn btn-primary" onclick="updateTicket();">
+                                                    Save changes
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

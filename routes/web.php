@@ -34,10 +34,10 @@ Route::group([
     'prefix' => 'ticket',
     'middleware' => 'auth',
 ], function () {
-    Route::get('/list', 'TicketController@list');
+    Route::get('/list', 'TicketController@list')->name('ticket.list');
     Route::get('/map', 'TicketController@map');
     Route::post('/show', 'TicketController@show')->name('ticket.show');
-    Route::post('/update', 'TicketController@update');
+    Route::post('/update', 'TicketController@update')->name('ticket.update');
 });
 Route::group([
     'prefix' => 'user',

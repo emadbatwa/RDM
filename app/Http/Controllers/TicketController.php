@@ -12,6 +12,7 @@ use App\TicketHistory;
 use App\User;
 use App\UserRating;
 use GuzzleHttp\Client as GuzzleClient;
+use http\Env\Response;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Location;
@@ -89,18 +90,37 @@ class TicketController extends Controller
             }
 
         }
+        $tickets = '';
+        foreach ($finalList as $ticket) {
+            $tickets = $tickets . '<tr class="table-row" id="' . $ticket['ticket']->id . '" data-toggle="modal"
+                                            onclick="getid(this);" data-target="#detailsModal">
+                                            <td>' . $ticket['ticket']->id . '</td>
+                                            <td>' . $ticket['ticket']->description . '</td>
+                                            <td>' . $ticket['ticket']->status_ar . '</td>
+                                            <td>' . $ticket['ticket']->degree_ar . '</td>
+                                            <td>' . $ticket['ticket']->classification_ar . '</td>';
+            if ($ticket['assignedCompany'] != null) {
+                $tickets = $tickets . '<td>' . $ticket['assignedCompany']->name . '</td>';
+            } else {
+                $tickets = $tickets . '<td>لا يوجد</td>';
+            }
+            $tickets = $tickets . '<td>' . $ticket['ticket']->created_at . '</td></tr>';
+        }
         /*$finalList = $this->paginate($finalList);
         $finalList->withPath('/ticket/list');*/
         if (\Auth::user()->role_id == 2) {
+            if($request->ajax()){
+                return response()->json($tickets);
+            }
             $statistics['open'] = Ticket::where('status_id', '=', 1)->count();
             $statistics['closed'] = Ticket::where('status_id', '=', 6)->count();
             $statistics['total'] = Ticket::count();
             $companies = User::where('role_id', '=', 3)->select('id', 'name', 'phone')->get();
             $classifications = Classification::select('id', 'classification_ar')->get();
-           // return $finalList;
-            return view('admin.list')->with(['tickets' => $finalList, 'statistics' => $statistics, 'companies' => $companies, 'classifications' => $classifications]);
+            // return $finalList;
+            return view('admin.list')->with(['tickets' => $tickets, 'statistics' => $statistics, 'companies' => $companies, 'classifications' => $classifications]);
         } elseif (\Auth::user()->role_id == 3) {
-            return view('company.list')->with(['tickets' => $finalList]);
+            return view('company.list')->with(['tickets' => $tickets]);
         }
         // $finalList = datatables($finalList)->toJson();
     }
@@ -191,235 +211,176 @@ class TicketController extends Controller
     public function show(Request $request)
     {
         if ($request->ajax()) {
-        $request->validate([
-            'ticket_id' => 'numeric',
-        ]);
+            $request->validate([
+                'ticket_id' => 'numeric',
+            ]);
 
-        $user = $request->user();
-        $wantedTicket = Ticket::find($request->get('ticketId'));
+            $user = $request->user();
+            $wantedTicket = Ticket::find($request->get('ticketId'));
 
-        if ($wantedTicket != null && ($wantedTicket->user_id == $user->id || $wantedTicket->assigned_company == $user->id || $wantedTicket->assigned_employee == $user->id || $user->role_id == 2)) {
-            $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
-                ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
-                ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
-                ->where('tickets.id', '=', $wantedTicket->id)
-                ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at')
-                ->first();
+            if ($wantedTicket != null && ($wantedTicket->user_id == $user->id || $wantedTicket->assigned_company == $user->id || $wantedTicket->assigned_employee == $user->id || $user->role_id == 2)) {
+                $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
+                    ->join('classifications', 'classifications.id', '=', 'tickets.classification_id')
+                    ->leftJoin('damage_degrees', 'damage_degrees.id', '=', 'tickets.damage_degree_id')
+                    ->where('tickets.id', '=', $wantedTicket->id)
+                    ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'tickets.user_rating_id', 'statuses.status', 'statuses.status_ar', 'damage_degrees.degree', 'damage_degrees.degree_ar', 'classifications.classification', 'classifications.classification_ar', 'tickets.assigned_employee', 'tickets.assigned_company', 'tickets.created_at', 'tickets.updated_at')
+                    ->first();
 
-            $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
-                ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
-                ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
-                ->where('locations.id', '=', $wantedTicket->location_id)->first();
+                $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
+                    ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
+                    ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
+                    ->where('locations.id', '=', $wantedTicket->location_id)->first();
 
-            $photos = Photo::where('ticket_id', '=', $wantedTicket->id)->get();
+                $photos = Photo::where('ticket_id', '=', $wantedTicket->id)->get();
 
-            $ticketHistories = TicketHistory::where('ticket_id', '=', $wantedTicket->id)->get();
+                $ticketHistories = TicketHistory::where('ticket_id', '=', $wantedTicket->id)->get();
 
-            $userRating = UserRating::where('id', '=', $wantedTicket->user_rating_id)->first();
+                $userRating = UserRating::where('id', '=', $wantedTicket->user_rating_id)->first();
 
-            $assignedEmployee = User::where('id', '=', $wantedTicket->assigned_employee)->first();
-            $assignedEmployee = collect($assignedEmployee)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
+                $assignedEmployee = User::where('id', '=', $wantedTicket->assigned_employee)->first();
+                $assignedEmployee = collect($assignedEmployee)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
 
-            $assignedCompany = User::where('id', '=', $wantedTicket->assigned_company)->first();
-            $assignedCompany = collect($assignedCompany)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
+                $assignedCompany = User::where('id', '=', $wantedTicket->assigned_company)->first();
+                $assignedCompany = collect($assignedCompany)->except(['city_id', 'neighborhood_id', 'gender', 'created_at', 'updated_at', 'active', 'company', 'role_id']);
 
 
-            $ticket = ['ticket' => $ticket,
-                'location' => $location,
-                'photos' => $photos,
-                'ticketHistories' => $ticketHistories,
-                'userRating' => $userRating,
-                'assignedEmployee' => $assignedEmployee,
-                'assignedCompany' => $assignedCompany,
-            ];
-            if (\Auth::user()->role_id == 2) {
-                //return view('admin.show')->with(['ticket' => $ticket]);
-                return response()->json($ticket);
-            } elseif (\Auth::user()->role_id == 3) {
-                //return view('company.show')->with(['ticket' => $ticket]);
-                return response()->json($ticket);
+                $ticket = ['ticket' => $ticket,
+                    'location' => $location,
+                    'photos' => $photos,
+                    'ticketHistories' => $ticketHistories,
+                    'userRating' => $userRating,
+                    'assignedEmployee' => $assignedEmployee,
+                    'assignedCompany' => $assignedCompany,
+                ];
+                if (\Auth::user()->role_id == 2) {
+                    //return view('admin.show')->with(['ticket' => $ticket]);
+                    return response()->json($ticket);
+                } elseif (\Auth::user()->role_id == 3) {
+                    //return view('company.show')->with(['ticket' => $ticket]);
+                    return response()->json($ticket);
+                }
+            } else {
+                return response()->json('failed');
             }
-        } else {
-            return response()->json('failed');
         }
-    }
     }
 
     public function update(Request $request)
     {
-        $request->validate([
-            'ticket_id' => 'required | numeric',
-        ]);
-
-        if ($request->user()->role_id == 2 && $request->status == Status::ASSIGNED) {
+        if ($request->ajax()) {
             $request->validate([
-                'company_id' => 'required | numeric',
-                'message' => 'string',
-                'classification_id' => 'in:1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                'ticket_id' => 'required | numeric',
             ]);
 
-            $ticket = Ticket::find($request->ticket_id);
-            $company = User::find($request->company_id);
+            if ($request->user()->role_id == 2 && $request->status == Status::ASSIGNED) {
+                $request->validate([
+                    'company_id' => 'required | numeric',
+                    'message' => 'string',
+                    'classification_id' => 'in:1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                ]);
 
-            if ($company->role_id == 3 && $ticket->assigned_company == null && $ticket->status->id == 1 || $ticket->status->id == 5) {
+                $ticket = Ticket::find($request->ticket_id);
+                $company = User::find($request->company_id);
+
+                if ($company->role_id == 3 && $ticket->assigned_company == null && $ticket->status->id == 1 || $ticket->status->id == 5) {
+                    if ($ticket->status->id == 1) {
+                        $ticket->update(['assigned_company' => $company->id, 'status_id' => 2]);
+                    }
+                    if ($classification_id = $request->classification_id) {
+                        $ticket->update(['classification_id' => $classification_id]);
+                    }
+                    //need to implement a way to delete the photo from storage or not?
+                    $photos = Photo::where('ticket_id', '=', $ticket->id)->where('role_id', '=', 3)->get();
+                    foreach ($photos as $photo) {
+                        \Storage::delete('public/photos/' . $photo->photo_name);
+                        $photo->delete();
+                    }
+                    if ($message = $request->message) {
+                        TicketHistory::create([
+                            'message' => $message,
+                            'sender' => 1,
+                            'receiver' => $company->id,
+                            'ticket_id' => $ticket->id,
+                        ]);
+                    }
+                    return response()->json(['message' => 'Successfully updated ticket'], 200);
+                } else {
+                    return response()->json(['message' => 'either the user is not admin, or the ticket already assigned'], 400);
+                }
+            }
+
+            if ($request->user()->role_id == 3 && $request->status == Status::IN_PROGRESS) {
+                $request->validate([
+                    'employee_id' => 'required | numeric',
+                ]);
+
+                $ticket = Ticket::find($request->ticket_id);
+                $employee = User::find($request->employee_id);
+
+                if ($employee->role_id == 4 && $ticket->assigned_employee == null && $ticket->status->id == 2 || $ticket->status->id == 4) {
+                    if ($ticket->status->id == 2) {
+                        $ticket->update(['assigned_employee' => $employee->id, 'status_id' => 3]);
+                    }
+                    //need to implement a way to delete the photo from storage or not?
+                    Photo::where('ticket_id', '=', $ticket->id)->where('role_id', '=', 3)->delete();
+
+                    return redirect()->back()->with(['message' => 'Successfully updated ticket']);
+                } else {
+                    return redirect()->back()->with(['message' => 'either the user is not company, or the ticket already in progress']);
+                }
+            }
+
+            if ($request->user()->role_id == 3 && $request->status == Status::DONE) {
+                $request->validate([
+                    'message' => 'string',
+                ]);
+
+                $ticket = Ticket::find($request->ticket_id);
+                $company = $request->user();
+
+                if ($ticket->assigned_company == $company->id && $ticket->status->id == 4) {
+                    $ticket->update(['status_id' => 5]);
+                    if ($message = $request->message) {
+                        TicketHistory::create([
+                            'message' => $message,
+                            'sender' => $request->user()->id,
+                            'receiver' => 1,
+                            'ticket_id' => $ticket->id,
+                        ]);
+                    }
+                    return redirect()->back()->with(['message' => 'Successfully updated ticket']);
+                } else {
+                    return redirect()->back()->with(['message' => 'either the user is not company, or the ticket already done']);
+                }
+            }
+
+            if ($request->user()->role_id == 2 && $request->status == Status::CLOSED) {
+
+                $ticket = Ticket::find($request->ticket_id);
+
+                if ($ticket->status->id == 5) {
+                    $ticket->update(['status_id' => 6]);
+
+                    return redirect()->back()->with(['message' => 'Successfully updated ticket']);
+                } else {
+                    return redirect()->back()->with(['message' => 'either the user is not admin, or the ticket already closed']);
+                }
+            }
+
+            if ($request->user()->role_id == 2 && $request->status == Status::EXCLUDED) {
+
+                $ticket = Ticket::find($request->ticket_id);
+
                 if ($ticket->status->id == 1) {
-                    $ticket->update(['assigned_company' => $company->id, 'status_id' => 2]);
+                    $ticket->update(['status_id' => 7]);
+
+                    return redirect()->back()->with(['message' => 'Successfully updated ticket']);
+                } else {
+                    return redirect()->back()->with(['message' => 'either the user is not admin, or the ticket already excluded']);
                 }
-                if ($classification_id = $request->classification_id) {
-                    $ticket->update(['classification_id' => $classification_id]);
-                }
-                //need to implement a way to delete the photo from storage or not?
-                $photos = Photo::where('ticket_id', '=', $ticket->id)->where('role_id', '=', 3)->get();
-                foreach ($photos as $photo) {
-                    \Storage::delete('public/photos/' . $photo->photo_name);
-                    $photo->delete();
-                }
-                if ($message = $request->message) {
-                    TicketHistory::create([
-                        'message' => $message,
-                        'sender' => 1,
-                        'receiver' => $company->id,
-                        'ticket_id' => $ticket->id,
-                    ]);
-                }
-                return response()->json([
-                    'message' => 'Successfully updated ticket'
-                ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'either the user is not admin, or the ticket already assigned'
-                ], 400);
             }
+            return redirect()->back()->with(['message' => 'Something went wrong!!']);
         }
-
-        if ($request->user()->role_id == 3 && $request->status == Status::IN_PROGRESS) {
-            $request->validate([
-                'employee_id' => 'required | numeric',
-            ]);
-
-            $ticket = Ticket::find($request->ticket_id);
-            $employee = User::find($request->employee_id);
-
-            if ($employee->role_id == 4 && $ticket->assigned_employee == null && $ticket->status->id == 2 || $ticket->status->id == 4) {
-                if ($ticket->status->id == 2) {
-                    $ticket->update(['assigned_employee' => $employee->id, 'status_id' => 3]);
-                }
-                //need to implement a way to delete the photo from storage or not?
-                Photo::where('ticket_id', '=', $ticket->id)->where('role_id', '=', 3)->delete();
-
-                return response()->json([
-                    'message' => 'Successfully updated ticket'
-                ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'either the user is not company, or the ticket already in progress'
-                ], 400);
-            }
-        }
-
-        if ($request->user()->role_id == 4 && $request->status == Status::SOLVED) {
-            $messages = [
-                "photos.max" => "photos can't be more than 4."
-            ];
-
-            $request->validate([
-                'photos' => 'required | max:4',
-                'degree_id' => 'required|in:1, 2, 3',
-                'photos.*' => 'image|mimes:jpg,jpeg',
-            ], $messages);
-            $ticket = Ticket::find($request->ticket_id);
-            $employee = $request->user();
-            $degree = $request->degree_id;
-
-            if ($ticket->assigned_employee == $employee->id && $ticket->assigned_company == $employee->company && $ticket->status->id == 3 && $photos = $request->file('photos')) {
-                $ticket->update(['damage_degree_id' => $degree, 'status_id' => 4]);
-                $i = 1;
-
-                foreach ($photos as $photo) {
-                    $filename = $i++ . time() . '.' . $photo->extension();
-                    $photo->move(storage_path('app/public/photos'), $filename);
-                    Photo::create([
-                        'photo_name' => $filename,
-                        'ticket_id' => $ticket->id,
-                        'role_id' => 3
-                    ]);
-                }
-                return response()->json([
-                    'message' => 'Successfully updated ticket'
-                ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'either the user is not employee the assigned employee, or the ticket already solved'
-                ], 400);
-            }
-        }
-
-        if ($request->user()->role_id == 3 && $request->status == Status::DONE) {
-            $request->validate([
-                'message' => 'string',
-            ]);
-
-            $ticket = Ticket::find($request->ticket_id);
-            $company = $request->user();
-
-            if ($ticket->assigned_company == $company->id && $ticket->status->id == 4) {
-                $ticket->update(['status_id' => 5]);
-                if ($message = $request->message) {
-                    TicketHistory::create([
-                        'message' => $message,
-                        'sender' => $request->user()->id,
-                        'receiver' => 1,
-                        'ticket_id' => $ticket->id,
-                    ]);
-                }
-                return response()->json([
-                    'message' => 'Successfully updated ticket'
-                ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'either the user is not admin, or the ticket already assigned'
-                ], 400);
-            }
-        }
-
-        if ($request->user()->role_id == 2 && $request->status == Status::CLOSED) {
-
-            $ticket = Ticket::find($request->ticket_id);
-
-            if ($ticket->status->id == 5) {
-                $ticket->update(['status_id' => 6]);
-
-                return response()->json([
-                    'message' => 'Successfully updated ticket'
-                ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'either the user is not admin, or the ticket already assigned'
-                ], 400);
-            }
-        }
-
-        if ($request->user()->role_id == 2 && $request->status == Status::EXCLUDED) {
-
-            $ticket = Ticket::find($request->ticket_id);
-
-            if ($ticket->status->id == 1) {
-                $ticket->update(['status_id' => 7]);
-
-                return response()->json([
-                    'message' => 'Successfully updated ticket'
-                ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'either the user is not admin, or the ticket already assigned'
-                ], 400);
-            }
-        }
-
-
-        return response()->json([
-            'message' => 'Something went wrong!!'
-        ], 400);
     }
 
     /**

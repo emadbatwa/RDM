@@ -60,8 +60,6 @@ class UserController extends Controller
                 'neighborhood' => $userNeighborhood,
             ], 200);
         }
-        return response()->json([
-            'message' => 'Nothing to update'
-        ], 400);
+        return $this->employees($request);
     }
 }
