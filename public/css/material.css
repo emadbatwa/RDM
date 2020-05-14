@@ -8826,9 +8826,9 @@ a.text-dark:focus {
 
 .btn.btn-primary {
     color: #fff;
-    background-color: #9c27b0;
-    border-color: #9c27b0;
-    box-shadow: 0 2px 2px 0 rgba(156, 39, 176, 0.14), 0 3px 1px -2px rgba(156, 39, 176, 0.2), 0 1px 5px 0 rgba(156, 39, 176, 0.12);
+    background-color: #127577;
+    border-color: #127577;
+    box-shadow: 0 2px 2px 0 rgba(12, 69, 71, 0.14), 0 3px 1px -2px rgba(16, 81, 83, 0.2), 0 1px 5px 0 rgba(8, 43, 45, 0.12);
 }
 
 .btn.btn-primary:hover {
@@ -8841,8 +8841,8 @@ a.text-dark:focus {
 .btn.btn-primary.focus,
 .btn.btn-primary:hover {
     color: #fff;
-    background-color: #9124a3;
-    border-color: #701c7e;
+    background-color: #127577;
+    border-color: #12696b;
 }
 
 .btn.btn-primary:active,
@@ -8898,7 +8898,7 @@ a.text-dark:focus {
 .btn.btn-primary:focus,
 .btn.btn-primary:active,
 .btn.btn-primary:hover {
-    box-shadow: 0 14px 26px -12px rgba(156, 39, 176, 0.42), 0 4px 23px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(156, 39, 176, 0.2);
+    box-shadow: 0 14px 26px -12px rgba(105, 156, 157, 0.42), 0 4px 23px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(18, 117, 119, 0.2);
 }
 
 .btn.btn-primary.btn-link {
@@ -11400,7 +11400,7 @@ fieldset[disabled] .is-focused .switch label:focus {
 
 .form-control,
 .is-focused .form-control {
-    background-image: linear-gradient(to top, #9c27b0 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px);
+    background-image: linear-gradient(to top, #12696b 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px);
 }
 
 .form-control:invalid {
@@ -14516,7 +14516,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
     bottom: 0;
     left: 0;
     z-index: 2;
-    width: 100px;
+    width: 20%;
     background: #fff;
 
 }
@@ -16819,7 +16819,7 @@ label {
 .card.bg-primary,
 .card.card-rotate.bg-primary .front,
 .card.card-rotate.bg-primary .back {
-    background: linear-gradient(60deg, #ab47bc, #8e24aa);
+    background: linear-gradient(60deg, #699c9d, #127577);
 }
 
 .card .card-header-info .card-icon,
@@ -16870,7 +16870,7 @@ label {
 .card .card-header-primary .card-icon,
 .card .card-header-primary:not(.card-header-icon):not(.card-header-text),
 .card .card-header-primary .card-text {
-    box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(156, 39, 176, 0.4);
+    box-shadow: 0 4px 20px 0px rgba(18, 117, 119, 0.14), 0 7px 10px -5px rgba(105, 156, 157, 0.4);
 }
 
 .card .card-header-danger .card-icon,

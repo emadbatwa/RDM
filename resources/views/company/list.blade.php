@@ -1,16 +1,11 @@
 <html lang="fa" dir="rtl">
 @extends('layouts.app')
 @section('head')
-    <style>
 
-        .w {
-            width: 20%;
-        }
-    </style>
 @endsection
 
 @section('content')
-    <div class="sidebar shadow-sm w">
+    <div class="sidebar shadow-sm">
         <!--
           Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
