@@ -12,7 +12,7 @@
           Tip 2: you can also add an image using data-image tag
       -->
         <div class="logo ">
-            <a href="http://gp.test/public/home" class="simple-text logo-normal">
+            <a href="{{ url('/') }}" class="simple-text logo-normal">
                 <img src="/images/logo.png" alt="Smiley" height="42" width="42">
             </a>
         </div>
