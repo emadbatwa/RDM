@@ -3,56 +3,52 @@
 
 @extends('layouts.app' )
 
+@section('head')
+
+@endsection
+
 @section('content')
     <div class="wrapper">
 
-        {{--        <nav id="sidebar">--}}
 
-        {{--            <ul class="list-unstyled components">--}}
-        {{--                <p>الموقع </p>--}}
-
-        {{--                <li>--}}
-        {{--                    <a href="#">الشركه</a>--}}
-        {{--                </li>--}}
-
-        {{--                <li>--}}
-        {{--                    <a href="#">الخريطة</a>--}}
-        {{--                </li>--}}
-        {{--                <li>--}}
-        {{--                    <a href="#">تواصل معنا</a>--}}
-        {{--                </li>--}}
-        {{--            </ul>--}}
-        {{--        </nav>--}}
-
-        <div class="sidebar" data-color="purple" data-background-color="white">
+        <div class="sidebar shadow-sm ">
             <!--
               Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
               Tip 2: you can also add an image using data-image tag
           -->
-            <div class="logo">
+            <div class="logo ">
                 <a href="http://gp.test/public/home" class="simple-text logo-normal">
                     <img src="/images/logo.png" alt="Smiley" height="42" width="42">
                 </a>
             </div>
 
 
-            <div class="sidebar-wrapper">
-                <ul class="nav">
-                    <li class="nav-item ">
-                        <a class="nav-link">
-                            <i class="material-icons">الرئيسية</i>
+            <div class="sidebar-wrapper w">
+                <ul class="nav ">
+                    <li class="nav-item" >
+                        <a class="nav-link" href="#map">
+                            <i class="material-icons">map</i>
+                            <p>الخريطة</p>
                         </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link">  <!--  need to be  -->
-                            <i class="material-icons">التذاكر</i>
+                        <a class="nav-link" href="#table">  <!--  need to be  -->
+                            <i class="material-icons">list_alt</i>
+                            <p>التذاكر</p>
                         </a>
                     </li>
-                    <li class="nav-item  fixed-bottom">
-                        <a class="nav-link">
+                    <li class="nav-item  fixed-bottom-m">
+                        <a class="nav-link" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+
                             <i class="material-icons">logout</i>
+                            <p>تسجيل خروج</p>
                         </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
                     </li>
 
                 </ul>
@@ -183,10 +179,10 @@
             }
 
         </script>
-        <div id="content">
+        <div class="main-panel">
             <!-- heatMap -->
 
-            <div id="map" style="width: 100%; height: 500px;">
+            <div id="map" style="width: 100%; height: 400px;">
 
 
                 <script>
@@ -254,14 +250,14 @@
                     <div class="">
 
                         <div class="">
-                            <div class="card-header">
+                            <div class="card-header" id="table">
                                 Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
                             @if(\Session::has('message'))
                                 <p>{{\Session::get('message')}}</p>
                             @endif
 
                             <div class="card-body">
-                                <table id="example" class="display" style="width:100%">
+                                <table id="example" class="display " style="width:100%">
                                     <thead>
                                     <tr>
                                         <th>رقم التذكرة</th>

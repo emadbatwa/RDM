@@ -44,6 +44,7 @@ Route::group([
     'middleware' => 'auth',
 ], function () {
     Route::get('/employees', 'UserController@employees');
+    Route::get('/add', 'UserController@add');
     Route::get('/cities', 'API\TicketController@cities');
     Route::get('/neighborhoods', 'API\TicketController@neighborhoods');
 });
