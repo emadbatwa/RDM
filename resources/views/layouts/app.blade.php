@@ -17,6 +17,9 @@
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
     <link href="https://fonts.googleapis.com/css?family=Cairo&amp;subset=arabic" rel="stylesheet">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+
     <!-- Styles -->
     <link href="{{ asset('css/app2.css') }}" rel="stylesheet">
     <link href="{{ asset('css/material.css') }}" rel="stylesheet">

@@ -261,7 +261,8 @@
                                                                     aria-expanded="false">
                                                             </select>
                                                         </div>
-                                                        <button type="button" class="btn btn-primary" onclick="updateClassification();">
+                                                        <button type="button" class="btn btn-primary"
+                                                                onclick="updateClassification();">
                                                             تغيير التصنيف
                                                         </button>
                                                     </td>
@@ -288,7 +289,8 @@
                                                                 <!-- @@@@@@@ -->
                                                             </select>
                                                         </div>
-                                                        <button type="button" class="btn btn-primary" onclick="assignTicket();">
+                                                        <button type="button" class="btn btn-primary"
+                                                                onclick="assignTicket();">
                                                             اسناد
                                                         </button>
                                                     </td>
@@ -320,10 +322,11 @@
 
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" onclick="closeTicket();">
-                                                    اغلاق
+                                                    إغلاق التذكرة
                                                 </button>
-                                                <button type="button" class="btn btn-primary" onclick="excludeTicket();">
-                                                    استبعاد
+                                                <button type="button" class="btn btn-primary"
+                                                        onclick="excludeTicket();">
+                                                    استبعاد التذكرة
                                                 </button>
                                             </div>
                                         </div>
@@ -486,92 +489,231 @@
                 }
             });
         }
+
         function updateClassification() {
-           var classification = $( "#classifications" ).val();
-           var ticketId = window.id;
-            console.log(classification);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: 'post',
-                url: '{{ route('ticket.updateClassification') }}',
-                data: {ticket_id: ticketId, classification: classification},
-                success: function (data) {
-                    console.log('okay');
-                },
-                error: function (data) {
-                    console.log('failed');
-                }
-            });
-        }
-        function assignTicket() {
-            var classification = $( "#classifications" ).val();
+            var classification = $("#classifications").val();
             var ticketId = window.id;
-            var company = $( "#companies" ).val();
+            Swal.fire({
+                title: 'هل أنت متأكد?',
+                text: "سيتم تغيير تصنيف التذكرة",
+                type: 'warning',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'تراجع',
+                confirmButtonText: 'تغيير التصنيف'
+            }).then((result) => {
+                if (result.value) {
+                    event.preventDefault();
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: 'post',
+                        url: '{{ route('ticket.updateClassification') }}',
+                        data: {ticket_id: ticketId, classification: classification},
+                        success: function (data) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'تم تغيير التصنيف بنجاح',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                confirmButtonText: 'حسنا',
+
+                            })
+                        },
+                        error: function (data) {
+                            console.log('failed');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'فشل تغيير التصنيف...',
+                                text: 'الرجاء التأكد من حالة التذكرة ',
+                                footer: ' التذاكر المفتوحة يمكن تغيير تصنيفها فقط',
+                                confirmButtonText: 'حسنا'
+                            })
+                        }
+                    });
+                }
+            });
             console.log(classification);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: 'post',
-                url: '{{ route('ticket.update') }}',
-                data: {ticket_id: ticketId, classification: classification, company_id:company, status: 'ASSIGNED'},
-                success: function (data) {
-                    console.log('okay');
-                    $('#detailsModal').modal('hide');
-                    updateTable();
-                },
-                error: function (data) {
-                    console.log('failed');
-                }
-            });
+
         }
+
+        function assignTicket() {
+            var classification = $("#classifications").val();
+            var ticketId = window.id;
+            var company = $("#companies").val();
+            console.log(classification);
+            //
+            Swal.fire({
+                title: 'هل أنت متأكد?',
+                text: "سيتم إسناد التذكرة إلى الشركة المختارة",
+                type: 'warning',
+                showCancelButton: true,
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'تراجع',
+                confirmButtonText: 'إسناد التذكرة'
+            }).then((result) => {
+                if (result.value) {
+                    event.preventDefault();
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: 'post',
+                        url: '{{ route('ticket.update') }}',
+                        data: {
+                            ticket_id: ticketId,
+                            classification: classification,
+                            company_id: company,
+                            status: 'ASSIGNED'
+                        },
+                        success: function (data) {
+                            console.log('okay');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'تم إسناد التذكرة بنجاح',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                confirmButtonText: 'حسنا',
+
+                            });
+                            $('#detailsModal').modal('hide');
+                            updateTable();
+                        },
+                        error: function (data) {
+                            console.log('failed');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'فشل إسناد التذكرة...',
+                                text: 'الرجاء التأكد من حالة التذكرة ',
+                                footer: ' التذاكر المفتوحة أو المقبولة يمكن إسنادها فقط',
+                                confirmButtonText: 'حسنا'
+                            })
+                        }
+                    });
+                }
+            });
+            //
+
+        }
+
 
         function closeTicket() {
             var ticketId = window.id;
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: 'post',
-                url: '{{ route('ticket.update') }}',
-                data: {ticket_id: ticketId, status: 'CLOSED'},
-                success: function (data) {
-                    console.log('okay');
-                    $('#detailsModal').modal('hide');
-                    updateTable();
-                },
-                error: function (data) {
-                    console.log('failed');
+
+            //
+            Swal.fire({
+                title: 'هل أنت متأكد?',
+                text: "سيتم إغلاق التذكرة",
+                type: 'warning',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'تراجع',
+                confirmButtonText: 'إغلاق التذكرة'
+            }).then((result) => {
+                if (result.value) {
+                    event.preventDefault();
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: 'post',
+                        url: '{{ route('ticket.update') }}',
+                        data: {ticket_id: ticketId, status: 'CLOSED'},
+                        success: function (data) {
+                            console.log('okay');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'تم إغلاق التذكرة بنجاح',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                confirmButtonText: 'حسنا',
+
+                            });
+                            $('#detailsModal').modal('hide');
+                            updateTable();
+                        },
+                        error: function (data) {
+                            console.log('failed');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'فشل إغلاق التذكرة...',
+                                text: 'الرجاء التأكد من حالة التذكرة ',
+                                footer: ' التذاكر المقبولة يمكن إغلاقها فقط',
+                                confirmButtonText: 'حسنا'
+                            })
+                        }
+                    });
                 }
             });
         }
 
         function excludeTicket() {
             var ticketId = window.id;
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: 'post',
-                url: '{{ route('ticket.update') }}',
-                data: {ticket_id: ticketId, status: 'EXCLUDED'},
-                success: function (data) {
-                    console.log('okay');
-                    $('#detailsModal').modal('hide');
-                    updateTable();
-                },
-                error: function (data) {
-                    console.log('failed');
+            Swal.fire({
+                title: 'هل أنت متأكد?',
+                text: "سيتم استبعاد التذكرة",
+                type: 'warning',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'تراجع',
+                confirmButtonText: 'استبعاد التذكرة'
+            }).then((result) => {
+                if (result.value) {
+                    event.preventDefault();
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: 'post',
+                        url: '{{ route('ticket.update') }}',
+                        data: {ticket_id: ticketId, status: 'EXCLUDED'},
+                        success: function (data) {
+                            console.log('okay');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'تم استبعاد التذكرة بنجاح',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                confirmButtonText: 'حسنا',
+
+                            });
+                            $('#detailsModal').modal('hide');
+                            updateTable();
+                        },
+                        error: function (data) {
+                            console.log('failed');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'فشل استبعاد التذكرة...',
+                                text: 'الرجاء التأكد من حالة التذكرة ',
+                                footer: ' التذاكر المفتوحة يمكن استبعادها فقط',
+                                confirmButtonText: 'حسنا'
+                            })
+                        }
+                    });
+
                 }
             });
         }
