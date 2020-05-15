@@ -120,11 +120,13 @@ class TicketController extends Controller
             $statistics['closed'] = Ticket::where('status_id', '=', 6)->count();
             $statistics['total'] = Ticket::count();
             // return $finalList;
-            return view('admin.list')->with(['tickets' => $tickets, 'statistics' => $statistics]);
+            $locations = Location::select('latitude', 'longitude')->get();
+            return view('admin.list')->with(['tickets' => $tickets, 'statistics' => $statistics, 'locations' => $locations]);
         } elseif (\Auth::user()->role_id == 3) {
             return view('company.list')->with(['tickets' => $finalList]);
         }
         // $finalList = datatables($finalList)->toJson();
+
     }
 
     public function map(Request $request)

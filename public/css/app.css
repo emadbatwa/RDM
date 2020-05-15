@@ -6242,14 +6242,14 @@ a.close.disabled {
   overflow: hidden;
   outline: 0;
 }
-
+@media screen and (min-width: 768px) {
 .modal-dialog {
-  position: relative;
-  width: auto;
-  margin: 0.5rem;
-  pointer-events: none;
+  /* position: relative; */
+  width: 900px; /* New width for default modal */
+  /* margin: 0.5rem;
+  pointer-events: none; */
+ } 
 }
-
 .modal.fade .modal-dialog {
   -webkit-transition: -webkit-transform 0.3s ease-out;
   transition: -webkit-transform 0.3s ease-out;
@@ -6358,7 +6358,7 @@ a.close.disabled {
 
 .modal-header {
   display: -webkit-box;
-  display: flex;
+  display: list-item; 
   -webkit-box-align: start;
           align-items: flex-start;
   -webkit-box-pack: justify;
@@ -6445,7 +6445,8 @@ a.close.disabled {
 @media (min-width: 992px) {
   .modal-lg,
   .modal-xl {
-    max-width: 800px;
+
+    max-width: 1000px;
   }
 }
 

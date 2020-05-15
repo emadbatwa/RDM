@@ -9,8 +9,10 @@ use App\City;
 
 $factory->define(Location::class, function (Faker $faker) {
     $n = Neighborhood::where('City_id', '=', 6)->get()->random(1);
-    $latitude = $faker->latitude;
-    $longitude = $faker->longitude;
+    $latitude = $faker->latitude($min = '21.3', $max = '21.5');
+    $longitude = $faker->longitude($min = '39.7', $max = '39.9');
+   
+
 
     return [
         'latitude' => $latitude,

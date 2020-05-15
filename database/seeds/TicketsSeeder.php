@@ -11,7 +11,7 @@ class TicketsSeeder extends Seeder
      */
     public function run()
     {
-        $records = 100;
+        $records = 250;
         factory(App\Ticket::class, $records)->create();
         $badRoads = [
             0 => '11567001134.jpeg',
