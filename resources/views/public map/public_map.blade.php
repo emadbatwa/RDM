@@ -13,6 +13,7 @@
           <link href="{{ asset('material') }}/css/material-dashboard-rtl.css?v=1.1" rel="stylesheet" />
           <!-- CSS Just for demo purpose, don't include it in your project -->
           <link href="{{ asset('material') }}/demo/demo.css" rel="stylesheet" />
+          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
         </head>
         <body class="container-fluid">
 <div class="wrapper ">
@@ -119,8 +120,18 @@ var markers = [
             (function (marker, data) {
                 google.maps.event.addListener(marker, "click", function (e) {
                     //تعديل حجم البوب اب مع المعلومات 
-                    infoWindow.setContent("<div style = 'width:12%;min-height:20%'>" + data.description + "</div>");
-                    infoWindow.open(map, marker);
+                    "<div style = 'width:12%;min-height:20%'>" + data.description + "</div>"
+                    infoWindow.setContent(Swal.fire({
+                      position: 'center',
+  title: data.title ,
+  text: data.description + data.description ,
+  imageUrl: 'https://unsplash.it/400/200',
+  imageWidth: 400,
+  imageHeight: 200,
+  imageAlt: 'Custom image',
+
+}));
+                  //  infoWindow.open(map, marker);
                 });
             })(marker, data);
         }
