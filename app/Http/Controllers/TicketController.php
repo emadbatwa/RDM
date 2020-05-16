@@ -198,7 +198,8 @@ class TicketController extends Controller
                 'photos' => $photos,
             ];
         }
-        return view('publicMap')->with(['tickets' => $finalList]);
+        return $finalList;
+        return view('publicMap.public_map')->with(['tickets' => $finalList]);
         // $finalList = datatables($finalList)->toJson();
     }
 
@@ -344,13 +345,19 @@ class TicketController extends Controller
                 if ($employee->role_id == 4 && $ticket->assigned_employee == null && $ticket->status->id == 2 || $ticket->status->id == 4) {
                     if ($ticket->status->id == 2) {
                         $ticket->update(['assigned_employee' => $employee->id, 'status_id' => 3]);
+                    } else {
+                        $ticket->update(['status_id' => 3]);
                     }
                     //need to implement a way to delete the photo from storage or not?
-                    Photo::where('ticket_id', '=', $ticket->id)->where('role_id', '=', 3)->delete();
+                    $photos = Photo::where('ticket_id', '=', $ticket->id)->where('role_id', '=', 3)->get();
+                    foreach ($photos as $photo) {
+                        \Storage::delete('public/photos/' . $photo->photo_name);
+                        $photo->delete();
+                    }
 
-                    return redirect()->back()->with(['message' => 'Successfully updated ticket']);
+                    return response()->json(['message' => 'تم اسناد التذكرة الى الموظف'], 200);
                 } else {
-                    return redirect()->back()->with(['message' => 'either the user is not company, or the ticket already in progress']);
+                    return response()->json(['message' => 'لم ينجح الاسناد'], 400);
                 }
             }
 
@@ -372,9 +379,9 @@ class TicketController extends Controller
                             'ticket_id' => $ticket->id,
                         ]);
                     }
-                    return redirect()->back()->with(['message' => 'Successfully updated ticket']);
+                    return response()->json(['message' => 'تم رفع الحل للادارة'], 200);
                 } else {
-                    return redirect()->back()->with(['message' => 'either the user is not company, or the ticket already done']);
+                    return response()->json(['message' => 'لم ينجح رفع الحل'], 400);
                 }
             }
 
