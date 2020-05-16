@@ -103,11 +103,23 @@ class TicketController extends Controller
                 $tickets = $tickets . '<td>لا يوجد</td>';
             }
             $tickets = $tickets . '<td>' . $ticket['ticket']->classification_ar . '</td>';
-            if ($ticket['assignedCompany'] != null) {
-                $tickets = $tickets . '<td>' . $ticket['assignedCompany']->name . '</td>';
-            } else {
-                $tickets = $tickets . '<td>لا يوجد</td>';
-            }
+
+            if (\Auth::user()->role_id == 2) {
+                 if ($ticket['assignedCompany'] != null) {
+                  $tickets = $tickets . '<td>' . $ticket['assignedCompany']->name . '</td>';
+                 } else {
+                      $tickets = $tickets . '<td>لا يوجد</td>';
+                     }
+           }elseif (\Auth::user()->role_id == 3){
+            if ($ticket['assignedEmployee'] != null) {
+                $tickets = $tickets . '<td>' . $ticket['assignedEmployee']->name . '</td>';
+               } else {
+                    $tickets = $tickets . '<td>لا يوجد</td>';
+                   }
+
+           }
+
+
             $tickets = $tickets . '<td>' . $ticket['ticket']->created_at . '</td></tr>';
         }
         /*$finalList = $this->paginate($finalList);
@@ -123,7 +135,10 @@ class TicketController extends Controller
             $locations = Location::select('latitude', 'longitude')->get();
             return view('admin.list')->with(['tickets' => $tickets, 'statistics' => $statistics, 'locations' => $locations]);
         } elseif (\Auth::user()->role_id == 3) {
-            return view('company.list')->with(['tickets' => $finalList]);
+            if ($request->ajax()) {
+                return response()->json($tickets);
+            }
+             return view('company.list')->with(['tickets' => $tickets]);
         }
         // $finalList = datatables($finalList)->toJson();
 
@@ -263,14 +278,16 @@ class TicketController extends Controller
                     $classifications = Classification::select('id', 'classification_ar')->get();
                     return response()->json(['ticket' => $ticket, 'companies' => $companies, 'classifications' => $classifications]);
                 } elseif (\Auth::user()->role_id == 3) {
-                    //return view('company.show')->with(['ticket' => $ticket]);
-                    return response()->json($ticket);
+                    $employees = User::where('role_id', '=', 4)->select('id', 'name', 'phone')->get();
+                   $classifications = Classification::select('id', 'classification_ar')->get();
+                    return response()->json(['ticket' => $ticket, 'employees' => $employees, 'classifications' => $classifications]);
                 }
             } else {
                 return response()->json('failed');
             }
         }
     }
+
 
     public function update(Request $request)
     {
