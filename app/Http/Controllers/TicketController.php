@@ -178,6 +178,7 @@ class TicketController extends Controller
         $tickets = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
             ->join('users', 'users.id', '=', 'tickets.user_id')
             ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'statuses.status', 'statuses.status_ar', 'tickets.created_at', 'tickets.updated_at')
+            ->whereIn('tickets.status_id', [1, 6])
             ->orderBy('id');
 
         if ($status = $request->status) {
@@ -198,7 +199,7 @@ class TicketController extends Controller
                 'photos' => $photos,
             ];
         }
-        return view('publicMap')->with(['tickets' => $finalList]);
+        return view('publicMap.public_map')->with(['tickets' => $finalList]);
         // $finalList = datatables($finalList)->toJson();
     }
 
