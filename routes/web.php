@@ -10,10 +10,13 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
+	Route::get('public_map', function () {
+		return view('public map.public_map');
+	})->name('table');
+	
+    Route::get('/', function () {
+        return view('welcome');
+    });
 
 Auth::routes(['register' => false]);
 Route::group([

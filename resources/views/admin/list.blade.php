@@ -22,8 +22,6 @@
                     <img src="/images/logo.png" alt="Smiley" height="42" width="42">
                 </a>
             </div>
-
-
             <div class="sidebar-wrapper w">
                 <ul class="nav ">
                     <li class="nav-item">
@@ -54,7 +52,6 @@
                 </ul>
             </div>
         </div>
-
         <script>
             $(document).ready(function () {
                 var tickets = @json($tickets);
