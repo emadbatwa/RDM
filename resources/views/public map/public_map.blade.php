@@ -109,6 +109,10 @@ var markers = [
             var myLatlng = new google.maps.LatLng(data.lat, data.lng);
             var marker = new google.maps.Marker({
                 position: myLatlng,
+                icon: {
+      url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+      //url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+    },
                 map: map,
                 title: data.title
             });
