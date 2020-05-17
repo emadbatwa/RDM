@@ -222,9 +222,9 @@
                                             </tr>
                                             <tr>
                                                 <th>اسم المبلغ:</th>
-                                                <td id="latitude"></td>
+                                                <td id="username"></td>
                                                 <th>رقم المبلغ:</th>
-                                                <td id="longitude"></td>
+                                                <td id="userphone"></td>
 
                                                 <th>صور البلاغ</th>
 
