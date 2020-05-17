@@ -19,10 +19,10 @@
           -->
             <div class="logo ">
                 <a href="{{ url('/ticket/list') }}" class="simple-text logo-normal">
-                    <img src="/images/logo.png" alt="Smiley" height="45" width="45">
+                    <img src="{{ asset('material') }}/img/logo.png" alt="Smiley" style="height: 46px">
                 </a>
             </div>
-            <div class="sidebar-wrapper w">
+            <div class="sidebar-wrapper">
                 <ul class="nav ">
                     <li class="nav-item">
                         <a class="nav-link" href="#map">
