@@ -129,6 +129,13 @@ class TicketController extends Controller
                 return response()->json($tickets);
             }
             $statistics['open'] = Ticket::where('status_id', '=', 1)->count();
+                        $statistics['assigned'] = Ticket::where('status_id', '=', 2)->count();
+            $statistics['in_progress'] = Ticket::where('status_id', '=', 3)->count();
+            // response()->json('failed');
+            $statistics['solved'] = Ticket::where('status_id', '=', 4)->count();
+            $statistics['done'] = Ticket::where('status_id', '=', 5)->count();
+            $statistics['closed'] = Ticket::where('status_id', '=', 6)->count();
+            $statistics['excluded'] = Ticket::where('status_id', '=', 7)->count();
             $statistics['closed'] = Ticket::where('status_id', '=', 6)->count();
             $statistics['total'] = Ticket::count();
             // return $finalList;
