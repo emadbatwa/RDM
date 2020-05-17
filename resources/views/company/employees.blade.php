@@ -8,7 +8,7 @@
       -->
         <div class="logo ">
             <a href="http://gp.test/public/home" class="simple-text logo-normal">
-                <img src="/images/logo.png" alt="Smiley" height="42" width="42">
+                <img src="/images/logo.png" alt="Smiley" height="45" width="45">
             </a>
         </div>
 

@@ -130,9 +130,7 @@ html[dir="rtl"] .close {
     float: left;
 }
 
-html[dir="rtl"] .modal-header .close {
-    margin: -15px auto -15px -15px;
-}
+
 
 html[dir="rtl"] .modal-footer > :not(:first-child) {
     margin-right: .25rem;
