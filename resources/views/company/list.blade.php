@@ -18,8 +18,8 @@
               Tip 2: you can also add an image using data-image tag
           -->
             <div class="logo ">
-                <a href="http://gp.test/public/home" class="simple-text logo-normal">
-                    <img src="/images/logo.png" alt="Smiley" height="42" width="42">
+                <a href="{{ url('/ticket/list') }}" class="simple-text logo-normal">
+                    <img src="/images/logo.png" alt="Smiley" height="45" width="45">
                 </a>
             </div>
 
@@ -123,7 +123,7 @@
                                      aria-hidden="true">
                                     <div class="modal-dialog modal-lg" style="width:5000px;">
                                         <div class="modal-content">
-                                            <div class="modal-header" style="text-align:center">
+                                            <div class="modal-header"  style="text-align:center; display: inline;">
                                                 <table>
 
                                                     <tr>
@@ -241,8 +241,8 @@
                                                 </tr> -->
                                             </table>
 
-                                            <div class="modal-footer "
-                                                 style=" margin: 0 auto;">
+                                            <div class="modal-footer shosho"
+                                                 style="text-align: center; margin: 0 auto;  border-top: none;">
                                                 <button type="button" class="btn btn-primary" onclick="DoneTicket();">
                                                     رفع حل التذكرة
                                                 </button>

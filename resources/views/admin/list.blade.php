@@ -18,8 +18,8 @@
               Tip 2: you can also add an image using data-image tag
           -->
             <div class="logo ">
-                <a href="http://gp.test/public/home" class="simple-text logo-normal">
-                    <img src="/images/logo.png" alt="Smiley" height="42" width="42">
+                <a href="{{ url('/ticket/list') }}" class="simple-text logo-normal">
+                    <img src="/images/logo.png" alt="Smiley" height="45" width="45">
                 </a>
             </div>
             <div class="sidebar-wrapper w">
@@ -149,184 +149,164 @@
             </div>
 
 
-                <div class=" justify-content-center">
+            <div class=" justify-content-center">
+                <div class="">
+
                     <div class="">
+                        <div class="card-header" id="table">
+                            Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
 
-                        <div class="">
-                            <div class="card-header" id="table">
-                                Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
-
-                            <div class="card-body">
-                                <table id="example" class="display " style="width:100%">
-                                    <thead>
-                                    <tr>
-                                        <th>رقم التذكرة</th>
-                                        <th>الوصف</th>
-                                        <th>الحالة</th>
-                                        <th>الدرجة</th>
-                                        <th>التصنيف</th>
-                                        <th>الشركة</th>
-                                        <th>تاريخ الإنشاء</th>
-                                    </tr>
-                                    </thead>
-                                    <div id="result"></div>
-                                    <tbody id="tableBody">
+                        <div class="card-body">
+                            <table id="example" class="display " style="width:100%">
+                                <thead>
+                                <tr>
+                                    <th>رقم التذكرة</th>
+                                    <th>الوصف</th>
+                                    <th>الحالة</th>
+                                    <th>الدرجة</th>
+                                    <th>التصنيف</th>
+                                    <th>الشركة</th>
+                                    <th>تاريخ الإنشاء</th>
+                                </tr>
+                                </thead>
+                                <div id="result"></div>
+                                <tbody id="tableBody">
 
 
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th>رقم التذكرة</th>
-                                        <th>الوصف</th>
-                                        <th>الحالة</th>
-                                        <th>الدرجة</th>
-                                        <th>التصنيف</th>
-                                        <th>الشركة</th>
-                                        <th>تاريخ الإنشاء</th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>رقم التذكرة</th>
+                                    <th>الوصف</th>
+                                    <th>الحالة</th>
+                                    <th>الدرجة</th>
+                                    <th>التصنيف</th>
+                                    <th>الشركة</th>
+                                    <th>تاريخ الإنشاء</th>
+                                </tr>
+                                </tfoot>
+                            </table>
 
 
-                                <div id="detailsModal" class="modal fade bd-example-modal-lg" role="dialog"
-                                     aria-labelledby="detailsModal"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog modal-lg" style="width:5000px;">
-                                        <div class="modal-content">
-                                            <div class="modal-header" style="text-align:center">
-                                                <table>
+                            <div id="detailsModal" class="modal fade bd-example-modal-lg" role="dialog"
+                                 aria-labelledby="detailsModal"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg" style="width:5000px;">
+                                    <div class="modal-content">
+                                        <div class="modal-header"
+                                             style="text-align:center; display: inline;">
+                                            <table>
 
-                                                    <tr>
-                                                        <th class="modal-title text-right"> تذكرة رقم:</th>
-                                                        <td id="id"></td>
-                                                        <th class="modal-title">الحالة:</th>
-                                                        <td id="status_ar"></td>
-
-                                                        <button type="button" id="closeWindow" class="close"
-                                                                data-dismiss="modal"
-                                                                aria-hidden="true">
-                                                            &times;
-                                                        </button>
-                                                    </tr>
-                                                </table>
-                                            </div>
-
-                                            <p>
-                                                <!-- <div class="container">
-                                                 <div class="row">
-                                                   <div class="col">1</div>
-                                                   <div class="col">2</div>
-                                                   <div class="w-100"></div>
-                                                   <div class="col">3</div>
-                                                   <div class="col">4</div>
-                                                 </div>
-                                                </div> -->
-                                            <table class="table">
                                                 <tr>
+                                                    <th class="modal-title text-right"> تذكرة رقم:</th>
+                                                    <td id="id"></td>
+                                                    <th class="modal-title">الحالة:</th>
+                                                    <td id="status_ar"></td>
 
-
-                                                    <th>تاريخ الإنشاء:</th>
-                                                    <td id="created_at"></td>
-                                                    <th>تاريخ التعديل:</th>
-                                                    <td id="updated_at"></td>
+                                                    <button type="button" id="closeWindow" class="close"
+                                                            data-dismiss="modal"
+                                                            aria-hidden="true">
+                                                        &times;
+                                                    </button>
                                                 </tr>
-                                                <tr>
-                                                    <th>اسم المبلغ:</th>
-                                                    <td id="latitude"></td>
-                                                    <th>رقم المبلغ:</th>
-                                                    <td id="longitude"></td>
-
-                                                    <th>صور البلاغ</th>
-
-
-                                                    <td id="problemPhotos">
-                                                        <img src="" alt="ticket photo" height="100" width="100">
-                                                        <img src="" alt="ticket photo" height="100" width="100">
-                                                        <img src="" alt="ticket photo" height="100" width="100">
-                                                        <img src="" alt="ticket photo" height="100" width="100">
-                                                    </td>
-
-
-                                                </tr>
-                                                <tr>
-                                                    <th>التصنيف:</th>
-
-                                                    <td>
-
-                                                        <div class="btn-group">
-                                                            <select id="classifications" type="button" class="btn"
-                                                                    aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                            </select>
-                                                        </div>
-                                                        <button type="button" class="btn btn-primary"
-                                                                onclick="updateClassification();">
-                                                            تغيير التصنيف
-                                                        </button>
-                                                    </td>
-                                                    <th>حجم الضرر:</th>
-                                                    <td id="degree_ar"></td>
-                                                    <th>الوصف</th>
-                                                    <td id="description"></td>
-
-
-                                                </tr>
-                                                <tr>
-
-
-                                                    <th>الشركة:</th>
-
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <select id="companies" type="button"
-                                                                    class="btn  dropdown-toggle"
-                                                                    aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                                <!-- <option id="assigned_company" selected>1</a> -->
-                                                                <!-- @@@@@@@ -->
-                                                            </select>
-                                                        </div>
-                                                        <button type="button" class="btn btn-primary"
-                                                                onclick="assignTicket();">
-                                                            اسناد
-                                                        </button>
-                                                    </td>
-
-                                                    <th></th>
-                                                    <td></td>
-                                                    <th>صور الاصلاح</th>
-                                                    <td id="fixPhotos">
-                                                        <img src="{{url('/images/defaultPhoto.png')}}"
-                                                             alt="ticket photo" height="100" width="100">
-                                                        <img src="{{url('/images/defaultPhoto.png')}}"
-                                                             alt="ticket photo" height="100" width="100">
-                                                        <img src="{{url('/images/defaultPhoto.png')}}"
-                                                             alt="ticket photo" height="100" width="100">
-                                                        <img src="{{url('/images/defaultPhoto.png')}}"
-                                                             alt="ticket photo" height="100" width="100">
-                                                    </td>
-                                                </tr>
-                                                <!-- <tr>
-                                                    <td style="text-align:center" colspan="4">
-                                                        <a class="collapsee" data-toggle="collapse"
-                                                           href="#collapseExample"
-                                                           role="button" aria-expanded="false"
-                                                           aria-controls="collapseExample">
-                                                        </a>
-                                                    </td>
-                                                </tr> -->
                                             </table>
+                                        </div>
+                                        <table class="table">
+                                            <tr>
 
-                                            <div class="modal-footer shosho"
-                                                 style="text-align: center; margin: 0 auto;">
-                                                <button type="button" class="btn btn-primary" onclick="closeTicket();">
-                                                    إغلاق التذكرة
-                                                </button>
-                                                <button type="button" class="btn btn-primary"
-                                                        onclick="excludeTicket();">
-                                                    استبعاد التذكرة
-                                                </button>
-                                            </div>
+
+                                                <th>تاريخ الإنشاء:</th>
+                                                <td id="created_at"></td>
+                                                <th>تاريخ التعديل:</th>
+                                                <td id="updated_at"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>اسم المبلغ:</th>
+                                                <td id="latitude"></td>
+                                                <th>رقم المبلغ:</th>
+                                                <td id="longitude"></td>
+
+                                                <th>صور البلاغ</th>
+
+
+                                                <td id="problemPhotos">
+                                                    <img src="" alt="ticket photo" height="100" width="100">
+                                                    <img src="" alt="ticket photo" height="100" width="100">
+                                                    <img src="" alt="ticket photo" height="100" width="100">
+                                                    <img src="" alt="ticket photo" height="100" width="100">
+                                                </td>
+
+
+                                            </tr>
+                                            <tr>
+                                                <th>التصنيف:</th>
+
+                                                <td>
+
+                                                    <div class="btn-group">
+                                                        <select id="classifications" type="button" class="btn"
+                                                                aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                        </select>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary"
+                                                            onclick="updateClassification();">
+                                                        تغيير التصنيف
+                                                    </button>
+                                                </td>
+                                                <th>حجم الضرر:</th>
+                                                <td id="degree_ar"></td>
+                                                <th>الوصف</th>
+                                                <td id="description"></td>
+
+
+                                            </tr>
+                                            <tr>
+
+
+                                                <th>الشركة:</th>
+
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <select id="companies" type="button"
+                                                                class="btn  dropdown-toggle"
+                                                                aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                            <!-- <option id="assigned_company" selected>1</a> -->
+                                                            <!-- @@@@@@@ -->
+                                                        </select>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary"
+                                                            onclick="assignTicket();">
+                                                        اسناد
+                                                    </button>
+                                                </td>
+
+                                                <th></th>
+                                                <td></td>
+                                                <th>صور الاصلاح</th>
+                                                <td id="fixPhotos">
+                                                    <img src="{{url('/images/defaultPhoto.png')}}"
+                                                         alt="ticket photo" height="100" width="100">
+                                                    <img src="{{url('/images/defaultPhoto.png')}}"
+                                                         alt="ticket photo" height="100" width="100">
+                                                    <img src="{{url('/images/defaultPhoto.png')}}"
+                                                         alt="ticket photo" height="100" width="100">
+                                                    <img src="{{url('/images/defaultPhoto.png')}}"
+                                                         alt="ticket photo" height="100" width="100">
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <div class="modal-footer shosho"
+                                             style="text-align: center; margin: 0 auto;  border-top: none;">
+                                            <button type="button" class="btn btn-primary" onclick="closeTicket();">
+                                                إغلاق التذكرة
+                                            </button>
+                                            <button type="button" class="btn btn-primary"
+                                                    onclick="excludeTicket();">
+                                                استبعاد التذكرة
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
