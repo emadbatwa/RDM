@@ -246,6 +246,12 @@
                                                 <button type="button" class="btn btn-primary" onclick="DoneTicket();">
                                                     رفع حل التذكرة
                                                 </button>
+                                                
+                                                <button type="button" class="btn btn-danger " id="closeWindow"
+                                                        data-dismiss="modal"
+                                                        aria-hidden="true">
+                                                    إغلاق النافذة
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

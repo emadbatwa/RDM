@@ -9296,8 +9296,8 @@ a.text-dark:focus {
 
 .btn.btn-danger {
     color: #fff;
-    background-color: #dbe6e4;
-    border-color: #f436bb;
+    background-color: #f44336;
+    border-color: #f44336;
     box-shadow: 0 2px 2px 0 rgba(177, 175, 175, 0.14), 0 3px 1px -2px rgba(177, 175, 175, 0.14), 0 1px 5px 0 rgba(177, 175, 175, 0.14);
 }
 /*
