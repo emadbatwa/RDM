@@ -21,24 +21,26 @@
             <a href="{{ route('table') }}" class="simple-text logo-normal">
                 <img src="{{ asset('material') }}/img/logo.png" alt="Smiley" height="45" width="45">
             </a>
+
+
+            <div class="sidebar-wrapper">
+                <div class="container">
+                    <ul class="nav">
+                        <label for="statuses">حالة البلاغ</label>
+                        <select id="status" class="container-fluid" name="status">
+                            <option value="all" selected>الكل</option>
+                            <option value="open">مفتوحة</option>
+                            <option value="closed">مغلقة</option>
+                        </select>
+                    </ul>
+                </div>
+                <div class="container-fluid">
+                    <!-- من هنا تتمرر للداتابيس-->
+                    <button id="search" class="button" name="filter_update" onclick="updateMarkers();"> ابحث</button>
+                </div>
+            </div>
         </div>
 
-        <div class="sidebar-wrapper">
-            <div class="container">
-                <ul class="nav">
-                    <label for="statuses">حالة البلاغ</label>
-                    <select id="status" class="container-fluid" name="status">
-                        <option value="all" selected>الكل</option>
-                        <option value="open">مفتوحة</option>
-                        <option value="closed">مغلقة</option>
-                    </select>
-                </ul>
-            </div>
-            <div class="container-fluid">
-                <!-- من هنا تتمرر للداتابيس-->
-                <button id="search" class="button" name="filter_update" onclick="updateMarkers();"> ابحث</button>
-            </div>
-        </div>
     </div>
     <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
         <div class="container-fluid">
@@ -55,114 +57,113 @@
             </div>
         </div>
     </nav>
-</div>
+    <div class="main-panel">
+        <div id="map">
 
-<div class="main-panel">
-    <div id="map">
-
-        <script type="text/javascript"
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBejOPM4uDw_MrHg4SpDUM6XwFb8Pw8lrg&callback=initMap">
-        </script>
-        <script type="text/javascript">
-            // سحب بيانات من الداتابيس بالاضافة للصور
-            var markers = @json($tickets);
-            var closedTickets = [];
-            var openTickets = [];
-            var allTickets = [];
-            var map;
-            console.log(markers);
-            window.onload = function () {
-                LoadMap();
-            };
-
-            function LoadMap() {
-                var mapOptions = {
-                    center: new google.maps.LatLng(21.44271329, 39.80599992),
-                    zoom: 13,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
+            <script type="text/javascript"
+                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBejOPM4uDw_MrHg4SpDUM6XwFb8Pw8lrg&callback=initMap">
+            </script>
+            <script type="text/javascript">
+                // سحب بيانات من الداتابيس بالاضافة للصور
+                var markers = @json($tickets);
+                var closedTickets = [];
+                var openTickets = [];
+                var allTickets = [];
+                var map;
+                console.log(markers);
+                window.onload = function () {
+                    LoadMap();
                 };
-                map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
-                var infoWindow = new google.maps.InfoWindow();
-                for (var i = 0; i < markers.length; i++) {
-                    var data = markers[i];
-                    var myLatlng = new google.maps.LatLng(data['location'].latitude, data['location'].longitude);
 
-                    if (data['ticket'].status == 'OPEN') {
-                        var marker = new google.maps.Marker({
-                            position: myLatlng,
-                            icon: {
-                                url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-                                //url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-                            },
-                            map: map,
-                            //    title: data.title
-                        });
-                        openTickets.push(marker);
-                        allTickets.push(marker);
-                    } else {
-                        var marker = new google.maps.Marker({
-                            position: myLatlng,
-                            icon: {
-                                //url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-                                url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-                            },
-                            map: map,
-                            // title: data.title
-                        });
-                        closedTickets.push(marker);
-                        allTickets.push(marker);
-                    }
-                    (function (marker, data) {
-                        google.maps.event.addListener(marker, "click", function (e) {
-                            console.log(data);
-                            var goodPhotos = '';
-                            var badPhotos = '';
-                            for (i = 0; i < data['photos'].length; i++) {
-                                if (data['photos'][i].role_id == 3) {
-                                    goodPhotos += `<img src="http://www.ai-rdm.website/storage/photos/` + data['photos'][i].photo_name + `" alt="photo" height="100" width="100">`;
-                                } else {
-                                    badPhotos += `<img src="http://www.ai-rdm.website/storage/photos/` + data['photos'][i].photo_name + `" alt="photo" height="100" width="100">`;
+                function LoadMap() {
+                    var mapOptions = {
+                        center: new google.maps.LatLng(21.44271329, 39.80599992),
+                        zoom: 13,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
+                    var infoWindow = new google.maps.InfoWindow();
+                    for (var i = 0; i < markers.length; i++) {
+                        var data = markers[i];
+                        var myLatlng = new google.maps.LatLng(data['location'].latitude, data['location'].longitude);
+
+                        if (data['ticket'].status == 'OPEN') {
+                            var marker = new google.maps.Marker({
+                                position: myLatlng,
+                                icon: {
+                                    url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                                    //url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                                },
+                                map: map,
+                                //    title: data.title
+                            });
+                            openTickets.push(marker);
+                            allTickets.push(marker);
+                        } else {
+                            var marker = new google.maps.Marker({
+                                position: myLatlng,
+                                icon: {
+                                    //url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                                    url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                                },
+                                map: map,
+                                // title: data.title
+                            });
+                            closedTickets.push(marker);
+                            allTickets.push(marker);
+                        }
+                        (function (marker, data) {
+                            google.maps.event.addListener(marker, "click", function (e) {
+                                console.log(data);
+                                var goodPhotos = '';
+                                var badPhotos = '';
+                                for (i = 0; i < data['photos'].length; i++) {
+                                    if (data['photos'][i].role_id == 3) {
+                                        goodPhotos += `<img src="http://www.ai-rdm.website/storage/photos/` + data['photos'][i].photo_name + `" alt="photo" height="100" width="100">`;
+                                    } else {
+                                        badPhotos += `<img src="http://www.ai-rdm.website/storage/photos/` + data['photos'][i].photo_name + `" alt="photo" height="100" width="100">`;
+                                    }
                                 }
-                            }
-                            //تعديل حجم البوب اب مع المعلومات
-                            "<div style = 'width:12%;min-height:20%'>" + data.description + "</div>"
-                            infoWindow.setContent(Swal.fire({
-                                position: 'center',
-                                title: data['ticket'].description,
-                                html: '<p>تاريخ الإنشاء: ' + moment().locale('ar-sa').format('MMMM Do YYYY, h:mm:ss a') + '</p>' + badPhotos + '<br>' + goodPhotos + '<br><a target="_blank" href="http://maps.google.com/maps?z=12&t=m&q=loc:' + data['location'].latitude + '+' + data['location'].longitude + '">موقع التذكرة</a>',
-                                // imageUrl: 'http://www.ai-rdm.website/storage/photos/' + data['photos'][0].photo_name,
-                                // imageWidth: 400,
-                                // imageHeight: 200,
-                                // imageAlt: 'Custom image',
-                                // header: data['ticket'].created_at,
-                            }));
-                            //  infoWindow.open(map, marker);
-                        });
-                    })(marker, data);
+                                //تعديل حجم البوب اب مع المعلومات
+                                "<div style = 'width:12%;min-height:20%'>" + data.description + "</div>"
+                                infoWindow.setContent(Swal.fire({
+                                    position: 'center',
+                                    title: data['ticket'].description,
+                                    html: '<p>تاريخ الإنشاء: ' + moment().locale('ar-sa').format('MMMM Do YYYY, h:mm:ss a') + '</p>' + badPhotos + '<br>' + goodPhotos + '<br><a target="_blank" href="http://maps.google.com/maps?z=12&t=m&q=loc:' + data['location'].latitude + '+' + data['location'].longitude + '">موقع التذكرة</a>',
+                                    // imageUrl: 'http://www.ai-rdm.website/storage/photos/' + data['photos'][0].photo_name,
+                                    // imageWidth: 400,
+                                    // imageHeight: 200,
+                                    // imageAlt: 'Custom image',
+                                    // header: data['ticket'].created_at,
+                                }));
+                                //  infoWindow.open(map, marker);
+                            });
+                        })(marker, data);
+                    }
                 }
-            }
 
-            function updateMarkers() {
-                var status = $('#status').val();
-                for (i = 0; i < allTickets.length; i++) {
-                    allTickets[i].setMap(null);
-                }
-                if (status == 'open') {
-                    for (i = 0; i < openTickets.length; i++) {
-                        openTickets[i].setMap(map);
-                    }
-                } else if (status == 'closed') {
-                    for (i = 0; i < closedTickets.length; i++) {
-                        closedTickets[i].setMap(map);
-                    }
-                } else {
+                function updateMarkers() {
+                    var status = $('#status').val();
                     for (i = 0; i < allTickets.length; i++) {
-                        allTickets[i].setMap(map);
+                        allTickets[i].setMap(null);
+                    }
+                    if (status == 'open') {
+                        for (i = 0; i < openTickets.length; i++) {
+                            openTickets[i].setMap(map);
+                        }
+                    } else if (status == 'closed') {
+                        for (i = 0; i < closedTickets.length; i++) {
+                            closedTickets[i].setMap(map);
+                        }
+                    } else {
+                        for (i = 0; i < allTickets.length; i++) {
+                            allTickets[i].setMap(map);
+                        }
                     }
                 }
-            }
-        </script>
-        <div id="dvMap" style="width:100%; height:100%">
+            </script>
+            <div id="dvMap" style="width:100%; height:100%">
+            </div>
         </div>
     </div>
 </div>
@@ -184,4 +185,5 @@
 <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="{{ asset('material') }}/js/material-dashboard.js?v=2.1.1" type="text/javascript"></script>
 </body>
+
 </html>
