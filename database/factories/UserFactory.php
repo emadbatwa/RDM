@@ -3,6 +3,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 use App\User;
 use Faker\Generator as Faker;
+use Faker\Factory as Factory;
 use Illuminate\Support\Str;
 
 /*
@@ -17,6 +18,8 @@ use Illuminate\Support\Str;
 */
 
 $factory->define(User::class, function (Faker $faker) {
+    $faker = Factory::create('ar_SA');
+    gc_collect_cycles();
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,

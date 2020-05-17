@@ -19,7 +19,7 @@
           -->
             <div class="logo ">
                 <a href="{{ url('/ticket/list') }}" class="simple-text logo-normal">
-                    <img src="/images/logo.png" alt="Smiley" height="45" width="45">
+                    <img src="{{ asset('material') }}/img/logo.png" alt="Smiley" style="height: 46px">
                 </a>
             </div>
 
@@ -78,9 +78,7 @@
             });
         </script>
         <div class="main-panel">
-            <div class="container">
-
-                <div class="row justify-content-center">
+                <div class="justify-content-center">
                     <div class="">
 
                         <div class="">
@@ -246,7 +244,7 @@
                                                 <button type="button" class="btn btn-primary" onclick="DoneTicket();">
                                                     رفع حل التذكرة
                                                 </button>
-                                                
+
                                                 <button type="button" class="btn btn-danger " id="closeWindow"
                                                         data-dismiss="modal"
                                                         aria-hidden="true">
@@ -538,6 +536,5 @@
 
 
         </script>
-    </div>
 @endsection
 </html>

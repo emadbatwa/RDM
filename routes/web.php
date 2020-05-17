@@ -24,19 +24,24 @@ Route::group([
     Route::post('register', 'Auth\RegisterController@register');
 });
 
+Route::group([
+    'middleware' => '',
+], function () {
+    Route::get('find_password', 'Auth\RegisterController@showRegistrationForm')->name('register');
+    Route::post('register', 'Auth\RegisterController@register');
+});
+
 
 Route::group([
     'prefix' => 'public',
 ], function () {
     Route::get('/map', 'TicketController@publicMap');
-    Route::get('/show/{ticket_id}', 'TicketController@showPublic');
 });
 Route::group([
     'prefix' => 'ticket',
     'middleware' => 'auth',
 ], function () {
     Route::get('/list', 'TicketController@list')->name('ticket.list');
-    Route::get('/map', 'TicketController@map');
     Route::post('/show', 'TicketController@show')->name('ticket.show');
     Route::post('/update', 'TicketController@update')->name('ticket.update');
     Route::post('/updateClassification', 'TicketController@updateClassification')->name('ticket.updateClassification');
@@ -47,7 +52,5 @@ Route::group([
 ], function () {
     Route::get('/employees', 'UserController@employees');
     Route::get('/add', 'UserController@add');
-    Route::get('/cities', 'API\TicketController@cities');
-    Route::get('/neighborhoods', 'API\TicketController@neighborhoods');
 });
 

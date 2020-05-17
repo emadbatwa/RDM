@@ -151,31 +151,6 @@ class TicketController extends Controller
 
     }
 
-    public function map(Request $request)
-    {
-        $user = $request->user();
-        //admin
-        if ($user->role_id == 2) {
-            $tickets = Ticket::orderBy('id')
-                ->get();
-        }
-
-        $finalList = array();
-        $i = 0;
-        foreach ($tickets as $ticket) {
-            $location = Location::join('cities', 'cities.id', '=', 'locations.city_id')
-                ->join('neighborhoods', 'neighborhoods.id', '=', 'locations.neighborhood_id')
-                ->select('locations.id', 'locations.latitude', 'locations.longitude', 'cities.name_ar as city', 'neighborhoods.name_ar as neighborhood')
-                ->where('locations.id', '=', $ticket->location_id)->first();
-            $finalList[$i++] = [
-                'ticket' => $ticket,
-                'location' => $location,
-            ];
-        }
-        return view('admin.map')->with(['tickets' => $finalList]);
-        // $finalList = datatables($finalList)->toJson();
-    }
-
     public function publicMap(Request $request)
     {
         $request->validate([
@@ -208,31 +183,6 @@ class TicketController extends Controller
         }
         return view('publicMap.public_map')->with(['tickets' => $finalList]);
         // $finalList = datatables($finalList)->toJson();
-    }
-
-    public function showPublic(Request $request)
-    {
-        $request->validate([
-            'ticket_id' => 'numeric',
-        ]);
-
-        $wantedTicket = Ticket::findOrFail($request->ticket_id);
-
-        $ticket = Ticket::join('statuses', 'statuses.id', '=', 'tickets.status_id')
-            ->where('tickets.id', '=', $wantedTicket->id)
-            ->select('tickets.id', 'tickets.description', 'tickets.location_id', 'statuses.status', 'statuses.status_ar', 'tickets.created_at', 'tickets.updated_at')
-            ->first();
-
-        $location = Location::select(['locations.latitude', 'locations.longitude'])
-            ->where('locations.id', '=', $wantedTicket->location_id)->first();
-
-        $photos = Photo::where('ticket_id', '=', $wantedTicket->id)->get();
-
-        $ticket = ['ticket' => $ticket,
-            'location' => $location,
-            'photos' => $photos,
-        ];
-        return view('publicShow')->with(['ticket' => $ticket]);
     }
 
     public function show(Request $request)
@@ -295,7 +245,6 @@ class TicketController extends Controller
             }
         }
     }
-
 
     public function update(Request $request)
     {

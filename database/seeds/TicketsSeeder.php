@@ -58,7 +58,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
-                $ticket->assigned_employee = rand(3, 4);
+                $ticket->assigned_employee = rand(4, 5);
                 $ticket->save();
             }
             //Solved
@@ -70,7 +70,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
-                $ticket->assigned_employee = rand(3, 4);
+                $ticket->assigned_employee = rand(4, 5);
                 $ticket->save();
                 foreach ($goodRoads as $goodRoad) {
                     \App\Photo::create([
@@ -90,7 +90,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
-                $ticket->assigned_employee = rand(3, 4);
+                $ticket->assigned_employee = rand(4, 5);
                 $ticket->save();
                 foreach ($goodRoads as $goodRoad) {
                     \App\Photo::create([
@@ -105,6 +105,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'تم اصلاحها في أقل من يوم',
                     'ticket_id' => $ticket->id,
                 ]);
+                $ticket->update(['damage_degree_id' => rand(1,3)]);
             }
             //Closed
             if ($ticket->status_id == 6) {
@@ -115,7 +116,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
-                $ticket->assigned_employee = rand(3, 4);
+                $ticket->assigned_employee = rand(4, 5);
                 $ticket->save();
                 foreach ($goodRoads as $goodRoad) {
                     \App\Photo::create([
@@ -138,6 +139,7 @@ class TicketsSeeder extends Seeder
                     $ticket->user_rating_id = $userRating->id;
                     $ticket->save();
                 }
+                $ticket->update(['damage_degree_id' => rand(1,3)]);
             }
         }
     }
