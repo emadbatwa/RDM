@@ -58,7 +58,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
-                $ticket->assigned_employee = rand(3, 4);
+                $ticket->assigned_employee = rand(4, 5);
                 $ticket->save();
             }
             //Solved
@@ -70,7 +70,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
-                $ticket->assigned_employee = rand(3, 4);
+                $ticket->assigned_employee = rand(4, 5);
                 $ticket->save();
                 foreach ($goodRoads as $goodRoad) {
                     \App\Photo::create([
@@ -90,7 +90,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
-                $ticket->assigned_employee = rand(3, 4);
+                $ticket->assigned_employee = rand(4, 5);
                 $ticket->save();
                 foreach ($goodRoads as $goodRoad) {
                     \App\Photo::create([
@@ -116,7 +116,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'يجب اصلاح هذه التذكرة بأسرع وقت',
                     'ticket_id' => $ticket->id,
                 ]);
-                $ticket->assigned_employee = rand(3, 4);
+                $ticket->assigned_employee = rand(4, 5);
                 $ticket->save();
                 foreach ($goodRoads as $goodRoad) {
                     \App\Photo::create([
