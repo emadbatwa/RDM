@@ -115,8 +115,8 @@
                         (function (marker, data) {
                             google.maps.event.addListener(marker, "click", function (e) {
                                 console.log(data);
-                                var goodPhotos = '';
-                                var badPhotos = '';
+                                var goodPhotos = '<p>صور الحل: </p>';
+                                var badPhotos = '<p>صور المشكلة: </p>';
                                 for (i = 0; i < data['photos'].length; i++) {
                                     if (data['photos'][i].role_id == 3) {
                                         goodPhotos += `<img src="http://www.ai-rdm.website/storage/photos/` + data['photos'][i].photo_name + `" alt="photo" height="100" width="100">`;

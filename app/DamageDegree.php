@@ -10,7 +10,7 @@ class DamageDegree extends Model
     const MODERATE = 'MODERATE';
     const SIMPLE = 'SIMPLE';
 
-    protected $timestamps = false;
+    public $timestamps = false;
 
-    protected $fillable = ['degree', 'degree_ar'];
+    public $fillable = ['degree', 'degree_ar'];
 }

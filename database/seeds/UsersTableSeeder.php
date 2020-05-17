@@ -15,21 +15,28 @@ class UsersTableSeeder extends Seeder
         User::create([
             'email' => 'admin@hotmail.com',
             'password' => bcrypt('password'),
-            'name' => 'BOSS',
+            'name' => 'محمد الغامدي',
             'phone' => '0500000000',
             'role_id' => 2,
         ]);
         User::create([
             'email' => 'company@hotmail.com',
             'password' => bcrypt('password'),
-            'name' => 'company',
+            'name' => 'شركة اصلاح الجنوب',
+            'phone' => '0511111111',
+            'role_id' => 3,
+        ]);
+        User::create([
+            'email' => 'company1@hotmail.com',
+            'password' => bcrypt('password'),
+            'name' => 'شركة اصلاح الشمال',
             'phone' => '0511111111',
             'role_id' => 3,
         ]);
         User::create([
             'email' => 'employee1@hotmail.com',
             'password' => bcrypt('password'),
-            'name' => 'employee1',
+            'name' => 'عماد بتوا',
             'phone' => '0544444444',
             'company' => 2,
             'role_id' => 4,
@@ -37,7 +44,7 @@ class UsersTableSeeder extends Seeder
         User::create([
             'email' => 'employee2@hotmail.com',
             'password' => bcrypt('password'),
-            'name' => 'employee2',
+            'name' => 'محمد الزهراني',
             'phone' => '0588888888',
             'company' => 2,
             'role_id' => 4,

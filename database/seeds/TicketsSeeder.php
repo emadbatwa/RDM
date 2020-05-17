@@ -105,6 +105,7 @@ class TicketsSeeder extends Seeder
                     'message' => 'تم اصلاحها في أقل من يوم',
                     'ticket_id' => $ticket->id,
                 ]);
+                $ticket->update(['damage_degree_id' => rand(1,3)]);
             }
             //Closed
             if ($ticket->status_id == 6) {
@@ -138,6 +139,7 @@ class TicketsSeeder extends Seeder
                     $ticket->user_rating_id = $userRating->id;
                     $ticket->save();
                 }
+                $ticket->update(['damage_degree_id' => rand(1,3)]);
             }
         }
     }
