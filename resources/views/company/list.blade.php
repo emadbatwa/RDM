@@ -25,29 +25,27 @@
 
 
             <div class="sidebar-wrapper w">
-            <ul class="nav ">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/ticket/list') }}">
-                        <i class="material-icons">list_alt</i>
-                        <p>التذاكر</p>
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="{{ url('/user/employees') }}">  <!--  need to be  -->
-                        <i class="material-icons">group</i>
-                        <p>الموظفين</p>
-                    </a>
-                </li>
-                <li class="nav-item  fixed-bottom-m">
-                    <a class="nav-link" href="{{ route('logout') }}"
-                       onclick="event.preventDefault();
+                <ul class="nav ">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/ticket/list') }}">
+                            <i class="material-icons">list_alt</i>
+                            <p>التذاكر</p>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="{{ url('/user/employees') }}">  <!--  need to be  -->
+                            <i class="material-icons">group</i>
+                            <p>الموظفين</p>
+                        </a>
+                    </li>
+                    <li class="nav-item  fixed-bottom-m">
+                        <a class="nav-link" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
 
-                        <i class="material-icons">logout</i>
-                        <p>تسجيل خروج</p>
-                    </a>
-  
-
+                            <i class="material-icons">logout</i>
+                            <p>تسجيل خروج</p>
+                        </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
@@ -56,11 +54,12 @@
                 </ul>
             </div>
         </div>
+        @include('layouts.Side-bar-toggle')
 
         <script>
             $(document).ready(function () {
                 var tickets = @json($tickets);
-                console.log('good',tickets);
+                console.log('good', tickets);
                 $('#tableBody').append(tickets);
                 window.table = $('#example').DataTable({
                     "language": {
@@ -79,17 +78,13 @@
             });
         </script>
         <div class="main-panel">
-
-
-            </div>
-
             <div class="container">
 
                 <div class="row justify-content-center">
                     <div class="">
 
                         <div class="">
-                            
+
 
                             <div class="card-body">
                                 <table id="example" class="display " style="width:100%">
@@ -106,7 +101,7 @@
                                     </thead>
                                     <div id="result"></div>
                                     <tbody id="tableBody">
-                                   
+
 
                                     </tbody>
                                     <tfoot>
@@ -147,32 +142,31 @@
                                             </div>
 
                                             <p>
-                                            <!-- <div class="container">
-                                             <div class="row">
-                                               <div class="col">1</div>
-                                               <div class="col">2</div>
-                                               <div class="w-100"></div>
-                                               <div class="col">3</div>
-                                               <div class="col">4</div>
-                                             </div>
-                                            </div> -->
+                                                <!-- <div class="container">
+                                                 <div class="row">
+                                                   <div class="col">1</div>
+                                                   <div class="col">2</div>
+                                                   <div class="w-100"></div>
+                                                   <div class="col">3</div>
+                                                   <div class="col">4</div>
+                                                 </div>
+                                                </div> -->
                                             <table class="table">
                                                 <tr>
-                                                
-                                               
-                                                
+
+
                                                     <th>تاريخ الإنشاء:</th>
                                                     <td id="created_at"></td>
                                                     <th>تاريخ التعديل:</th>
                                                     <td id="updated_at"></td>
                                                 </tr>
                                                 <tr>
-                                                 
-                                                <th>الوصف</th>
+
+                                                    <th>الوصف</th>
                                                     <td id="description"></td>
                                                     <th>صور البلاغ</th>
 
-                                               
+
                                                     <td id="problemPhotos">
                                                         <img src="" alt="ticket photo" height="100" width="100">
                                                         <img src="" alt="ticket photo" height="100" width="100">
@@ -185,7 +179,7 @@
                                                 <tr>
                                                     <th>التصنيف:</th>
 
-                                                    <td id="classification_ar" >
+                                                    <td id="classification_ar">
 
                                                         <!-- <div class="btn-group">
                                                             <select id="classifications" type="button" class="btn"
@@ -200,13 +194,11 @@
                                                     </td>
                                                     <th>حجم الضرر:</th>
                                                     <td id="degree_ar"></td>
-                                                    
 
 
                                                 </tr>
                                                 <tr>
 
-                                                    
 
                                                     <th>الموظف:</th>
 
@@ -225,7 +217,7 @@
                                                             اسناد
                                                         </button>
                                                     </td>
-                                                  
+
                                                     <th>صور الاصلاح</th>
                                                     <td id="fixPhotos">
                                                         <img src="{{url('/images/defaultPhoto.png')}}"
@@ -249,11 +241,11 @@
                                                 </tr> -->
                                             </table>
 
-                                            <div class="modal-footer">
+                                            <div class="modal-footer "
+                                                 style=" margin: 0 auto;">
                                                 <button type="button" class="btn btn-primary" onclick="DoneTicket();">
                                                     رفع حل التذكرة
                                                 </button>
-                                             
                                             </div>
                                         </div>
                                     </div>
@@ -264,282 +256,282 @@
                 </div>
             </div>
         </div>
-    </div>
-    <script>
+        <script>
 
-        $(document).on('hidden.bs.modal', '#detailsModal', function () {
-            clearr();
-        });
-
-        function clearr() {
-            console.log("dd");
-            $('#description').text("");
-            $('#assigned_employee').text(""); // @@@@@@@
-            $('#classification_ar').text("");
-            $('#degree_ar').text("");
-            $('#status_ar').text("");
-            $('#created_at').text("");
-            $('#updated_at').text("");
-            $('#id').text("");
-            $('#classifications').children().remove();
-            $('#employees').children().remove();
-
-            var fixPhotos = document.getElementById('fixPhotos');
-            var problemPhotos = document.getElementById('problemPhotos');
-            for (i = 0; i <= 3; i++) {
-                problemPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
-            }
-            for (i = 0; i <= 3; i++) {
-                fixPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
-            }
-        }
-
-        function getid(ele) {
-            window.id = ele.id;
-            console.log(id);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+            $(document).on('hidden.bs.modal', '#detailsModal', function () {
+                clearr();
             });
-            $.ajax({
-                type: 'post',
-                url: '{{ route('ticket.show') }}',
-                data: {ticketId: window.id},
-                success: function (data) {
-                    console.log('show ticket',data);
-               
-                       // function getPointss() {
-                       //    return [ new google.maps.LatLng(data['ticket']['location'].latitude,data['ticket']['location'].longitud)
-                       //    new google.maps.LatLng(21.44164476, 39.80269969)
-                      //  ];}
-                    
-                    $('#description').text(data['ticket']['ticket'].description);
-                    $('#assigned_employee').text(data['ticket']['assignedEmployee'].name);
-                    $('#classification_ar').text(data['ticket']['ticket'].classification_ar);
-                    if (data['ticket']['ticket'].degree_ar === null) {
-                        $('#degree_ar').text('لا يوجد');
-                    } else {
-                        $('#degree_ar').text(data['ticket']['ticket'].degree_ar);
-                    }
-                    $('#status_ar').text(data['ticket']['ticket'].status_ar);
-                    $('#username').text(data['ticket']['ticket'].userName);
-                    $('#userphone').text(data['ticket']['ticket'].userPhone);
-                    $('#created_at').text(data['ticket']['ticket'].created_at);
-                    $('#updated_at').text(data['ticket']['ticket'].updated_at);
-                    $('#id').text(window.id);
-                    // var classifications = '';
-                    // for (i = 0; i <= data['classifications'].length - 1; i++) {
-                    //     if (data['classifications'][i].classification_ar === data['ticket']['ticket'].classification_ar) {
-                    //         classifications += '<option selected value="' + data['classifications'][i].id + '">' + data['classifications'][i].classification_ar + '</option>';
-                    //     } else {
-                    //         classifications += '<option value="' + data['classifications'][i].id + '">' + data['classifications'][i].classification_ar + '</option>';
-                    //     }
-                      
 
-                    // } 
-                     var employees = '';
-                    console.log(data['ticket']['assignedEmployee'].id);
-                    if (data['ticket']['assignedEmployee'].id === undefined) {
-                        employees += '<option selected value="">لا يوجد</option>';
-                        for (i = 0; i <= data['employees'].length - 1; i++) {
-                            employees += '<option value="' + data['employees'][i].id + '">' + data['employees'][i].name + '</option>';
+            function clearr() {
+                console.log("dd");
+                $('#description').text("");
+                $('#assigned_employee').text(""); // @@@@@@@
+                $('#classification_ar').text("");
+                $('#degree_ar').text("");
+                $('#status_ar').text("");
+                $('#created_at').text("");
+                $('#updated_at').text("");
+                $('#id').text("");
+                $('#classifications').children().remove();
+                $('#employees').children().remove();
+
+                var fixPhotos = document.getElementById('fixPhotos');
+                var problemPhotos = document.getElementById('problemPhotos');
+                for (i = 0; i <= 3; i++) {
+                    problemPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
+                }
+                for (i = 0; i <= 3; i++) {
+                    fixPhotos.children[i].src = "{{url('/images/defaultPhoto.png')}}";
+                }
+            }
+
+            function getid(ele) {
+                window.id = ele.id;
+                console.log(id);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: 'post',
+                    url: '{{ route('ticket.show') }}',
+                    data: {ticketId: window.id},
+                    success: function (data) {
+                        console.log('show ticket', data);
+
+                        // function getPointss() {
+                        //    return [ new google.maps.LatLng(data['ticket']['location'].latitude,data['ticket']['location'].longitud)
+                        //    new google.maps.LatLng(21.44164476, 39.80269969)
+                        //  ];}
+
+                        $('#description').text(data['ticket']['ticket'].description);
+                        $('#assigned_employee').text(data['ticket']['assignedEmployee'].name);
+                        $('#classification_ar').text(data['ticket']['ticket'].classification_ar);
+                        if (data['ticket']['ticket'].degree_ar === null) {
+                            $('#degree_ar').text('لا يوجد');
+                        } else {
+                            $('#degree_ar').text(data['ticket']['ticket'].degree_ar);
                         }
-                    } else {
-                        for (i = 0; i <= data['employees'].length - 1; i++) {
-                            if (data['employees'][i].id === data['ticket']['assignedEmployee'].id) {
-                                employees += '<option selected value="' + data['employees'][i].id + '">' + data['employees'][i].name + '</option>';
-                            } else {
+                        $('#status_ar').text(data['ticket']['ticket'].status_ar);
+                        $('#username').text(data['ticket']['ticket'].userName);
+                        $('#userphone').text(data['ticket']['ticket'].userPhone);
+                        $('#created_at').text(data['ticket']['ticket'].created_at);
+                        $('#updated_at').text(data['ticket']['ticket'].updated_at);
+                        $('#id').text(window.id);
+                        // var classifications = '';
+                        // for (i = 0; i <= data['classifications'].length - 1; i++) {
+                        //     if (data['classifications'][i].classification_ar === data['ticket']['ticket'].classification_ar) {
+                        //         classifications += '<option selected value="' + data['classifications'][i].id + '">' + data['classifications'][i].classification_ar + '</option>';
+                        //     } else {
+                        //         classifications += '<option value="' + data['classifications'][i].id + '">' + data['classifications'][i].classification_ar + '</option>';
+                        //     }
+
+
+                        // }
+                        var employees = '';
+                        console.log(data['ticket']['assignedEmployee'].id);
+                        if (data['ticket']['assignedEmployee'].id === undefined) {
+                            employees += '<option selected value="">لا يوجد</option>';
+                            for (i = 0; i <= data['employees'].length - 1; i++) {
                                 employees += '<option value="' + data['employees'][i].id + '">' + data['employees'][i].name + '</option>';
                             }
-                        }
-                    }
-                    // $('#classifications').append(classifications);
-                    $('#employees').append(employees);
-                    var photos = data['ticket']['photos'];
-                    var fixPhotos = document.getElementById('fixPhotos');
-                    var problemPhotos = document.getElementById('problemPhotos');
-                    var childrenCounter = 0;
-                    for (i = 0; i <= photos.length - 1; i++) {
-                        if (photos[i].role_id === 1) {
-                            problemPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
-                        }
-                    }
-                    childrenCounter = 0;
-                    for (i = 0; i <= photos.length - 1; i++) {
-                        if (photos[i].role_id === 3) {
-                            fixPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
-                        }
-                    }
-
-                },
-                error: function (data) {
-                    console.log('failed');
-                }
-            });
-        }
-
-        function updateTable() {
-            console.log(window.id);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: 'get',
-                url: '{{ route('ticket.list') }}',
-                data: {},
-                success: function (data) {
-                    window.table.destroy();
-                    $('#tableBody').children().remove();
-                    $('#tableBody').append(data);
-                    window.table = $('#example').DataTable({
-                        "language": {
-                            "lengthMenu": "عرض _MENU_ تذكرة لكل صفحة",
-                            "zeroRecords": "لا توجد تذاكر",
-                            "info": "عرض صفحة _PAGE_ من _PAGES_",
-                            "infoEmpty": "لا يوجد تذاكر",
-                            "infoFiltered": "(ترتيب من _MAX_ كل التذاكر)",
-                            "search": "البحث:",
-                            "paginate": {
-                                "previous": "السابق",
-                                "next": "التالي",
+                        } else {
+                            for (i = 0; i <= data['employees'].length - 1; i++) {
+                                if (data['employees'][i].id === data['ticket']['assignedEmployee'].id) {
+                                    employees += '<option selected value="' + data['employees'][i].id + '">' + data['employees'][i].name + '</option>';
+                                } else {
+                                    employees += '<option value="' + data['employees'][i].id + '">' + data['employees'][i].name + '</option>';
+                                }
                             }
                         }
-                    });
-                },
-                error: function (data) {
-                    console.log('failed');
-                }
-            });
-        }
-
-
-        function assignTicketE() {
-            //var classification = $("#classifications").val();
-            var ticketId = window.id;
-            var employee = $("#employees").val();
-           //console.log(classification);
-            //
-            Swal.fire({
-                title: 'هل أنت متأكد?',
-                text: "سيتم إسناد التذكرة الموظف ",
-                type: 'warning',
-                showCancelButton: true,
-                icon: 'warning',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'تراجع',
-                confirmButtonText: 'إسناد التذكرة'
-            }).then((result) => {
-                if (result.value) {
-                    event.preventDefault();
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        // $('#classifications').append(classifications);
+                        $('#employees').append(employees);
+                        var photos = data['ticket']['photos'];
+                        var fixPhotos = document.getElementById('fixPhotos');
+                        var problemPhotos = document.getElementById('problemPhotos');
+                        var childrenCounter = 0;
+                        for (i = 0; i <= photos.length - 1; i++) {
+                            if (photos[i].role_id === 1) {
+                                problemPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
+                            }
                         }
-                    });
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        childrenCounter = 0;
+                        for (i = 0; i <= photos.length - 1; i++) {
+                            if (photos[i].role_id === 3) {
+                                fixPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
+                            }
                         }
-                    });
-                    $.ajax({
-                        type: 'post',
-                        url: '{{ route('ticket.update') }}',
-                        data: {
-                            ticket_id: ticketId,
-                          //  classification: classification,
-                            employee_id: employee,
-                            status: 'IN_PROGRESS'
-                        },
-                        success: function (data) {
-                            console.log('okay');
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'تم إسناد التذكرة بنجاح',
-                                timer: 1500,
-                                showConfirmButton: false,
-                                confirmButtonText: 'حسنا',
 
-                            });
-                            $('#detailsModal').modal('hide');
-                            updateTable();
-                        },
-                        error: function (data) {
-                            console.log('failed');
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'فشل إسناد التذكرة...',
-                                text: 'الرجاء التأكد من حالة التذكرة ',
-                                footer: ' فقط التذاكر المسندة ',
-                                confirmButtonText: 'حسنا'
-                            })
-                        }
-                    });
-                }
-            });
-            //
+                    },
+                    error: function (data) {
+                        console.log('failed');
+                    }
+                });
+            }
 
-        }
+            function updateTable() {
+                console.log(window.id);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: 'get',
+                    url: '{{ route('ticket.list') }}',
+                    data: {},
+                    success: function (data) {
+                        window.table.destroy();
+                        $('#tableBody').children().remove();
+                        $('#tableBody').append(data);
+                        window.table = $('#example').DataTable({
+                            "language": {
+                                "lengthMenu": "عرض _MENU_ تذكرة لكل صفحة",
+                                "zeroRecords": "لا توجد تذاكر",
+                                "info": "عرض صفحة _PAGE_ من _PAGES_",
+                                "infoEmpty": "لا يوجد تذاكر",
+                                "infoFiltered": "(ترتيب من _MAX_ كل التذاكر)",
+                                "search": "البحث:",
+                                "paginate": {
+                                    "previous": "السابق",
+                                    "next": "التالي",
+                                }
+                            }
+                        });
+                    },
+                    error: function (data) {
+                        console.log('failed');
+                    }
+                });
+            }
 
 
-        function DoneTicket() {
-            var ticketId = window.id;
+            function assignTicketE() {
+                //var classification = $("#classifications").val();
+                var ticketId = window.id;
+                var employee = $("#employees").val();
+                //console.log(classification);
+                //
+                Swal.fire({
+                    title: 'هل أنت متأكد?',
+                    text: "سيتم إسناد التذكرة الموظف ",
+                    type: 'warning',
+                    showCancelButton: true,
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'تراجع',
+                    confirmButtonText: 'إسناد التذكرة'
+                }).then((result) => {
+                    if (result.value) {
+                        event.preventDefault();
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                        $.ajax({
+                            type: 'post',
+                            url: '{{ route('ticket.update') }}',
+                            data: {
+                                ticket_id: ticketId,
+                                //  classification: classification,
+                                employee_id: employee,
+                                status: 'IN_PROGRESS'
+                            },
+                            success: function (data) {
+                                console.log('okay');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'تم إسناد التذكرة بنجاح',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                    confirmButtonText: 'حسنا',
 
-            //
-            Swal.fire({
-                title: 'هل أنت متأكد?',
-                text: "سيتم رفع حل التذكرة",
-                type: 'warning',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'تراجع',
-                confirmButtonText: 'رفع حل التذكرة'
-            }).then((result) => {
-                if (result.value) {
-                    event.preventDefault();
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        type: 'post',
-                        url: '{{ route('ticket.update') }}',
-                        data: {ticket_id: ticketId, status: 'DONE'},
-                        success: function (data) {
-                            console.log('okay');
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'تم رفع حل التذكرة بنجاح',
-                                timer: 1500,
-                                showConfirmButton: false,
-                                confirmButtonText: 'حسنا',
+                                });
+                                $('#detailsModal').modal('hide');
+                                updateTable();
+                            },
+                            error: function (data) {
+                                console.log('failed');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'فشل إسناد التذكرة...',
+                                    text: 'الرجاء التأكد من حالة التذكرة ',
+                                    footer: ' فقط التذاكر المسندة ',
+                                    confirmButtonText: 'حسنا'
+                                })
+                            }
+                        });
+                    }
+                });
+                //
 
-                            });
-                            $('#detailsModal').modal('hide');
-                            updateTable();
-                        },
-                        error: function (data) {
-                            console.log('failed');
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'فشل رفع حل التذكرة...',
-                                text: 'الرجاء التأكد من حالة التذكرة ',
-                                footer: ' التذاكر محلوله يمكن رفع حلها فقط',
-                                confirmButtonText: 'حسنا'
-                            })
-                        }
-                    });
-                }
-            });
-        }
+            }
 
-        
-    </script>
+
+            function DoneTicket() {
+                var ticketId = window.id;
+
+                //
+                Swal.fire({
+                    title: 'هل أنت متأكد?',
+                    text: "سيتم رفع حل التذكرة",
+                    type: 'warning',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'تراجع',
+                    confirmButtonText: 'رفع حل التذكرة'
+                }).then((result) => {
+                    if (result.value) {
+                        event.preventDefault();
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                        $.ajax({
+                            type: 'post',
+                            url: '{{ route('ticket.update') }}',
+                            data: {ticket_id: ticketId, status: 'DONE'},
+                            success: function (data) {
+                                console.log('okay');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'تم رفع حل التذكرة بنجاح',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                    confirmButtonText: 'حسنا',
+
+                                });
+                                $('#detailsModal').modal('hide');
+                                updateTable();
+                            },
+                            error: function (data) {
+                                console.log('failed');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'فشل رفع حل التذكرة...',
+                                    text: 'الرجاء التأكد من حالة التذكرة ',
+                                    footer: ' التذاكر محلوله يمكن رفع حلها فقط',
+                                    confirmButtonText: 'حسنا'
+                                })
+                            }
+                        });
+                    }
+                });
+            }
+
+
+        </script>
+    </div>
 @endsection
 </html>

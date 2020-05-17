@@ -43,6 +43,7 @@
             </ul>
         </div>
     </div>
+    @include('layouts.Side-bar-toggle')
     <div class="main-panel">
         <div class="container">
             <div class="row justify-content-center">

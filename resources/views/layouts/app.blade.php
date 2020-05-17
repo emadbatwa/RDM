@@ -11,6 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" ></script>
+    <script src="{{ asset('material') }}/js/material-dashboard.js?v=2.1.1" type="text/javascript"></script>
 
     <!-- Fonts -->
 {{--    <link rel="dns-prefetch" href="//fonts.gstatic.com">--}}
@@ -38,13 +39,6 @@
         .h3,
         .h4 {
             font-family: "Cairo";
-        }
-
-
-
-        #map {
-            height:500px;
-            width:100%;
         }
 
     </style>

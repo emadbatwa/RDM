@@ -42,7 +42,9 @@
 
             </ul>
         </div>
+
     </div>
+    @include('layouts.Side-bar-toggle')
     <div class="main-panel">
         <div class="container">
             <div class="row justify-content-center">
@@ -51,8 +53,9 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <form method="post" action="{{url('/register')}}" autocomplete="off" class="form-horizontal">
-                                     @csrf
+                                    <form method="post" action="{{url('/register')}}" autocomplete="off"
+                                          class="form-horizontal">
+                                        @csrf
                                         <div class="card ">
                                             <div class="card-header card-header-primary">
                                                 <h4 class="card-title">{{ __('اضافة موظف') }}</h4>

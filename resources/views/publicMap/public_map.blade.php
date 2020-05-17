@@ -129,7 +129,7 @@
                             infoWindow.setContent(Swal.fire({
                                 position: 'center',
                                 title: data['ticket'].description,
-                                html: '<p>تاريخ الإنشاء: ' + moment().locale('ar-sa').format('MMMM Do YYYY, h:mm:ss a') + '</p>' + badPhotos +'<br>'+ goodPhotos + '<br><a target="_blank" href="http://maps.google.com/maps?z=12&t=m&q=loc:' + data['location'].latitude + '+' + data['location'].longitude + '">موقع التذكرة</a>',
+                                html: '<p>تاريخ الإنشاء: ' + moment().locale('ar-sa').format('MMMM Do YYYY, h:mm:ss a') + '</p>' + badPhotos + '<br>' + goodPhotos + '<br><a target="_blank" href="http://maps.google.com/maps?z=12&t=m&q=loc:' + data['location'].latitude + '+' + data['location'].longitude + '">موقع التذكرة</a>',
                                 // imageUrl: 'http://www.ai-rdm.website/storage/photos/' + data['photos'][0].photo_name,
                                 // imageWidth: 400,
                                 // imageHeight: 200,

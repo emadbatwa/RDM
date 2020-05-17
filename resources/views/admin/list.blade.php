@@ -52,10 +52,14 @@
                 </ul>
             </div>
         </div>
+
+
+        @include('layouts.Side-bar-toggle')
+
         <script>
             $(document).ready(function () {
                 var tickets = @json($tickets);
-                console.log('good',tickets);
+                console.log('good', tickets);
                 $('#tableBody').append(tickets);
                 window.table = $('#example').DataTable({
                     "language": {
@@ -77,8 +81,7 @@
 
 
             <!---------------------- heatMap ----------------------->
-
-            <div id="map" style="width: 100%; height: 400px;">
+            <div id="map" style="width: 100%; height: 400px; margin-top: 40px;">
 
 
                 <script>
@@ -89,53 +92,53 @@
 
                     function initMap() {
                         map = new google.maps.Map(document.getElementById('map'), {
-                          zoom: 13,
+                            zoom: 13,
                             center: {lat: 21.42302911, lng: 39.82492447},
                             // mapTypeId: 'satellite'
                         });
 
                         heatmap = new google.maps.visualization.HeatmapLayer({
-                            data:  getPoints(),
-                            map:map
+                            data: getPoints(),
+                            map: map
                         });
                     }
-                     
-                  
+
+
                     function getPoints() {
-                   
-                            var locations = @json($locations);
-                           var points=new Array();
-                            for (var i=0; i < locations.length; i++) {
-                             
+
+                        var locations = @json($locations);
+                        var points = new Array();
+                        for (var i = 0; i < locations.length; i++) {
+
                             points[i] = new google.maps.LatLng(locations[i].latitude, locations[i].longitude);
-                     
-                            }
-                            console.log(points);
+
+                        }
+                        console.log(points);
 
                         return points;
-                            // new google.maps.LatLng(21.4423438, 39.80257094),
-                            // new google.maps.LatLng(21.44196432, 39.80260313),
-                            // new google.maps.LatLng(21.44164476, 39.80269969),
-                            // new google.maps.LatLng(21.44128525, 39.80271041),
-                            // new google.maps.LatLng(21.44082588, 39.80279624),
-                            // new google.maps.LatLng(21.44086582, 39.80335414),
-                            // new google.maps.LatLng(21.44099565, 39.8039335),
-                            // new google.maps.LatLng(21.44063614, 39.80437338),  
-                            // new google.maps.LatLng(21.44026664, 39.8044914),
-                            // new google.maps.LatLng(21.4401468, 39.80425537),
-                            // new google.maps.LatLng(21.43998702, 39.80448067),
-                            // new google.maps.LatLng(21.43976732, 39.80425537),
-                            // new google.maps.LatLng(21.43952765, 39.8043412),
-                            // new google.maps.LatLng(21.43939283, 39.80440825),
-                            // new google.maps.LatLng(21.44083586, 39.80622947),
-                            // new google.maps.LatLng(21.44062615, 39.80637968),
-                            // new google.maps.LatLng(21.44054626, 39.80652988),
-                            // new google.maps.LatLng(21.44047635, 39.8066479),
-                            // new google.maps.LatLng(21.44042642, 39.80674446),
-                            // new google.maps.LatLng(21.44031657, 39.80677664),
-                            // new google.maps.LatLng(21.44020672, 39.80681956),
-                            // new google.maps.LatLng(21.44027163, 39.8067686),
-                            // new google.maps.LatLng(21.44035153, 21.44035153)
+                        // new google.maps.LatLng(21.4423438, 39.80257094),
+                        // new google.maps.LatLng(21.44196432, 39.80260313),
+                        // new google.maps.LatLng(21.44164476, 39.80269969),
+                        // new google.maps.LatLng(21.44128525, 39.80271041),
+                        // new google.maps.LatLng(21.44082588, 39.80279624),
+                        // new google.maps.LatLng(21.44086582, 39.80335414),
+                        // new google.maps.LatLng(21.44099565, 39.8039335),
+                        // new google.maps.LatLng(21.44063614, 39.80437338),
+                        // new google.maps.LatLng(21.44026664, 39.8044914),
+                        // new google.maps.LatLng(21.4401468, 39.80425537),
+                        // new google.maps.LatLng(21.43998702, 39.80448067),
+                        // new google.maps.LatLng(21.43976732, 39.80425537),
+                        // new google.maps.LatLng(21.43952765, 39.8043412),
+                        // new google.maps.LatLng(21.43939283, 39.80440825),
+                        // new google.maps.LatLng(21.44083586, 39.80622947),
+                        // new google.maps.LatLng(21.44062615, 39.80637968),
+                        // new google.maps.LatLng(21.44054626, 39.80652988),
+                        // new google.maps.LatLng(21.44047635, 39.8066479),
+                        // new google.maps.LatLng(21.44042642, 39.80674446),
+                        // new google.maps.LatLng(21.44031657, 39.80677664),
+                        // new google.maps.LatLng(21.44020672, 39.80681956),
+                        // new google.maps.LatLng(21.44027163, 39.8067686),
+                        // new google.maps.LatLng(21.44035153, 21.44035153)
 
                     }
                 </script>
@@ -145,9 +148,8 @@
 
             </div>
 
-            <div class="container">
 
-                <div class="row justify-content-center">
+                <div class=" justify-content-center">
                     <div class="">
 
                         <div class="">
@@ -169,7 +171,7 @@
                                     </thead>
                                     <div id="result"></div>
                                     <tbody id="tableBody">
-                                   
+
 
                                     </tbody>
                                     <tfoot>
@@ -210,20 +212,19 @@
                                             </div>
 
                                             <p>
-                                            <!-- <div class="container">
-                                             <div class="row">
-                                               <div class="col">1</div>
-                                               <div class="col">2</div>
-                                               <div class="w-100"></div>
-                                               <div class="col">3</div>
-                                               <div class="col">4</div>
-                                             </div>
-                                            </div> -->
+                                                <!-- <div class="container">
+                                                 <div class="row">
+                                                   <div class="col">1</div>
+                                                   <div class="col">2</div>
+                                                   <div class="w-100"></div>
+                                                   <div class="col">3</div>
+                                                   <div class="col">4</div>
+                                                 </div>
+                                                </div> -->
                                             <table class="table">
                                                 <tr>
-                                                
-                                               
-                                                
+
+
                                                     <th>تاريخ الإنشاء:</th>
                                                     <td id="created_at"></td>
                                                     <th>تاريخ التعديل:</th>
@@ -234,10 +235,10 @@
                                                     <td id="latitude"></td>
                                                     <th>رقم المبلغ:</th>
                                                     <td id="longitude"></td>
-                                                
+
                                                     <th>صور البلاغ</th>
 
-                                               
+
                                                     <td id="problemPhotos">
                                                         <img src="" alt="ticket photo" height="100" width="100">
                                                         <img src="" alt="ticket photo" height="100" width="100">
@@ -272,7 +273,6 @@
                                                 </tr>
                                                 <tr>
 
-                                                    
 
                                                     <th>الشركة:</th>
 
@@ -291,9 +291,9 @@
                                                             اسناد
                                                         </button>
                                                     </td>
-                                                  
-                                                    <th>    </th>
-                                                    <td>    </td>
+
+                                                    <th></th>
+                                                    <td></td>
                                                     <th>صور الاصلاح</th>
                                                     <td id="fixPhotos">
                                                         <img src="{{url('/images/defaultPhoto.png')}}"
@@ -317,7 +317,8 @@
                                                 </tr> -->
                                             </table>
 
-                                            <div class="modal-footer">
+                                            <div class="modal-footer shosho"
+                                                 style="text-align: center; margin: 0 auto;">
                                                 <button type="button" class="btn btn-primary" onclick="closeTicket();">
                                                     إغلاق التذكرة
                                                 </button>
@@ -378,15 +379,15 @@
                 url: '{{ route('ticket.show') }}',
                 data: {ticketId: window.id},
                 success: function (data) {
-                    console.log('show ticket',data);
+                    console.log('show ticket', data);
                     $('#latitude').text(data['ticket']['location'].latitude);
                     $('#longitude').text(data['ticket']['location'].longitude);
-                        console.log('lati',data['ticket']['location'].latitude);
-                       // function getPointss() {
-                       //    return [ new google.maps.LatLng(data['ticket']['location'].latitude,data['ticket']['location'].longitud)
-                       //    new google.maps.LatLng(21.44164476, 39.80269969)
-                      //  ];}
-                    
+                    console.log('lati', data['ticket']['location'].latitude);
+                    // function getPointss() {
+                    //    return [ new google.maps.LatLng(data['ticket']['location'].latitude,data['ticket']['location'].longitud)
+                    //    new google.maps.LatLng(21.44164476, 39.80269969)
+                    //  ];}
+
                     $('#description').text(data['ticket']['ticket'].description);
                     $('#assigned_company').text(data['ticket']['assignedCompany'].name);
                     $('#classification_ar').text(data['ticket']['ticket'].classification_ar);
@@ -734,11 +735,11 @@
         //                     var lat = response;
         //                 console.log('oay',lat);
         //                 //document.getElementById("result").innerHTML = lat;
-        
+
         //                //  }
         //            // }
         //             console.log('okay');
-                   
+
         //         },
         //         error: function (response) {
         //             console.log('failed');
@@ -747,7 +748,7 @@
         //    // return lat;
         // }
         // listTicket();
-        
+
     </script>
 @endsection
 </html>
