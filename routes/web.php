@@ -42,6 +42,7 @@ Route::group([
     'middleware' => 'auth',
 ], function () {
     Route::get('/list', 'TicketController@list')->name('ticket.list');
+    Route::post('/show', 'TicketController@show')->name('ticket.show');
     Route::post('/update', 'TicketController@update')->name('ticket.update');
     Route::post('/updateClassification', 'TicketController@updateClassification')->name('ticket.updateClassification');
 });

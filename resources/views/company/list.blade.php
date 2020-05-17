@@ -19,7 +19,7 @@
           -->
             <div class="logo ">
                 <a href="{{ url('/ticket/list') }}" class="simple-text logo-normal">
-                    <img src="/images/logo.png" alt="Smiley" height="45" width="45">
+                    <img src="{{ asset('material') }}/img/logo.png" alt="Smiley" style="height: 46px">
                 </a>
             </div>
 
