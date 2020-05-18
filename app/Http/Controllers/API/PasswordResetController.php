@@ -99,8 +99,8 @@ class PasswordResetController extends Controller
         $user->save();
         $passwordReset->delete();
         $user->notify(new PasswordResetSuccess($passwordReset));
-        return response()->json([
+        return redirect()->back()->with([
             'message' => 'Successfully updated password'
-        ], 404);
+        ], 200);
     }
 }

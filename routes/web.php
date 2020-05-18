@@ -17,20 +17,14 @@
     });
 
 Auth::routes(['register' => false]);
+Route::post('password/change', 'API\PasswordResetController@reset')->name('password.change');
+
 Route::group([
     'middleware' => 'auth',
 ], function () {
     Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
     Route::post('register', 'Auth\RegisterController@register');
 });
-
-Route::group([
-    'middleware' => '',
-], function () {
-    Route::get('find_password', 'Auth\RegisterController@showRegistrationForm')->name('register');
-    Route::post('register', 'Auth\RegisterController@register');
-});
-
 
 Route::group([
     'prefix' => 'public',
