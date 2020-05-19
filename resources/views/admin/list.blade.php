@@ -39,7 +39,7 @@
                     <li class="nav-item  fixed-bottom-m">
                         <a class="nav-link" href="{{ route('logout') }}"
                            onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                            document.getElementById('logout-form').submit();">
 
                             <i class="material-icons">logout</i>
                             <p>تسجيل خروج</p>
@@ -79,29 +79,26 @@
         </script>
 
         <div class="main-panel">
-<div id="canvas" style = "width:35%; 
-
-       
-         position:relative; 
+<div id="canvas" style = "width:250px; hight:250px;position:relative; 
          top:40px; 
          left:-35px;">
-        <canvas id="myChart"  style="position: absolute; z-index: 1; " ></canvas>
+        <canvas id="myChart"  style="position: absolute; z-index: 1;" ></canvas>
   
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
         <script>
              let myChart = document.getElementById('myChart').getContext('2d');
+         
              var statistics = @json($statistics);
-
+            
               // Global Options
              Chart.defaults.global.defaultFontFamily = 'Lato';
              Chart.defaults.global.defaultFontSize = 12;
              Chart.defaults.global.defaultFontColor = '#777';
   
-
-
-                 let massPopChart = new Chart(myChart, {
-                   type:'doughnut', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-                   data:{
+                    let massPopChart = new Chart(myChart, {
+                    type:'doughnut', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+                    responsive:false,
+                 data:{
                      labels:['مفتوحة', 'مسندة', 'قيد التنفيذ', 'تم الحل', 'مقبولة ', 'مغلقة','مستبعدة' ],
                      datasets:[{
                         data:[
@@ -119,7 +116,7 @@
                          'rgba(255, 99, 132, 0.6)',
                          'rgba(54, 162, 235, 0.6)',
                          'rgba(255, 206, 86, 0.6)',
-                         'rgba(75, 192, 192, 0.6)',
+                         'rgba(75, 192, 142, 0.6)',
                          'rgba(153, 102, 255, 0.6)',
                          'rgba(255, 159, 64, 0.6)',
                          'rgba(75, 192, 192, 0.6)',
@@ -134,7 +131,7 @@
                        hoverBorderColor:'#000'
                      }]
                    },
-                   options:{
+                options:{
 
                      legend:{
                         
@@ -235,9 +232,7 @@
                 <div class="">
 
                     <div class="">
-                        <div class="card-header" id="table">
-                            Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
-
+                        
                         <div class="card-body">
                             <table id="example" class="display " style="width:100%">
                                 <thead>
