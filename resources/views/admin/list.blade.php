@@ -54,12 +54,27 @@
         </div>
 
 
-        @include('layouts.Side-bar-toggle')
+{{--        @include('layouts.Side-bar-toggle')--}}
+
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="navbar-toggler-icon icon-bar"></span>
+                    <span class="navbar-toggler-icon icon-bar"></span>
+                    <span class="navbar-toggler-icon icon-bar"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end ">
+                </div>
+            </div>
+        </nav>
 
         <script>
             $(document).ready(function () {
                 var tickets = @json($tickets);
-             //   console.log('good', tickets);
+                //   console.log('good', tickets);
                 $('#tableBody').append(tickets);
                 window.table = $('#example').DataTable({
                     "language": {
@@ -160,7 +175,7 @@
         </script>
 </div>
             <!---------------------- heatMap ----------------------->
-            <div id="map" style="width: 100%; height: 400px; margin-top: 40px;">
+            <div id="map" style="width: 100%; height: 400px;">
 
 
                 <script>
@@ -192,7 +207,7 @@
                             points[i] = new google.maps.LatLng(locations[i].latitude, locations[i].longitude);
 
                         }
-                      //  console.log(points);
+                        //  console.log(points);
 
                         return points;
                         // new google.maps.LatLng(21.4423438, 39.80257094),
