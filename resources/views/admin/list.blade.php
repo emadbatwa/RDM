@@ -59,7 +59,7 @@
         <script>
             $(document).ready(function () {
                 var tickets = @json($tickets);
-             //   console.log('good', tickets);
+                //   console.log('good', tickets);
                 $('#tableBody').append(tickets);
                 window.table = $('#example').DataTable({
                     "language": {
@@ -79,91 +79,90 @@
         </script>
 
         <div class="main-panel">
-<div id="canvas" style = "width:35%; 
+            <div id="canvas" style="width:35%;
 
-       
-         position:relative; 
-         top:40px; 
+
+         position:relative;
+         top:40px;
          left:-35px;">
-        <canvas id="myChart"  style="position: absolute; z-index: 1; " ></canvas>
-  
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-        <script>
-             let myChart = document.getElementById('myChart').getContext('2d');
-             var statistics = @json($statistics);
+                <canvas id="myChart" style="position: absolute; z-index: 1; "></canvas>
 
-              // Global Options
-             Chart.defaults.global.defaultFontFamily = 'Lato';
-             Chart.defaults.global.defaultFontSize = 12;
-             Chart.defaults.global.defaultFontColor = '#777';
-  
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+                <script>
+                    let myChart = document.getElementById('myChart').getContext('2d');
+                    var statistics = @json($statistics);
+
+                    // Global Options
+                    Chart.defaults.global.defaultFontFamily = 'Lato';
+                    Chart.defaults.global.defaultFontSize = 12;
+                    Chart.defaults.global.defaultFontColor = '#777';
 
 
-                 let massPopChart = new Chart(myChart, {
-                   type:'doughnut', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-                   data:{
-                     labels:['مفتوحة', 'مسندة', 'قيد التنفيذ', 'تم الحل', 'مقبولة ', 'مغلقة','مستبعدة' ],
-                     datasets:[{
-                        data:[
-                         statistics['open'],
-                         statistics['assigned'],
-                         statistics['in_progress'],
-                         statistics['solved'],
-                         statistics['done'] ,
-                         statistics['closed'],
-                         statistics['excluded'] 
-                    
-                       ],  
-                       //backgroundColor:'green',
-                       backgroundColor:[
-                         'rgba(255, 99, 132, 0.6)',
-                         'rgba(54, 162, 235, 0.6)',
-                         'rgba(255, 206, 86, 0.6)',
-                         'rgba(75, 192, 192, 0.6)',
-                         'rgba(153, 102, 255, 0.6)',
-                         'rgba(255, 159, 64, 0.6)',
-                         'rgba(75, 192, 192, 0.6)',
-                         'rgba(255, 159, 64, 0.6)',
-                         'rgba(75, 192, 192, 0.6)'
-                       ],
-                    //    weight:2,
-                    
-                       borderWidth:1,
-                       borderColor:'#777',
-                       hoverBorderWidth:2,
-                       hoverBorderColor:'#000'
-                     }]
-                   },
-                   options:{
+                    let massPopChart = new Chart(myChart, {
+                        type: 'doughnut', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+                        data: {
+                            labels: ['مفتوحة', 'مسندة', 'قيد التنفيذ', 'تم الحل', 'مقبولة ', 'مغلقة', 'مستبعدة'],
+                            datasets: [{
+                                data: [
+                                    statistics['open'],
+                                    statistics['assigned'],
+                                    statistics['in_progress'],
+                                    statistics['solved'],
+                                    statistics['done'],
+                                    statistics['closed'],
+                                    statistics['excluded']
 
-                     legend:{
-                        
-                       display:true,
-                       position:'right',
-                    //    min-height: 80px;
-                       labels:{
-                        
-                         fontColor:'#000',
-                    
-                       }
-                     },
-                     layout:{
-                       padding:{
-                         left:50,
-                         right:0,
-                         bottom:0,
-                         top:0
-                       }
-                     },
-                     tooltips:{
-                       enabled:true
-                     }
-                   }
-                 });
-        </script>
-</div>
+                                ],
+                                //backgroundColor:'green',
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.6)',
+                                    'rgba(54, 162, 235, 0.6)',
+                                    'rgba(255, 206, 86, 0.6)',
+                                    'rgba(75, 192, 192, 0.6)',
+                                    'rgba(153, 102, 255, 0.6)',
+                                    'rgba(255, 159, 64, 0.6)',
+                                    'rgba(75, 192, 192, 0.6)',
+                                    'rgba(255, 159, 64, 0.6)',
+                                    'rgba(75, 192, 192, 0.6)'
+                                ],
+                                //    weight:2,
+
+                                borderWidth: 1,
+                                borderColor: '#777',
+                                hoverBorderWidth: 2,
+                                hoverBorderColor: '#000'
+                            }]
+                        },
+                        options: {
+
+                            legend: {
+
+                                display: true,
+                                position: 'right',
+                                //    min-height: 80px;
+                                labels: {
+
+                                    fontColor: '#000',
+
+                                }
+                            },
+                            layout: {
+                                padding: {
+                                    left: 50,
+                                    right: 0,
+                                    bottom: 0,
+                                    top: 0
+                                }
+                            },
+                            tooltips: {
+                                enabled: true
+                            }
+                        }
+                    });
+                </script>
+            </div>
             <!---------------------- heatMap ----------------------->
-            <div id="map" style="width: 100%; height: 400px; margin-top: 40px;">
+            <div id="map" style="width: 100%; height: 400px;">
 
 
                 <script>
@@ -195,7 +194,7 @@
                             points[i] = new google.maps.LatLng(locations[i].latitude, locations[i].longitude);
 
                         }
-                      //  console.log(points);
+                        //  console.log(points);
 
                         return points;
                         // new google.maps.LatLng(21.4423438, 39.80257094),
@@ -235,9 +234,6 @@
                 <div class="">
 
                     <div class="">
-                        <div class="card-header" id="table">
-                            Dashboard {{$statistics['open']}} {{$statistics['closed']}} {{$statistics['total']}}</div>
-
                         <div class="card-body">
                             <table id="example" class="display " style="width:100%">
                                 <thead>
