@@ -45,7 +45,7 @@
 
     </div>
     @include('layouts.Side-bar-toggle')
-    <div class="main-panel">
+    <div class="main-panel" style="margin-top: 8%">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">

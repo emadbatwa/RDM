@@ -44,7 +44,7 @@
         </div>
     </div>
     @include('layouts.Side-bar-toggle')
-    <div class="main-panel">
+    <div class="main-panel" style="margin-top: 10%">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -79,9 +79,7 @@
                                                         <th>
                                                             تاريخ الإنشاء
                                                         </th>
-                                                        <th class="text-right">
-                                                            إجراء
-                                                        </th>
+
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -107,13 +105,7 @@
                                                                 <td>
                                                                     2020-03-04
                                                                 </td> -->
-                                                            <td class="td-actions text-right">
-                                                                <a rel="tooltip" class="btn btn-success btn-link"
-                                                                   href="http://gp.test/profile" data-original-title=""
-                                                                   title="">
-                                                                    <i class="material-icons">edit</i>
-                                                                    <div class="ripple-container"></div>
-                                                                </a>
+
                                                             </td>
                                                         </tr>
                                                     @endforeach

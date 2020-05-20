@@ -31,7 +31,7 @@
                         </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="#table">  <!--  need to be  -->
+                        <a class="nav-link" href="#table1">  <!--  need to be  -->
                             <i class="material-icons">list_alt</i>
                             <p>التذاكر</p>
                         </a>
@@ -94,22 +94,22 @@
         </script>
 
         <div class="main-panel">
-<div id="canvas" style = "width:250px; hight:250px;position:relative; 
-         top:40px; 
+<div id="canvas" style = "width:250px; hight:250px;position:relative;
+         top:40px;
          left:-35px;">
         <canvas id="myChart"  style="position: absolute; z-index: 1;" ></canvas>
-  
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
         <script>
              let myChart = document.getElementById('myChart').getContext('2d');
-         
+
              var statistics = @json($statistics);
-            
+
               // Global Options
              Chart.defaults.global.defaultFontFamily = 'Lato';
              Chart.defaults.global.defaultFontSize = 12;
              Chart.defaults.global.defaultFontColor = '#777';
-  
+
                     let massPopChart = new Chart(myChart, {
                     type:'doughnut', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
                     responsive:false,
@@ -123,9 +123,9 @@
                          statistics['solved'],
                          statistics['done'] ,
                          statistics['closed'],
-                         statistics['excluded'] 
-                    
-                       ],  
+                         statistics['excluded']
+
+                       ],
                        //backgroundColor:'green',
                        backgroundColor:[
                          'rgba(255, 99, 132, 0.6)',
@@ -139,7 +139,7 @@
                          'rgba(75, 192, 192, 0.6)'
                        ],
                     //    weight:2,
-                    
+
                        borderWidth:1,
                        borderColor:'#777',
                        hoverBorderWidth:2,
@@ -149,14 +149,14 @@
                 options:{
 
                      legend:{
-                        
+
                        display:true,
                        position:'right',
                     //    min-height: 80px;
                        labels:{
-                        
+
                          fontColor:'#000',
-                    
+
                        }
                      },
                      layout:{
@@ -244,10 +244,10 @@
 
 
             <div class=" justify-content-center">
-                <div class="">
+                <div id="table1">
 
                     <div class="">
-                        
+
                         <div class="card-body">
                             <table id="example" class="display " style="width:100%">
                                 <thead>
