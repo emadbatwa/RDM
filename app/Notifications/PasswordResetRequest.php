@@ -43,9 +43,9 @@ class PasswordResetRequest extends Notification
     {
         $url = url('/password/change/'.$this->token);
         return (new MailMessage)
-            ->line('You are receiving this email because we        received a password reset request for your account.')
-            ->action('Reset Password', url($url))
-            ->line('If you did not request a password reset, no further action is required.')
+            ->line('لقد قمت بإستلام هذه الرسالة لأنك قمت بطلب تغيير لكلمة السر.')
+            ->action('تغيير كلمة السر', url($url))
+            ->line('إذا لم تطلب تغيير كلمة السر، لا تحتاج الى عمل اي شيء.')
             ->from('admin@ai-rdm.website');
     }
 

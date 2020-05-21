@@ -41,9 +41,9 @@ class PasswordResetSuccess extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('You are changed your password successfully.')
-            ->line('If you did change password, no further action is required.')
-            ->line('If you did not change password, protect your account.')
+            ->line('لقد قمت بتغيير كلمة السر بنجاح.')
+            ->line('إذا قمت بتغيير كلمة السر، فلا حاجة لعمل اي شيء.')
+            ->line('اذا لم تقم بتغيير كلمة السر، أرجوا مراسلتنا على الإيميل.')
             ->from('admin@ai-rdm.website');
     }
 
