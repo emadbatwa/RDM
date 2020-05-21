@@ -19,7 +19,11 @@
             <ul class="navbar-nav ">
                 <!-- Authentication Links -->
                 @guest
-
+                    <li class="nav-item">
+                        <a id="publicMap" class="nav-link" href="{{url('/public/map')}}" role="button">
+                            الخريطة العامة
+                        </a>
+                    </li>
                 @else
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

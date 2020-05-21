@@ -468,7 +468,7 @@
                     $('#description').text(data['ticket']['ticket'].description);
                     $('#assigned_company').text(data['ticket']['assignedCompany'].name);
                     $('#classification_ar').text(data['ticket']['ticket'].classification_ar);
-                    if (data['ticket']['ticket'].degree_ar === null) {
+                    if (data['ticket']['ticket'].degree_ar == null) {
                         $('#degree_ar').text('لا يوجد');
                     } else {
                         $('#degree_ar').text(data['ticket']['ticket'].degree_ar);
@@ -481,7 +481,7 @@
                     $('#id').text(window.id);
                     var classifications = '';
                     for (i = 0; i <= data['classifications'].length - 1; i++) {
-                        if (data['classifications'][i].classification_ar === data['ticket']['ticket'].classification_ar) {
+                        if (data['classifications'][i].classification_ar == data['ticket']['ticket'].classification_ar) {
                             classifications += '<option selected value="' + data['classifications'][i].id + '">' + data['classifications'][i].classification_ar + '</option>';
                         } else {
                             classifications += '<option value="' + data['classifications'][i].id + '">' + data['classifications'][i].classification_ar + '</option>';
@@ -490,14 +490,14 @@
 
                     }
                     console.log(data['ticket']['assignedCompany'].id);
-                    if (data['ticket']['assignedCompany'].id === undefined) {
+                    if (data['ticket']['assignedCompany'].id == undefined) {
                         companies += '<option selected value="">لا يوجد</option>';
                         for (i = 0; i <= data['companies'].length - 1; i++) {
                             companies += '<option value="' + data['companies'][i].id + '">' + data['companies'][i].name + '</option>';
                         }
                     } else {
                         for (i = 0; i <= data['companies'].length - 1; i++) {
-                            if (data['companies'][i].id === data['ticket']['assignedCompany'].id) {
+                            if (data['companies'][i].id == data['ticket']['assignedCompany'].id) {
                                 companies += '<option selected value="' + data['companies'][i].id + '">' + data['companies'][i].name + '</option>';
                             } else {
                                 companies += '<option value="' + data['companies'][i].id + '">' + data['companies'][i].name + '</option>';
@@ -511,13 +511,13 @@
                     var problemPhotos = document.getElementById('problemPhotos');
                     var childrenCounter = 0;
                     for (i = 0; i <= photos.length - 1; i++) {
-                        if (photos[i].role_id === 1) {
+                        if (photos[i].role_id == 1) {
                             problemPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
                         }
                     }
                     childrenCounter = 0;
                     for (i = 0; i <= photos.length - 1; i++) {
-                        if (photos[i].role_id === 3) {
+                        if (photos[i].role_id == 3) {
                             fixPhotos.children[childrenCounter++].src = "http://www.ai-rdm.website/storage/photos/" + photos[i].photo_name;
                         }
                     }
