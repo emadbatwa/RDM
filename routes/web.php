@@ -11,6 +11,8 @@
 |
 */
 	Route::get('public_map', 'TicketController@publicMap')->name('table');
+	Route::get('index', function(){return view('about.index');})->name('index');
+	Route::get('contact', function(){return view('about.contact');})->name('contact');
 
     Route::get('/', function () {
         return view('auth.login');
